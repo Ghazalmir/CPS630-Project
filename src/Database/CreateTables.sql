@@ -39,3 +39,11 @@ CREATE TABLE users (
     phone_number VARCHAR(20),
     email VARCHAR(100)
 );
+
+CREATE TABLE reports (
+    Report_Id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    Report_Reason INTEGER NOT NULL CHECK (Report_Reason IN (0,1,2,3,4,5,6,7,8,9)), 
+    Subject_Id_User INTEGER NULL FOREIGN KEY REFERENCES users(User_id),
+    Subject_Id_Post INTEGER NULL FOREIGN KEY REFERENCES products(Product_id),
+    Subject_Type INTEGER NOT NULL DEFAULT 0 CHECK (Subject_Type IN (0,1)),    
+);
