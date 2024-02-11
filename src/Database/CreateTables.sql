@@ -22,3 +22,11 @@ CREATE TABLE messages (
     FOREIGN KEY (Sender_id) REFERENCES Users(User_id)
 );
 
+/* image table */
+CREATE TABLE images (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    Product_id INTEGER NOT NULL,
+    Image_link VARCHAR2(255) NOT NULL,
+    Image_title VARCHAR(100),
+    FOREIGN KEY (Product_id) REFERENCES Product(Product_id)
+);
