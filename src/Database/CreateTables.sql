@@ -30,3 +30,12 @@ CREATE TABLE images (
     Image_title VARCHAR(100),
     FOREIGN KEY (Product_id) REFERENCES Product(Product_id)
 );
+
+CREATE TABLE users (
+    id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    is_admin INTEGER NOT NULL DEFAULT 0 CHECK (is_admin IN (0,1)),
+    f_name VARCHAR(50),
+    l_name VARCHAR(50),
+    phone_number VARCHAR(20),
+    email VARCHAR(100)
+);
