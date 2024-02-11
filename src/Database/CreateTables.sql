@@ -7,8 +7,12 @@ CREATE TABLE products (
     Description VARCHAR2(1000),
 	  Price NUMBER NOT NULL, 
     Is_available INTEGER CHECK (Is_available IN (0,1)),
+    Category_id INTEGER,
+    Subcategory_id INTEGER,
     Date_posted DATE NOT NULL,
-    FOREIGN KEY (User_id) REFERENCES Users(User_id)
+    FOREIGN KEY (User_id) REFERENCES Users(User_id),
+    FOREIGN KEY (Category_id) REFERENCES categories(Category_Id),
+    FOREIGN KEY (Subcategory_id) REFERENCES subcategories(Subcategory_Id)
 );
 
 /* messages table */
@@ -47,3 +51,14 @@ CREATE TABLE reports (
     Subject_Id_Post INTEGER NULL FOREIGN KEY REFERENCES products(Product_id),
     Subject_Type INTEGER NOT NULL DEFAULT 0 CHECK (Subject_Type IN (0,1)),    
 );
+
+CREATE TABLE categories(
+	Category_Id INTEGER AUTO_INCREMENT PRIMARY KEY,
+	Category_Name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE subcategories(
+	Subcategory_Id INTEGER AUTO_INCREMENT PRIMARY KEY,
+	Subcategory_Name VARCHAR(50) NOT NULL
+);
+
