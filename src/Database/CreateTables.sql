@@ -45,11 +45,16 @@ CREATE TABLE users (
 );
 
 CREATE TABLE reports (
-    Report_Id INTEGER AUTO_INCREMENT PRIMARY KEY,
-    Report_Reason INTEGER NOT NULL CHECK (Report_Reason IN (0,1,2,3,4,5,6,7,8,9)), 
+    Report_Reason_Id VARCHAR(200), 
     Subject_Id_User INTEGER NULL FOREIGN KEY REFERENCES users(User_id),
     Subject_Id_Post INTEGER NULL FOREIGN KEY REFERENCES products(Product_id),
-    Subject_Type INTEGER NOT NULL DEFAULT 0 CHECK (Subject_Type IN (0,1)),    
+    Subject_Type INTEGER NOT NULL DEFAULT 0 CHECK (Subject_Type IN (0,1)),
+    FOREIGN KEY (Report_Reason_Id) REFERENCES report_reasons(Report_Reason_Id)
+);
+
+CREATE TABLE report_reasons (
+    Report_Reason_Id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    Reason_of_Report VARCHAR(200)   
 );
 
 CREATE TABLE categories(
