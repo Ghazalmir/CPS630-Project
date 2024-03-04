@@ -1,25 +1,33 @@
-import logo from './logo.svg';
+// Libraries
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
+// Components
+import AdDetails from "./pages/ads/adDetails";
+
+// Styling 
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 import './App.css';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+	return (
+		<Router>
+		<div>
+      {/* Add the componenet once you have it
+			<NavBar />
+      */}
+			<Routes>
+        {/* Add the actual main page once you have it */}
+        <Route path="/" element={<AdDetails />} />
+				<Route path="/AdDetails" element={<AdDetails />} />
+			</Routes>
+      {/* Add the componenet once you have it
+			<Footer />
+      */}
+		</div>
+		</Router>
+	);
 }
 
 export default App;

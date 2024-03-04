@@ -13,6 +13,27 @@
   }
 }
 
+.text-blue {
+  color: #004C9B;
+}
+
+.bg-blue {
+  background-color: #004C9B;
+}
+
+.text-yellow {
+  color: #FFDC00; 
+}
+
+.bg-yellow {
+  background-color: #FFDC00; 
+}
+
+.btn-primary {
+  background-color: #004C9B;
+}
+
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
