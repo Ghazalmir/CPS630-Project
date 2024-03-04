@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 // Components
 import AdDetails from "./pages/ads/adDetails";
+import PageNotFound from './pages/pageNotFound';
 
 // Styling 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -21,6 +22,7 @@ function App() {
         {/* Add the actual main page once you have it */}
         <Route path="/" element={<AdDetails />} />
 				<Route path="/AdDetails" element={<AdDetails />} />
+				<Route path="*" element={<PageNotFound />} />
 			</Routes>
       {/* Add the componenet once you have it
 			<Footer />
