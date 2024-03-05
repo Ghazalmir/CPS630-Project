@@ -1,8 +1,10 @@
-import BlueButton from "../../components/general/blueButton";
+import { useState } from "react";
 
 var files = [];
 
 function NewAdForm(props) {
+  const [meetOnCampus, setMeetOnCampusChecked] = useState(false);
+
   return (
     <form className="m-5" action="/newad">
       <h2>Item Information</h2>
@@ -48,20 +50,19 @@ function NewAdForm(props) {
       <h2>Meetup Information</h2>
       <p>Where do you want the transaction to happen?</p>
       {/* Address */}
-      <div className="mb-3">
-        <label htmlFor="street" className="form-label">Street Address</label>
-        <input type="text" className="form-control bg-body-tertiary" id="street" placeholder="Street Adress" autoComplete="street-address"/>
+      <div className="mb-3 form-check">
+        <input className="form-check-input" type="checkbox" value="meetOnCampus" id="meet-on-campus" checked={meetOnCampus}
+                onChange={() => {setMeetOnCampusChecked(!meetOnCampus)}
+            }
+        />
+        <label className="form-check-label" htmlFor="meet-on-campus">
+          Meet on TMU's Campus
+        </label>
       </div>
-      <div className="row mb-4">
-        <div className="col col-sm-6 col-12">
-          <label htmlFor="city" className="form-label">City <span className="text-danger">*</span></label>
-          <input type="text" className="form-control bg-body-tertiary" id="city" placeholder="City" autoComplete="address-level2" required/>
-        </div>
-        <div className="col col-sm-6 col-12">
-          <label htmlFor="country" className="form-label">Country <span className="text-danger">*</span></label>
-          <input type="text" className="form-control bg-body-tertiary" id="country" placeholder="Country" autoComplete="country" required/>
-        </div>
-      </div>
+      {
+        meetOnCampus == true ? "": addressFields() 
+      }
+      
       {/* Submit/cancel buttons */}
       <div className="text-end">
         <input className="btn btn-primary text-white rounded border-0 p-2 px-4" type="submit" value="Post Ad"/>
@@ -69,6 +70,27 @@ function NewAdForm(props) {
       </div>
     </form>
   )
+  }
+
+  function addressFields() {
+    return (
+      <div>
+        <div className="mb-3">
+          <label htmlFor="street" className="form-label">Street Address</label>
+          <input type="text" className="form-control bg-body-tertiary" id="street" placeholder="Street Adress" autoComplete="street-address"/>
+        </div>
+        <div className="row mb-4">
+          <div className="col col-sm-6 col-12">
+            <label htmlFor="city" className="form-label">City <span className="text-danger">*</span></label>
+            <input type="text" className="form-control bg-body-tertiary" id="city" placeholder="City" autoComplete="address-level2" required/>
+          </div>
+          <div className="col col-sm-6 col-12">
+            <label htmlFor="country" className="form-label">Country <span className="text-danger">*</span></label>
+            <input type="text" className="form-control bg-body-tertiary" id="country" placeholder="Country" autoComplete="country" required/>
+          </div>
+      </div>
+      </div>
+    );
   }
 
   function fileUpload(event) {
