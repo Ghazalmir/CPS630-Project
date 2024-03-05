@@ -1,5 +1,5 @@
 import './Navbar.css'
-import { ReactComponent as SearchIcon } from '../Other/icons8-search.svg';
+import { ReactComponent as SearchIcon } from '../../Other/icons8-search.svg';
 
 function LoggedOutNavBar() {
     return (
@@ -15,13 +15,14 @@ function LoggedOutNavBar() {
                 <a className="nav-link active" aria-current="page" href="#">Home</a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#">My Account</a>
-              </li>
-              <li className="nav-item">
                 <a className="nav-link" href="#">Create New Ad</a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#">Messages</a>
+                <div className="nav-link-group">
+                  <a className="nav-link" href="#">Sign Up</a>
+                  <span>/</span>
+                  <a className="nav-link" href="#">Log In</a>
+                </div>
               </li>
             </ul>
             <form className="d-flex search-form" role="search">
