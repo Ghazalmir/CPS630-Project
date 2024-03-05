@@ -4,8 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 // Components
 import AdDetails from "./pages/ads/adDetails";
 import PageNotFound from './pages/pageNotFound';
-import LoggedInNavbar from './components/navbars/LoggedInNavbar.js';
-import LoggedOutNavbar from './components/navbars/LoggedOutNavbar.js';
+import Navbar from './components/navbars/Navbar.js';
 import NewAdForm from './pages/ads/newAdForm';
 
 // Styling 
@@ -15,14 +14,14 @@ import './App.css';
 
 function App() {
 
-	const logged_in = true;
+	const logged_in = false;
 
 	return (
 		<Router>
 		<div>
 		
 		{ /* Some sort of var that determines which version of navbar is rendered */}
-		{logged_in ? <LoggedInNavbar /> : <LoggedOutNavbar />}
+		<Navbar logged_in={logged_in} />
 
 			<Routes>
         {/* Add the actual main page once you have it */}
