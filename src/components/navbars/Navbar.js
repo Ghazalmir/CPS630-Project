@@ -3,7 +3,7 @@ import { ReactComponent as SearchIcon } from '../../Other/icons8-search.svg';
 
 function LoggedOutNavBar({ logged_in }) {
     return (
-      <nav className="navbar navbar-expand-lg">
+      <nav className="navbar navbar-expand-lg mb-3">
         <div className="container-fluid">
           <a className="navbar-brand" href="#">Website Name</a>
           <button className="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

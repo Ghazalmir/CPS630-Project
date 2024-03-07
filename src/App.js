@@ -6,6 +6,7 @@ import AdDetails from "./pages/ads/adDetails";
 import PageNotFound from './pages/pageNotFound';
 import Navbar from './components/navbars/Navbar.js';
 import NewAdForm from './pages/ads/newAdForm';
+import HomePage from './pages/ads/homePage.js';
 
 // Styling 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -22,14 +23,12 @@ function App() {
 		
 		{ /* Some sort of var that determines which version of navbar is rendered */}
 		<Navbar logged_in={logged_in} />
-
-			<Routes>
+		<Routes>
         {/* Add the actual main page once you have it */}
-        <Route path="/" element={<AdDetails />} />
-				<Route path="/AdDetails" element={<AdDetails />} />
-				<Route path="/NewAd" element={<NewAdForm />} />
-
-				<Route path="*" element={<PageNotFound />} />
+        	<Route path="/" element={<HomePage />} />
+			<Route path="/AdDetails" element={<AdDetails />} />
+			<Route path="/NewAd" element={<NewAdForm />} />
+			<Route path="*" element={<PageNotFound />} />
 			</Routes>
       {/* Add the componenet once you have it
 			<Footer />

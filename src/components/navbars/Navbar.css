@@ -24,12 +24,13 @@
 }
 
 .navbar-brand {
+  font-family: Poppins !important;
   color: #FAFAFA !important;
   padding: 20px;
   font-size: 30px !important;
   font-weight: bold;
   text-decoration: none;
-  margin-left: 2vw;
+  margin-left: 8vw;
 }
 
 .navbar-collapse {
@@ -55,6 +56,7 @@
 }
 
 .nav-item a{
+  font-family: Poppins !important;
   flex-direction: row;
   color: #FAFAFA !important;
   font-size: 20px !important;
@@ -77,6 +79,7 @@
 }
 
 .search-form {
+  font-family: Poppins !important;
   margin-right: 2vw !important;
 }
 
