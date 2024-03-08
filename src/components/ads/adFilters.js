@@ -8,10 +8,10 @@ function adFilters() {
     return (
         <Container className="p-5 mr-auto filter-container">
             <Row className="justify-content-center">
-                <span className="mr-auto h5 category">Items Wanted</span>
+                <span className="mr-auto h5 category" href="#/action-1">Items Wanted</span>
             </Row>
             <Row className="justify-content-center">
-                <span className="mr-auto h5 category">Items for Sale</span>
+                <span className="mr-auto h5 category" href="#/action-2">Items for Sale</span>
             </Row>
 
             <Row className="justify-content-center">

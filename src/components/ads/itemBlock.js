@@ -1,4 +1,4 @@
-import imageExample from './blacktshirt.jpg';
+import imageExample from './blacktshirt.png';
 import React from 'react';
 
 function itemBlock( {price, title, location} ) {
@@ -7,11 +7,10 @@ function itemBlock( {price, title, location} ) {
     return (
         <div style={{ width:'270px', fontFamily:'Poppins'}}>
             { /* Replace image url with user uploaded img to be determined later*/}
-            <div className='imageHolder' style={{ width:'270px', height:'270px', backgroundImage:`url(${imageExample})`, backgroundSize:'cover', backgroundPosition:'center', backgroundColor:'#F5F5F5'}}>
-            </div>
+            <a href="#"><div className='imageHolder' style={{ width:'300px', height:'300px', backgroundImage:`url(${imageExample})`, backgroundSize:'cover', backgroundPosition:'center', backgroundColor:'#F5F5F5'}}></div></a>
             <div className='pt-2'>
-                <h6 className='text-blue'>${price}</h6>
-                <h5 className='fw-bold'>{title}</h5>
+                <h6 style={{ color:'#004C9B', fontWeight:'bold'}}>${price}</h6>
+                <a href="#" style={{ textDecoration:'none' }}><h5 style={{ color:'black', fontWeight:'bold'}}>{title}</h5></a>
                 <h6 style={{color:'#80A5CD'}}>{location}</h6>
             </div>
         </div>
