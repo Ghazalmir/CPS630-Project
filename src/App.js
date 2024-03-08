@@ -7,6 +7,7 @@ import PageNotFound from './pages/pageNotFound';
 import Navbar from './components/navbars/Navbar.js';
 import NewAdForm from './pages/ads/newAdForm';
 import HomePage from './pages/ads/homePage.js';
+import MessagePanel from './components/messages/MessagePanel.js';
 
 // Styling 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -28,6 +29,7 @@ function App() {
         	<Route path="/" element={<HomePage />} />
 			<Route path="/AdDetails" element={<AdDetails />} />
 			<Route path="/NewAd" element={<NewAdForm />} />
+			<Route path="/Messages" element={<MessagePanel />} />
 			<Route path="*" element={<PageNotFound />} />
 			</Routes>
       {/* Add the componenet once you have it

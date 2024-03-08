@@ -1,0 +1,56 @@
+.sidebar {
+	background-color: #f8f9fa;
+}
+
+.messaging-panel {
+	border: 1px solid #ccc;
+	padding: 20px;
+	margin-top: 0px;
+	height: 500px;
+	overflow-y: auto;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	border-radius: 4px;
+}
+
+.message-container {
+	flex: 1;
+	overflow-y: auto;
+	flex-direction: column-reverse;
+	margin-bottom: 20px;
+}
+
+.input-group {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: calc(100% - 20px);
+	margin: 10px;
+}
+
+.list-group-item.active {
+	background-color: #c3d9f0;
+	color: black;
+	cursor: pointer;
+}
+
+.latest-message {
+	font-size: 14px;
+	color: #888;
+}
+
+.sidebar {
+	background-color: white;
+}
+
+.list-group-container {
+	height: 500px;
+	overflow-y: auto;
+}
+
+.header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
