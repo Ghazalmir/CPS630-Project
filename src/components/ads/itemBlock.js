@@ -5,7 +5,7 @@ function itemBlock( {price, title, location} ) {
 
     { /* Remove these later and use variables above*/}
     return (
-        <div style={{ width:'270px', fontFamily:'Poppins'}}>
+        <div style={{ width:'300px', fontFamily:'Poppins'}}>
             { /* Replace image url with user uploaded img to be determined later*/}
             <a href="#"><div className='imageHolder' style={{ width:'300px', height:'300px', backgroundImage:`url(${imageExample})`, backgroundSize:'cover', backgroundPosition:'center', backgroundColor:'#F5F5F5'}}></div></a>
             <div className='pt-2'>

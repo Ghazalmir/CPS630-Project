@@ -1,9 +1,10 @@
 .item-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adjust minmax and breakpoints as needed */
+    grid-template-columns: repeat(auto-fill, minmax(325px, 325px)); /* Adjust minmax and breakpoints as needed */
     justify-content: center;
     padding: 50px;
     gap:50px;
+    margin: 0 auto;
 }
 
 .item-title:hover {
@@ -23,8 +24,24 @@
     background-color: white !important;
     color: black !important;
     border: none !important;
+    bottom: auto !important;
 }
 
 .side-bar {
     border-right: 2px solid #E3E3E3;
+    height: 300px;
+    display: block;
+    overflow-x: hidden;
+}
+
+.dropdown-menu.show {
+    border: none;
+    margin-left: 50px;
+    font-size: 20px;
+    font-weight: 600 !important;
+}
+
+.category {
+    font-size: 20px !important;
+    font-weight: 600 !important;
 }

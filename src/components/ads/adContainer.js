@@ -19,17 +19,9 @@ function adContainer() {
 
     return (
         <div className="item-container">
-            <ItemBlock price={item.price} title={item.title} location={item.location} />
-            <ItemBlock price={item.price} title={item.title} location={item.location} />
-            <ItemBlock price={item.price} title={item.title} location={item.location} />
-            <ItemBlock price={item.price} title={item.title} location={item.location} />
-            <ItemBlock price={item.price} title={item.title} location={item.location} />
-            <ItemBlock price={item.price} title={item.title} location={item.location} />
-            <ItemBlock price={item.price} title={item.title} location={item.location} />
-            <ItemBlock price={item.price} title={item.title} location={item.location} />
-            <ItemBlock price={item.price} title={item.title} location={item.location} />
-            <ItemBlock price={item.price} title={item.title} location={item.location} />
-            <ItemBlock price={item.price} title={item.title} location={item.location} />
+            {data.map((item, index) => (
+                <ItemBlock price={item.price} title={item.title} location={item.location} />
+            ))} 
         </div>
     );
 }
