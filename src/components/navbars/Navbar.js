@@ -5,31 +5,31 @@ function LoggedOutNavBar({ logged_in }) {
     return (
       <nav className="navbar navbar-expand-lg mb-3">
         <div className="container-fluid">
-          <a className="navbar-brand" href="#">Website Name</a>
+          <a className="navbar-brand" href="/HomePage">Website Name</a>
           <button className="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="#">Home</a>
+                <a className="nav-link active" aria-current="page" href="/HomePage">Home</a>
               </li>
               { logged_in ? (
                 <>
                 <li className="nav-item">
-                  <a className="nav-link" href="#">My Account</a>
+                  <a className="nav-link" href="/Profile">My Account</a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" href="#">Create New Ad</a>
+                  <a className="nav-link" href="/NewAd">Create New Ad</a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" href="#">Messages</a>
+                  <a className="nav-link" href="/Messages">Messages</a>
                 </li>
                 </>
                 ) : (
                 <>
                 <li className="nav-item">
-                  <a className="nav-link" href="#">Create New Ad</a>
+                  <a className="nav-link" href="/NewAd">Create New Ad</a>
                 </li>
                 <li className="nav-item">
                   <div className="nav-link-group">
