@@ -10,7 +10,7 @@ function itemBlock( {price, title, location} ) {
             <a href="#"><div className='imageHolder' style={{ width:'300px', height:'300px', backgroundImage:`url(${imageExample})`, backgroundSize:'cover', backgroundPosition:'center', backgroundColor:'#F5F5F5'}}></div></a>
             <div className='pt-2'>
                 <h6 style={{ color:'#004C9B', fontWeight:'bold'}}>${price}</h6>
-                <a href="#" style={{ textDecoration:'none' }}><h5 style={{ color:'black', fontWeight:'bold'}}>{title}</h5></a>
+                <a href="#" className="item-title" style={{ textDecoration:'none' }}><h5 style={{ color:'black', fontWeight:'bold'}}>{title}</h5></a>
                 <h6 style={{color:'#80A5CD'}}>{location}</h6>
             </div>
         </div>

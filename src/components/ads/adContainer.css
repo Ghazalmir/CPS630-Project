@@ -6,8 +6,9 @@
     gap:50px;
 }
 
-.item-title {
-    text-decoration: none;
+.item-title:hover {
+    text-decoration: underline !important;
+    color: black !important;
 }
 
 .category {
@@ -18,16 +19,12 @@
     border-right: 2px solid #E3E3E3;
 }
 
-.academic-services {
-    border-style: none !important;
+.sidebar-dropdown {
     background-color: white !important;
     color: black !important;
-    padding: 0px!important;
-
+    border: none !important;
 }
 
-.dropdown-menu.show {
-    border-style: none !important;
-    background-color: white !important;
-    color: black !important;
+.side-bar {
+    border-right: 2px solid #E3E3E3;
 }
