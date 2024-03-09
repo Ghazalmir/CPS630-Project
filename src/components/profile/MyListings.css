@@ -1,0 +1,10 @@
+.container {
+	flex: 1;
+	overflow-y: auto;
+}
+
+.listings-container {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
