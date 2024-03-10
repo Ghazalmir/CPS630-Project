@@ -18,7 +18,19 @@ import './App.css';
 function App() {
 
 	const logged_in = false;
-
+	// This is menat to mock an existing ad, will be replaced when developing the backend
+		var vals = {
+			title: "title 11", 
+			price: 10, 
+			description: "description 1",
+			category: 1,
+			images: [],
+			onCampus: false,
+			street: "street 1",
+			city: "city 1", 
+			country: "country 1",
+			isAvailable: true,
+		};
 	return (
 		<Router>
 		<div>
@@ -29,7 +41,8 @@ function App() {
         {/* Add the actual main page once you have it */}
         	<Route path="/" element={<HomePage />} />
 			<Route path="/AdDetails" element={<AdDetails />} />
-			<Route path="/NewAd" element={<NewAdForm />} />
+			<Route path="/NewAd" element={<NewAdForm isEditForm={false}/>} />
+			<Route path="/EditAd" element={<NewAdForm vals={vals} isEditForm={true}/>} />
 			<Route path="/Messages" element={<MessagePanel />} />
 			<Route path="/Profile" element={<Profile />} />
 			<Route path="*" element={<PageNotFound />} />
@@ -41,5 +54,6 @@ function App() {
 		</Router>
 	);
 }
+
 
 export default App;
