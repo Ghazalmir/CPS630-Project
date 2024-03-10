@@ -34,7 +34,7 @@
     overflow-x: hidden;
 }
 
-.dropdown-menu.show {
+.sidebar-categories.dropdown-menu.show {
     border: none;
     margin-left: 50px;
     font-size: 20px;
