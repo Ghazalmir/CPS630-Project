@@ -34,6 +34,12 @@
   background-color: #004C9B;
 }
 
+.btn-yellow {
+  background-color: #FFDC00; 
+}
+.btn-yellow:hover {
+  background-color: rgb(245, 195, 68); 
+}
 
 .App-header {
   background-color: #282c34;

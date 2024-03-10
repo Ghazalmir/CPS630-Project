@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import AdDetails from "./pages/ads/adDetails";
 import PageNotFound from './pages/pageNotFound';
 import Navbar from './components/navbars/Navbar.js';
-import NewAdForm from './pages/ads/newAdForm';
+import AdForm from './pages/ads/adForm.js';
 import HomePage from './pages/ads/homePage.js';
 import MessagePanel from './components/messages/MessagePanel.js';
 import Profile from './components/profile/Profile.js';
@@ -41,8 +41,8 @@ function App() {
         {/* Add the actual main page once you have it */}
         	<Route path="/" element={<HomePage />} />
 			<Route path="/AdDetails" element={<AdDetails />} />
-			<Route path="/NewAd" element={<NewAdForm isEditForm={false}/>} />
-			<Route path="/EditAd" element={<NewAdForm vals={vals} isEditForm={true}/>} />
+			<Route path="/NewAd" element={<AdForm isEditForm={false} id="1"/>} />
+			<Route path="/EditAd" element={<AdForm vals={vals} isEditForm={true} id="1"/>} />
 			<Route path="/Messages" element={<MessagePanel />} />
 			<Route path="/Profile" element={<Profile />} />
 			<Route path="*" element={<PageNotFound />} />

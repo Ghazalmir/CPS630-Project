@@ -1,6 +1,6 @@
 import { useState } from "react";
 import StatusFields from "../../components/adForm/statusField";
-
+import DeleteConfirmationModal from "../../components/adForm/deleteConfirmationModal";
 var files = [];
 {/* 
 This page is used for both making and editing an ad. 
@@ -8,7 +8,7 @@ The only difference between the two is that the edit page has the fields pre-fil
 and also allows the user to delete an ad or change its status. 
 */}
 
-function NewAdForm(props) {
+function AdForm(props) {
     var defaultVals = {
       title: undefined, 
       price: 0, 
@@ -24,7 +24,7 @@ function NewAdForm(props) {
   
   const [vals, setVals] = useState(props.vals || defaultVals);
   const [meetOnCampus, setMeetOnCampusChecked] = useState(vals.onCampus);
-
+  const [isDeleteModalShown, setIsDeleteModalShown] = useState(false);
 
   return (
     <form className="m-5" action="/setAdDetails" method="post">
@@ -96,10 +96,25 @@ function NewAdForm(props) {
       
       {/* Submit/cancel buttons */}
       <div className="text-end">
-        <input className="btn btn-primary text-white rounded border-0 p-2 px-4" 
+          {props.isEditForm ? 
+            <button className="btn btn-yellow rounded border-0 p-2 px-4 mx-1"
+            onClick={($event) => {$event.preventDefault(); setIsDeleteModalShown(!isDeleteModalShown)}}
+            >
+              Delete Ad
+            </button>
+            : ""
+          }
+
+        <input className="btn btn-primary text-white rounded border-0 p-2 px-4 mx-1" 
                type="submit" value={props.isEditForm == true ? "Update Ad" : "Post Ad"}/>
         <a type="button" href="/" className="btn p-2 px-4" >Cancel</a>
       </div>
+
+      {/* Delete confirmation modal */}
+      <DeleteConfirmationModal show={isDeleteModalShown} 
+            id={props.id}
+            onHide={() => setIsDeleteModalShown(false)}
+            />
     </form>
   )
   }
@@ -155,4 +170,4 @@ function NewAdForm(props) {
       reader.readAsDataURL(f); 
     });
   }
-export default NewAdForm;
+export default AdForm;
