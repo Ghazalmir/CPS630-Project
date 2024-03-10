@@ -102,6 +102,17 @@
   transform: scale(0.5) !important;
 }
 
-.serach-icon:hover {
+.search-icon:hover {
   cursor: pointer !important;
+}
+
+.categories-title {
+  background-color: #004C9B !important;
+  border: none !important;
+  font-size: 20px !important;
+  font-family: Poppins, sans-serif !important;
+}
+
+.navbar-categories.dropdown-menu.show {
+  margin-left: 0px !important;
 }

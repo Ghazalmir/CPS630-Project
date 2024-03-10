@@ -1,12 +1,20 @@
 import './Navbar.css'
 import { ReactComponent as SearchIcon } from '../../Other/icons8-search.svg';
+import React, { useState } from 'react';
+import { Dropdown } from 'react-bootstrap';
 
 function LoggedOutNavBar({ logged_in }) {
+  const [showDiv, setShowDiv] = useState(false);
+
+  const toggleDiv = () => {
+    setShowDiv(!showDiv)
+  };
+
     return (
       <nav className="navbar navbar-expand-lg mb-3">
         <div className="container-fluid">
           <a className="navbar-brand" href="/HomePage">Website Name</a>
-          <button className="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <button className="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" onClick={toggleDiv}>
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
@@ -40,6 +48,15 @@ function LoggedOutNavBar({ logged_in }) {
                 </li>
                 </>
                 )}
+            <Dropdown style={{ display: showDiv ? 'block' : 'none' }}>
+                <Dropdown.Toggle className="categories-title" variant="success" id="dropdown-basic">
+                  Categories
+                </Dropdown.Toggle>
+              <Dropdown.Menu className="navbar-categories">
+                <Dropdown.Item className="categories" href="#/action-1">Tutoring</Dropdown.Item>
+                <Dropdown.Item className="categories" href="#/action-2">Textbooks</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
               
             </ul>
             <form className="d-flex search-form" role="search">
