@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./MessagePanel.css";
 
@@ -50,7 +50,7 @@ const messages = [
 ];
 
 const MessagePanel = () => {
-	const [selectedConversation, setSelectedConversation] = useState(conversations[0]);
+	const [selectedConversation, setSelectedConversation] = useState(window.innerWidth >= 764 ? conversations[0] : null);
 	const [newMessage, setNewMessage] = useState("");
 
 	const handleConversationSelect = (conversation) => {
@@ -81,17 +81,41 @@ const MessagePanel = () => {
 		setNewMessage("");
 	};
 
+	const [screenSize, setScreenSize] = useState({
+		width: window.innerWidth,
+		height: window.innerHeight,
+	});
+
+	useEffect(() => {
+		const handleResize = () => {
+			setScreenSize({
+				width: window.innerWidth,
+				height: window.innerHeight,
+			});
+			if (window.innerWidth >= 763 && !selectedConversation) {
+				setSelectedConversation(conversations[0]);
+			}
+		};
+
+		window.addEventListener("resize", handleResize);
+
+		// Clean up the event listener when the component unmounts
+		return () => {
+			window.removeEventListener("resize", handleResize);
+		};
+	}, []);
+
 	return (
 		<div className="container-fluid">
 			<div className="row">
-				<div className="col-md-3 sidebar">
+				<div className={`${screenSize.width >= 764 ? "col-md-3" : selectedConversation ? "d-none" : "col-md-12"}`}>
 					<h2>Conversations</h2>
 					<div className="list-group-container">
 						<ul className="list-group">
 							{conversations.map((conversation) => (
 								<li
 									key={conversation.id}
-									className={`list-group-item ${selectedConversation.id === conversation.id ? "active" : ""}`}
+									className={`list-group-item ${selectedConversation?.id === conversation.id ? "active" : ""}`}
 									onClick={() => handleConversationSelect(conversation)}
 								>
 									<div>
@@ -103,30 +127,54 @@ const MessagePanel = () => {
 						</ul>
 					</div>
 				</div>
-				<div className="col-md-9">
-					<div className="header">
-						<h2>Messages with {otherUsersName(selectedConversation)}</h2>
-						<button className="btn btn-primary">View Item Details</button>
-					</div>
-					<div className="messaging-panel">
-						<div className="message-container">
-							{messages
-								.filter((message) => message.conversation_id === selectedConversation.id)
-								.map((message) => (
-									<div key={message.id}>
-										<p>
-											<strong>{message.sender}:</strong> {message.content}
-										</p>
-									</div>
-								))}
+				<div
+					className={`${selectedConversation && screenSize.width < 764 ? "col-md-12" : "col-md-9 d-none d-md-block"}`}
+				>
+					{selectedConversation ? (
+						<div className="header">
+							{screenSize.width < 764 && (
+								<a
+									href="#"
+									onClick={() => {
+										setSelectedConversation(null);
+									}}
+								>
+									&#x2B05;
+								</a>
+							)}
+							<h2>{otherUsersName(selectedConversation)}</h2>
+							<button className="btn btn-primary">View Item Details</button>
 						</div>
+					) : (
+						<div className="header">
+							<h2>No Messages to Display</h2>
+						</div>
+					)}
+					<div className="messaging-panel">
+						{selectedConversation && (
+							<div className="message-container">
+								{messages
+									.filter((message) => message.conversation_id === selectedConversation.id)
+									.map((message) => (
+										<div key={message.id}>
+											<p>
+												<strong>{message.sender}:</strong> {message.content}
+											</p>
+										</div>
+									))}
+							</div>
+						)}
 						<div className="input-group mt-3">
 							<input
 								type="text"
 								className="form-control"
 								placeholder="Type your message here..."
 								value={newMessage}
-								onChange={(e) => setNewMessage(e.target.value)}
+								onChange={(e) => {
+									if (selectedConversation) {
+										setNewMessage(e.target.value);
+									}
+								}}
 								onKeyDown={(e) => {
 									if (e.key === "Enter") {
 										sendMessage();

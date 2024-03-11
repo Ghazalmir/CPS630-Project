@@ -2,6 +2,8 @@
 	height: 100%;
 	display: flex;
 	flex-direction: column;
+	padding: 10px;
+	margin: 10px;
 }
 
 .form-row {
@@ -11,6 +13,7 @@
 .form-container {
 	flex: 1;
 	overflow-y: auto;
+	width: calc(100% - 20px);
 }
 
 .right-div {
@@ -25,8 +28,8 @@
 }
 
 .profile-picture {
-	width: 200px; /* Adjust the size as needed */
+	width: 200px;
 	height: 200px;
-	border-radius: 50%; /* To make the image circular */
+	border-radius: 50%;
 	margin-bottom: 20px;
 }

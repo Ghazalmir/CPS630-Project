@@ -8,7 +8,8 @@ import Navbar from './components/navbars/Navbar.js';
 import NewAdForm from './pages/ads/newAdForm';
 import HomePage from './pages/ads/homePage.js';
 import MessagePanel from './components/messages/MessagePanel.js';
-import Profile from './components/profile/Profile.js';
+import MyAccount from './components/profile/MyAccount.js';
+import MyListings from './components/profile/MyListings.js';
 
 // Styling 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -31,7 +32,8 @@ function App() {
 			<Route path="/AdDetails" element={<AdDetails />} />
 			<Route path="/NewAd" element={<NewAdForm />} />
 			<Route path="/Messages" element={<MessagePanel />} />
-			<Route path="/Profile" element={<Profile />} />
+			<Route path="/myAccount" element={<MyAccount />} />
+			<Route path="/myListings" element={<MyListings />} />
 			<Route path="*" element={<PageNotFound />} />
 			</Routes>
       {/* Add the componenet once you have it
