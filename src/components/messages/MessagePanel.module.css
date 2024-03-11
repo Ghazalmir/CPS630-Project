@@ -2,7 +2,7 @@
 	background-color: #f8f9fa;
 }
 
-.messaging-panel {
+.messagingPanel {
 	border: 1px solid #ccc;
 	padding: 20px;
 	margin-top: 0px;
@@ -14,14 +14,14 @@
 	border-radius: 4px;
 }
 
-.message-container {
+.messageContainer {
 	flex: 1;
 	overflow-y: auto;
 	flex-direction: column-reverse;
 	margin-bottom: 20px;
 }
 
-.input-group {
+.inputGroup {
 	position: absolute;
 	bottom: 0;
 	left: 0;
@@ -29,7 +29,7 @@
 	margin: 10px;
 }
 
-.list-group-item.active {
+.listGroupItem.active {
 	background-color: #c3d9f0;
 	color: black;
 	cursor: pointer;
@@ -44,7 +44,7 @@
 	background-color: white;
 }
 
-.list-group-container {
+.listGroupContainer {
 	height: 500px;
 	overflow-y: auto;
 }

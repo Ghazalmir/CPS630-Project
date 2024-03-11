@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./MyAccount.css"; // Import the stylesheet
+import classes from "./MyAccount.module.css";
 
 const MyAccount = () => {
 	const initialUserData = {
@@ -61,14 +61,14 @@ const MyAccount = () => {
 	};
 
 	return (
-		<div className="my-account">
+		<div className={classes.myAccount}>
 			<h3>My Account</h3>
-			<div className="form-container">
+			<div className={`form-container ${classes.formContainer}`}>
 				<div className="row">
-					<div className="col-md-6 left-div">
+					<div className="col-md-6">
 						<form>
-							<div className="form-row">
-								<div className="form-group col-md-12">
+							<div className={`form-row ${classes.formRow}`}>
+								<div className={`form-group ${classes.formGroup} col-md-12`}>
 									<label htmlFor="firstName">First Name</label>
 									<input
 										type="text"
@@ -79,8 +79,7 @@ const MyAccount = () => {
 										onChange={handleInputChange}
 										readOnly={!isEditing}
 									/>
-								</div>
-								<div className="form-group col-md-12">
+
 									<label htmlFor="lastName">Last Name</label>
 									<input
 										type="text"
@@ -92,38 +91,34 @@ const MyAccount = () => {
 										readOnly={!isEditing}
 									/>
 								</div>
-							</div>
-							<div className="form-row">
-								<div className="form-group col-md-12">
-									<label htmlFor="email">Email</label>
-									<input
-										type="email"
-										className="form-control"
-										id="email"
-										name="email"
-										value={userData.email}
-										onChange={handleInputChange}
-										readOnly={!isEditing}
-									/>
-								</div>
-								<div className="form-group col-md-12">
-									<label htmlFor="phoneNumber">Phone Number</label>
-									<input
-										type="tel"
-										className="form-control"
-										id="phoneNumber"
-										name="phoneNumber"
-										value={userData.phoneNumber}
-										onChange={handleInputChange}
-										readOnly={!isEditing}
-									/>
-								</div>
+
+								<label htmlFor="email">Email</label>
+								<input
+									type="email"
+									className="form-control"
+									id="email"
+									name="email"
+									value={userData.email}
+									onChange={handleInputChange}
+									readOnly={!isEditing}
+								/>
+
+								<label htmlFor="phoneNumber">Phone Number</label>
+								<input
+									type="tel"
+									className="form-control"
+									id="phoneNumber"
+									name="phoneNumber"
+									value={userData.phoneNumber}
+									onChange={handleInputChange}
+									readOnly={!isEditing}
+								/>
 							</div>
 
 							{isEditing && (
 								<>
-									<div className="form-row">
-										<div className="form-group col-md-12">
+									<div className={`form-row ${classes.formRow}`}>
+										<div className={`form-group ${classes.formGroup} col-md-12`}>
 											<label htmlFor="formFile" className="form-label">
 												Profile Picture <span className="text-danger">*</span>
 											</label>
@@ -136,10 +131,7 @@ const MyAccount = () => {
 												id="formFile"
 												accept=".jpg,.png"
 											/>
-										</div>
-									</div>
-									<div className="form-row">
-										<div className="form-group col-md-12">
+
 											<label htmlFor="password">Password</label>
 											<input
 												type="password"
@@ -149,10 +141,7 @@ const MyAccount = () => {
 												value={userData.password}
 												onChange={handleInputChange}
 											/>
-										</div>
-									</div>
-									<div className="form-row">
-										<div className="form-group col-md-12">
+
 											<label htmlFor="newPassword">New Password</label>
 											<input
 												type="password"
@@ -162,10 +151,7 @@ const MyAccount = () => {
 												value={userData.newPassword}
 												onChange={handleInputChange}
 											/>
-										</div>
-									</div>
-									<div className="form-row">
-										<div className="form-group col-md-12">
+
 											<label htmlFor="confirmNewPassword">Confirm New Password</label>
 											<input
 												type="password"
@@ -179,11 +165,11 @@ const MyAccount = () => {
 									</div>
 								</>
 							)}
-							<div className="form-row">
-								<div className="form-group col-md-12">
+							<div className={`form-row ${classes.formRow}`}>
+							<div className={`form-group ${classes.formGroup} col-md-12`}>
 									{isEditing ? (
 										<>
-											<button type="button" className="btn btn-primary mr-2" onClick={saveChanges}>
+											<button type="button" className="btn btn-primary me-2" onClick={saveChanges}>
 												Save
 											</button>
 											<button type="button" className="btn btn-secondary" onClick={cancelEdit}>
@@ -199,9 +185,9 @@ const MyAccount = () => {
 							</div>
 						</form>
 					</div>
-					<div className="col-md-6 right-div">
-            <img src={require("./profile_picture.jpg")} alt="Profile Pic" className="profile-picture"/>
-          </div>
+					<div className={`col-md-6 ${classes.rightDiv}`}>
+						<img src={require("./profile_picture.jpg")} alt="Profile Pic" className={classes.profilePicture} />
+					</div>
 				</div>
 			</div>
 		</div>

@@ -3,7 +3,7 @@
 	overflow-y: auto;
 }
 
-.listings-container {
+.listingsContainer {
 	height: 100%;
 	display: flex;
 	flex-direction: column;

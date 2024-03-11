@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./MessagePanel.css";
+import classes from "./MessagePanel.module.css";
 
 const conversations = [
 	{ id: 1, listingName: "bike", listingLink: "example", name1: "John Doe", name2: "Matt" },
@@ -110,12 +110,12 @@ const MessagePanel = () => {
 			<div className="row">
 				<div className={`${screenSize.width >= 764 ? "col-md-3" : selectedConversation ? "d-none" : "col-md-12"}`}>
 					<h2>Conversations</h2>
-					<div className="list-group-container">
+					<div className={classes.listGroupContainer}>
 						<ul className="list-group">
 							{conversations.map((conversation) => (
 								<li
 									key={conversation.id}
-									className={`list-group-item ${selectedConversation?.id === conversation.id ? "active" : ""}`}
+									className={`list-group-item ${classes.listGroupItem} ${selectedConversation?.id === conversation.id ? "active" : ""}`}
 									onClick={() => handleConversationSelect(conversation)}
 								>
 									<div>
@@ -131,7 +131,7 @@ const MessagePanel = () => {
 					className={`${selectedConversation && screenSize.width < 764 ? "col-md-12" : "col-md-9 d-none d-md-block"}`}
 				>
 					{selectedConversation ? (
-						<div className="header">
+						<div className={classes.header}>
 							{screenSize.width < 764 && (
 								<a
 									href="#"
@@ -146,13 +146,13 @@ const MessagePanel = () => {
 							<button className="btn btn-primary">View Item Details</button>
 						</div>
 					) : (
-						<div className="header">
+						<div className={classes.header}>
 							<h2>No Messages to Display</h2>
 						</div>
 					)}
-					<div className="messaging-panel">
+					<div className={classes.messagingPanel}>
 						{selectedConversation && (
-							<div className="message-container">
+							<div className={classes.messageContainer}>
 								{messages
 									.filter((message) => message.conversation_id === selectedConversation.id)
 									.map((message) => (
@@ -164,7 +164,7 @@ const MessagePanel = () => {
 									))}
 							</div>
 						)}
-						<div className="input-group mt-3">
+						<div className={`input-group mt-3 ${classes.inputGroup}`}>
 							<input
 								type="text"
 								className="form-control"

@@ -1,11 +1,11 @@
 import React from 'react';
 import AdContainer from '../ads/adContainer';
-import "./MyListings.css"
+import classes from "./MyListings.module.css"
 const MyListings = () => {
   return (
-    <div className='listings-container'>
+    <div className={classes.listingsContainer}>
       <h3>My Listings</h3>
-      <div className='container'>
+      <div className={classes.container}>
         <AdContainer/>
       </div>
     </div>

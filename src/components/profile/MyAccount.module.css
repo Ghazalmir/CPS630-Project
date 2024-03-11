@@ -1,4 +1,4 @@
-.my-account {
+.myAccount {
 	height: 100%;
 	display: flex;
 	flex-direction: column;
@@ -6,17 +6,18 @@
 	margin: 10px;
 }
 
-.form-row {
+.formRow {
 	margin-bottom: 20px;
 }
 
-.form-container {
+.formContainer {
 	flex: 1;
 	overflow-y: auto;
-	width: calc(100% - 20px);
+	width: 100%;
+	overflow-x: hidden;
 }
 
-.right-div {
+.rightDiv {
 	height: 100%;
 	display: flex;
 	justify-content: center;
@@ -27,7 +28,7 @@
 	text-align: center;
 }
 
-.profile-picture {
+.profilePicture {
 	width: 200px;
 	height: 200px;
 	border-radius: 50%;
