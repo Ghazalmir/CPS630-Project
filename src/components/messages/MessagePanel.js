@@ -86,6 +86,10 @@ const MessagePanel = () => {
 		height: window.innerHeight,
 	});
 
+	const cropContent = (content, maxLength) => {
+		return content?.length > maxLength ? content.slice(0, maxLength) + "..." : content
+	} 
+
 	useEffect(() => {
 		const handleResize = () => {
 			setScreenSize({
@@ -121,7 +125,7 @@ const MessagePanel = () => {
 									<div>
 										<strong>{otherUsersName(conversation)}</strong>
 									</div>
-									<div className="latest-message">{latestMessage(conversation)?.content}</div>
+									<div className="latest-message">{cropContent(latestMessage(conversation)?.content, 80)}</div>
 								</li>
 							))}
 						</ul>
