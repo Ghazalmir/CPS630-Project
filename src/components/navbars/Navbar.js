@@ -1,9 +1,9 @@
 import './Navbar.css'
 import { ReactComponent as SearchIcon } from '../../Other/icons8-search.svg';
 import React, { useState } from 'react';
-import { Dropdown } from 'react-bootstrap';
+import { Dropdown, Nav } from 'react-bootstrap';
 
-function LoggedOutNavBar({ logged_in }) {
+function Navbar({ logged_in, is_admin }) {
   const [showDiv, setShowDiv] = useState(false);
 
   const toggleDiv = () => {
@@ -25,7 +25,7 @@ function LoggedOutNavBar({ logged_in }) {
               { logged_in ? (
                 <>
                 <li className="nav-item">
-                  <a className="nav-link" href="/Profile">My Account</a>
+                  <a className="nav-link" href="/MyAccount">My Account</a>
                 </li>
                 <li className="nav-item">
                   <a className="nav-link" href="/NewAd">Create New Ad</a>
@@ -57,6 +57,14 @@ function LoggedOutNavBar({ logged_in }) {
                 <Dropdown.Item className="categories" href="#/action-2">Textbooks</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
+
+            { is_admin ? (
+              <>
+              <li className="nav-item">
+                  <a className="nav-link" href="/AdminPanel">Admin Panel</a>
+                </li>
+              </>
+            ) : (<></>)  }
               
             </ul>
             <form className="d-flex search-form" role="search">
@@ -73,4 +81,4 @@ function LoggedOutNavBar({ logged_in }) {
     );
   }
   
-  export default LoggedOutNavBar;
+  export default Navbar;
