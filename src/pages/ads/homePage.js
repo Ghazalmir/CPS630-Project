@@ -1,16 +1,17 @@
 import React from 'react';
 import Sidebar from '../../components/ads/sideBar.js';
 import AdContainer from '../../components/ads/adContainer.js';
+import './homePage.css';
 
 function HomePage() {
   return (
     <div className="container-fluid">
       <div className="row">
-        <div className="col-sm-4 col-md-2 d-none d-md-block">
-          <Sidebar />
+        <div className="col-2 sidebar">
+            <Sidebar />
         </div>
-        <div className="col-sm-12 col-md-10">
-          <AdContainer />
+        <div className="col-sm-12 col-md-10 ad-container">
+            <AdContainer />
         </div>
       </div>
     </div>
