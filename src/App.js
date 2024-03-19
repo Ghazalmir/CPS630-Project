@@ -10,6 +10,9 @@ import HomePage from './pages/ads/homePage.js';
 import MessagePanel from './components/messages/MessagePanel.js';
 import MyAccount from './components/profile/MyAccount.js';
 import MyListings from './components/profile/MyListings.js';
+import AdminPanel from './pages/admin/ReportedAds.js';
+import ReportedUsers from './pages/admin/ReportedUsers.js';
+import ManageUsers from './pages/admin/ManageUsers.js';
 
 // Styling 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -18,8 +21,9 @@ import './App.css';
 
 function App() {
 
-	const logged_in = false;
-	// This is menat to mock an existing ad, will be replaced when developing the backend
+	const logged_in = true;
+	const is_admin = true;
+	// This is meant to mock an existing ad, will be replaced when developing the backend
 		var vals = {
 			title: "title 11", 
 			price: 10, 
@@ -32,21 +36,25 @@ function App() {
 			country: "country 1",
 			isAvailable: true,
 		};
+		
 	return (
 		<Router>
 		<div>
-		
-		{ /* Some sort of var that determines which version of navbar is rendered */}
-		<Navbar logged_in={logged_in} />
+			<Navbar logged_in={logged_in} is_admin={is_admin} />
 		<Routes>
         {/* Add the actual main page once you have it */}
         	<Route path="/" element={<HomePage />} />
+			<Route path="/HomePage" element={<HomePage />} />
 			<Route path="/AdDetails" element={<AdDetails />} />
 			<Route path="/NewAd" element={<AdForm isEditForm={false} id="1"/>} />
 			<Route path="/EditAd" element={<AdForm vals={vals} isEditForm={true} id="1"/>} />
 			<Route path="/Messages" element={<MessagePanel />} />
-			<Route path="/myAccount" element={<MyAccount />} />
-			<Route path="/myListings" element={<MyListings />} />
+			<Route path="/MyAccount" element={<MyAccount />} />
+			<Route path="/MyListings" element={<MyListings />} />
+			<Route path="/AdminPanel" element={<AdminPanel />} />
+			<Route path="/ReportedAds" element={<AdminPanel />} />
+			<Route path="/ReportedUsers" element={<ReportedUsers />} />
+			<Route path="/ManageUsers" element={<ManageUsers />} />
 			<Route path="*" element={<PageNotFound />} />
 			</Routes>
       {/* Add the componenet once you have it
