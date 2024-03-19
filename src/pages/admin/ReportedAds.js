@@ -16,7 +16,7 @@ function ReportedAds() {
             <section className="links">
               <a href="./ReportedAds" className="active">Reported Ads</a>
               <a href="./ReportedUsers">Reported Users</a>
-              <a href="./manage_users">Manage Users</a>
+              <a href="./ManageUsers">Manage Users</a>
             </section>
             <section>
               <article>
