@@ -1,21 +1,15 @@
 const express = require('express');
 const router = express.Router();
+const pool = require("../db");
 
-module.exports = (pool) => {
-  // Define user-related routes
-  router.get('/details', (req, res) => {
-      // Example query to fetch users from MySQL database
-      pool.query('SELECT * FROM users', (err, results) => {
-          if (err) {
-              console.error(err);
-              res.status(500).send('Error retrieving users');
-          } else {
-              res.json(results);
-          }
-      });
-  });
+router.get('/details', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM users');
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server Error');
+  }
+});
 
-  // Add more routes as needed
-  
-  return router;
-};
+module.exports = router;
