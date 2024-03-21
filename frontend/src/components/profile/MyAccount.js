@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useUser } from "../../userContext";
 import classes from "./MyAccount.module.css";
 import axios from "axios";
 
 const MyAccount = () => {
 	
-	const signedInUserID = "952944778915676161";
+	const { userId, setUserId } = useUser();
 
 	const [initialUserData, setInitialUserData] = useState()
 	const [userData, setUserData] = useState();
@@ -17,7 +18,7 @@ const MyAccount = () => {
 			try {
 				const response = await axios.get("http://localhost:8080/api/profile/details", {
 					params: {
-						signedInUserID: signedInUserID
+						signedInUserID: userId
 					}
 				});
 				setUserData(response.data[0]);
@@ -31,7 +32,7 @@ const MyAccount = () => {
 		};
 	
 		fetchUserData();
-	}, []);
+	}, [userId]);
 	
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
