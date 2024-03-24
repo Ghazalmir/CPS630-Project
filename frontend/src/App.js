@@ -46,7 +46,7 @@ function App() {
 						{/* Add the actual main page once you have it */}
 						<Route path="/" element={<HomePage />} />
 						<Route path="/HomePage" element={<HomePage />} />
-						<Route path="/AdDetails" element={<AdDetails />} />
+						<Route path="/AdDetails/:id" element={<AdDetails />} />
 						<Route path="/NewAd" element={<AdForm isEditForm={false} id="1" />} />
 						<Route path="/EditAd" element={<AdForm vals={vals} isEditForm={true} id="1" />} />
 						<Route path="/Messages" element={<MessagePanel />} />
