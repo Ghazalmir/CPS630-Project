@@ -7,7 +7,7 @@ function ReportedAds() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/reported-ads")
+    fetch("http://localhost:8080/api/reported-ads")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to fetch");
