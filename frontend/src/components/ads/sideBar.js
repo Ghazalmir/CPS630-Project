@@ -8,7 +8,7 @@ function SideBar() {
 
   useEffect(() => {
     // Placeholder
-    fetch("http://localhost:3000/api/categories")
+    fetch("http://localhost:8080/api/categories")
       .then((response) => response.json())
       .then((data) => {
         setCategories(data);
