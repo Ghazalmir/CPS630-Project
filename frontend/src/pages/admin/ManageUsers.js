@@ -13,7 +13,7 @@ function ManageUsers() {
 
   useEffect(() => {
     // Placeholder for API endpoint
-    fetch("http://localhost:3000/api/users")
+    fetch("http://localhost:8080/api/users")
       .then((response) => response.json())
       .then((data) => setUsers(data))
       .catch((error) => console.error("Error fetching users:", error));
@@ -39,7 +39,7 @@ function ManageUsers() {
   const handleSubmit = (event) => {
     event.preventDefault();
     // Placeholder for update API endpoint
-    const updateUserEndpoint = `http:/localhost:3000/api/users/${selectedUser.id}`;
+    const updateUserEndpoint = `http:/localhost:8080/api/users/${selectedUser.id}`;
 
     // Example using fetch to update the user
     fetch(updateUserEndpoint, {
