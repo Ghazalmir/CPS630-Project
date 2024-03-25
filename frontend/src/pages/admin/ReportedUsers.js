@@ -7,7 +7,7 @@ function ReportedUsers() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/reported-users")
+    fetch("http://localhost:8080/api/reported-users")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -29,7 +29,7 @@ function ReportedUsers() {
   }, []);
   const handleDeleteUser = (userId) => {
     // Assuming API endpoint for deleting a reported user might look something like this
-    fetch(`http://localhost:3000/api/reported-users/${userId}`, {
+    fetch(`http://localhost:8080/api/reported-users/${userId}`, {
       method: "DELETE",
     })
       .then((response) => {
