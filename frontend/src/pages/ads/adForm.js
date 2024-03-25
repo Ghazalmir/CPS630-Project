@@ -1,6 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import StatusFields from "../../components/adForm/statusField";
 import DeleteConfirmationModal from "../../components/adForm/deleteConfirmationModal";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import { useUser } from "../../userContext";
+
 var files = [];
 {/* 
 This page is used for both making and editing an ad. 
@@ -9,27 +13,74 @@ and also allows the user to delete an ad or change its status.
 */}
 
 function AdForm(props) {
-    var defaultVals = {
-      title: undefined, 
-      price: 0, 
-      description: undefined,
-      category: 0,
-      images: [],
-      onCampus: false,
-      street: undefined,
-      city: undefined, 
-      country: undefined,
-      isAvailable: true,
-    } 
   
-  const [vals, setVals] = useState(props.vals || defaultVals);
-  const [meetOnCampus, setMeetOnCampusChecked] = useState(vals.onCampus);
+
+  const [meetOnCampus, setMeetOnCampusChecked] = useState(false);
   const [isDeleteModalShown, setIsDeleteModalShown] = useState(false);
+  const { id } = useParams();
+  const { userId, setUserId } = useUser();
+
+  // Form fields
+  const title= useRef(undefined);
+  const price = useRef(0);
+  const description = useRef(undefined);
+  const category_id = useRef(0);
+  const images = useRef([]);
+  //const [street, setStreet] = useState(undefined);
+  //const [city, setCity] = useState(undefined);
+  //const [country, setCountry] = useState(undefined);
+  const is_available = useRef(true);
+
+
+    useEffect(() => {
+      if (props.isEditForm) {
+        const fetchAdData = async () => {
+          try {
+            const response = await axios.get(`http://localhost:8080/api/ads/adDetails/${id}`, {
+              params: {
+                id: id
+              }
+            });            
+            title.current.value = response.data.rows[0].title;
+            description.current.value = response.data.rows[0].description;
+            price.current.value = response.data.rows[0].price;
+            category_id.current.value = response.data.rows[0].category_id;
+            is_available.current = response.data.rows[0].is_available;
+            
+            setMeetOnCampusChecked(response.data.rows[0].meet_on_campus);
+            console.log(response.data.rows[0]);
+          } catch (error) {
+            console.error("Error fetching user data:", error);
+          }
+        };
+      
+        fetchAdData();
+      }
+    }, [id]);
+
+    const postAd = async() => {
+      try {
+        const response = await axios.post("http://localhost:8080/api/ads/postNewAd", {
+          user_id: userId,
+          location_id: 1, // TODO: FIX THIS LATER
+          title: title.current.value,
+          description: description.current.value,
+          price: price.current.value, 
+          category_id: category_id.current.value,
+          // TODO: ADD SUB CATEGORY
+          meet_on_campus: meetOnCampus === true ? 1 : 0,
+          is_available: is_available.current === true ? 1 : 0,
+        });
+      } catch (error) {
+        console.error("Error uploading post:", error);
+      }
+    }
+  
 
   return (
-    <form className="m-5" action="/setAdDetails" method="post">
+    <form className="m-5">
       {
-        props.isEditForm == true ? <StatusFields status={vals.isAvailable}/> : ""
+        props.isEditForm == true ? <StatusFields status={is_available}/> : ""
       }
       <h2>Item Information</h2>
       <div className="row">
@@ -38,7 +89,7 @@ function AdForm(props) {
           <label htmlFor="title" className="form-label">Title <span className="text-danger">*</span></label>
           <input type="text" id="title" placeholder="Title" required
                  className="form-control bg-body-tertiary" maxLength="100" 
-                 defaultValue={vals.title} name="title"
+                 ref={title} name="title"
                  />
         </div>
         {/* Price */}
@@ -47,7 +98,7 @@ function AdForm(props) {
           <div className="input-group">
           <span className="input-group-text">$</span>
           <input type="number" className="form-control bg-body-tertiary" name="price"
-                 id="price" placeholder="Price" min="0" required defaultValue={vals.price}
+                 id="price" placeholder="Price" min="0" required ref={price}
                  />  
           </div>    
         </div>
@@ -56,13 +107,16 @@ function AdForm(props) {
       <div className="mb-3">
         <label htmlFor="description" className="form-label">Description</label>
         <textarea className="form-control bg-body-tertiary" id="description" 
-                  placeholder="Lorem ipsum..." rows="3" name="description" defaultValue={vals.description}>
+                  placeholder="Lorem ipsum..." rows="3" name="description" ref={description}
+                  >
         </textarea>
       </div>
       {/* Category */}
       <div className="mb-3">
         <label htmlFor="category" className="form-label">Categoy <span className="text-danger">*</span></label>
-        <select id="category" className="form-select bg-body-tertiary" defaultValue={vals.category} name="category" required>
+        <select id="category" className="form-select bg-body-tertiary" ref={category_id} 
+                name="category" required
+                >
           <option value="0">Select a category</option>
           <option value="1">One</option>
           <option value="2">Two</option>
@@ -70,17 +124,19 @@ function AdForm(props) {
         </select>
       </div>
       {/* File upload */}
+      {/* TODO: ADD THE IMAGES */}
       <div className="mb-3">
         <label htmlFor="formFile" className="form-label">Images <span className="text-danger">*</span></label>
         <input onChange={(event) => {fileUpload(event);}}
                 className="form-control bg-body-tertiary" type="file" id="formFile" 
-                multiple="multiple" accept=".jpg,.png" required defaultValue={vals.images} name="images"/>
+                multiple="multiple" accept=".jpg,.png" required name="images"/>
         <div id="selectedFiles" className="mt-3"></div>
       </div>
       <hr className="my-4"></hr>
       <h2>Meetup Information</h2>
       <p>Where do you want the transaction to happen?</p>
       {/* Address */}
+      {/* TODO: ADD LOCATION */}
       <div className="mb-3 form-check">
         <input className="form-check-input" type="checkbox" name="meetOnCampus" value={meetOnCampus} id="meet-on-campus" checked={meetOnCampus}
                 onChange={() => {setMeetOnCampusChecked(!meetOnCampus)}
@@ -91,11 +147,11 @@ function AdForm(props) {
         </label>
       </div>
       {
-        meetOnCampus == true ? "": addressFields(vals.street, vals.city, vals.country) 
+        meetOnCampus == true ? "": addressFields(" ", " ", " ") 
       }
       
       {/* Submit/cancel buttons */}
-      <div className="text-end">
+      <div className="text-end pb-5">
           {props.isEditForm ? 
             <button className="btn btn-yellow rounded border-0 p-2 px-4 mx-1"
             onClick={($event) => {$event.preventDefault(); setIsDeleteModalShown(!isDeleteModalShown)}}
@@ -105,8 +161,10 @@ function AdForm(props) {
             : ""
           }
 
-        <input className="btn btn-primary text-white rounded border-0 p-2 px-4 mx-1" 
-               type="submit" value={props.isEditForm == true ? "Update Ad" : "Post Ad"}/>
+        <button className="btn btn-primary text-white rounded border-0 p-2 px-4 mx-1" 
+               type="submit" onClick={postAd}>
+                {props.isEditForm == true ? "Update Ad" : "Post Ad"}
+        </button>
         <a type="button" href="/" className="btn p-2 px-4" >Cancel</a>
       </div>
 
@@ -146,6 +204,7 @@ function AdForm(props) {
       </div>
       </div>
     );
+    
   }
 
 
@@ -170,4 +229,5 @@ function AdForm(props) {
       reader.readAsDataURL(f); 
     });
   }
+
 export default AdForm;

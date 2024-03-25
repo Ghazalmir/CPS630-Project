@@ -19,7 +19,23 @@ router.get('/adDetails/:id', async (req, res) => {
 	}
 });
 
-
+router.post("/postNewAd", async (req, res) => {
+	try {
+		const {user_id, location_id, title, description, price, is_available, category_id, meet_on_campus}
+		 = {...req.body};
+    /* FIX THE user id and location and SUB CATEGORY FIELD, also add images*/
+		const result = await pool.query(
+      `INSERT INTO products (User_id, Location_id, title, Description, Price, Is_available, Category_id, Subcategory_id, meet_on_campus, Date_posted)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, 1, $8, CURRENT_TIMESTAMP);`,
+			[user_id, location_id, title, description, price, is_available, category_id, meet_on_campus]
+		);
+		res.status(201).json(result.rows[0]);
+		console.log(result.rows[0]);
+	} catch (error) {
+		console.error(error);
+		res.status(500).send("Server Error");
+	}
+});
 
 
 module.exports = router;
