@@ -19,7 +19,7 @@ router.get('/adDetails/:id', async (req, res) => {
 	}
 });
 
-router.get('/ads', async (req, res) => {
+router.get('/adProducts', async (req, res) => {
 	try {
 		const result = await pool.query('SELECT * FROM products;');
 		res.json(result);
