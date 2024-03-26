@@ -117,3 +117,20 @@
 .navbar-categories.dropdown-menu.show {
   margin-left: 0px !important;
 }
+
+.my-account-dropdown {
+  border-style: none !important;
+}
+
+.my-account-dropdown:hover {
+  background-color: #004C9B !important;
+}
+
+.my-account-dropdown-menu {
+  background-color: #004C9B !important;
+  border: none !important;
+}
+
+.my-account-mylistings:hover {
+  background-color: #004C9B !important;
+}

@@ -24,9 +24,20 @@ function Navbar({ logged_in, is_admin }) {
               </li>
               { logged_in ? (
                 <>
-                <li className="nav-item">
-                  <a className="nav-link" href="/MyAccount">My Account</a>
-                </li>
+                <Dropdown>
+                  <Dropdown.Toggle id="dropdown-account" className="my-account-dropdown d-flex align-items-center border-style-none">
+                  <li className="nav-item">
+                    <a className="nav-link" href="/MyAccount">My Account</a>
+                  </li>
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu className="my-account-dropdown-menu">
+                    <Dropdown.Item href="/MyListings" className="my-account-mylistings">
+                      <li className="nav-item">
+                        <a className="nav-link" href="/MyListings">My Listings</a>
+                      </li>
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+              </Dropdown>
                 <li className="nav-item">
                   <a className="nav-link" href="/NewAd">Create New Ad</a>
                 </li>
