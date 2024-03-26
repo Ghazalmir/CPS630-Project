@@ -6,6 +6,7 @@ import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { useUser } from "../../userContext";
 import { parseISO, compareAsc } from 'date-fns';
+import { Link } from 'react-router-dom';
 
 function useChatScroll(dep) {
   const ref = React.useRef();
@@ -174,6 +175,7 @@ const MessagePanel = () => {
 
 	useEffect(() => {
 		const handleResize = () => {
+
 			setScreenSize({
 				width: window.innerWidth,
 				height: window.innerHeight,
@@ -237,7 +239,9 @@ const MessagePanel = () => {
 										</a>
 									)}
 									<h2>{otherUsersName(selectedConversation)}</h2>
-									<button className="btn btn-primary">View Item Details</button>
+									<Link to={'/adDetails/' + selectedConversation.product_id}>
+										<button className="btn btn-primary">View Item Details</button>
+									</Link>
 								</div>
 							) : (
 								<div className={classes.header}>
