@@ -8,7 +8,7 @@ function SideBar() {
 
   useEffect(() => {
     // Placeholder
-    fetch("http://localhost:8080/api/categories")
+    fetch("http://localhost:8080/api/categories/sections")
       .then((response) => response.json())
       .then((data) => {
         setCategories(data);
@@ -47,7 +47,7 @@ function SideBar() {
                 className="btn align-items-center category"
                 to={`/${category.link}`}
               >
-                {category.name}
+                {category.category_name}
               </Link>
             )}
           </li>
