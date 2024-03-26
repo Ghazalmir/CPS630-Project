@@ -1,30 +1,42 @@
-import React from 'react';
-import './adContainer.css'
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import './adContainer.css';
 import ItemBlock from './itemBlock.js';
 
-function adContainer() {
-    const data = [
-        { price: '200', title: 'Black T-Shirt', location: 'Toronto, ON' },
-        { price: '300', title: 'Blue Jeans', location: 'New York, NY' },
-        { price: '150', title: 'White Sneakers', location: 'Los Angeles, CA' },
-        { price: '120', title: 'Striped Shirt', location: 'Chicago, IL' },
-        { price: '250', title: 'Leather Jacket', location: 'San Francisco, CA' },
-        { price: '180', title: 'Denim Shorts', location: 'Miami, FL' },
-        { price: '220', title: 'Hoodie', location: 'Seattle, WA' },
-        { price: '280', title: 'Athletic Shoes', location: 'Boston, MA' },
-        // Add more items as needed
-    ];
+function AdContainer() {
+    const [adData, setAdData] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const item ={ price: '200', title: 'Black T-Shirt', location: 'Toronto, ON' };
+    useEffect(() => {
+        const fetchAdData = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/ads/adProducts');
+                setAdData(response.data.rows);
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching ad data:', error);
+                setLoading(false);
+            }
+        };
+
+        fetchAdData();
+    }, []);
 
     return (
         <div className="item-container">
-            {data.map((item, index) => (
-                <ItemBlock price={item.price} title={item.title} location={item.location} />
-            ))} 
+            {loading ? (
+                <p>Loading...</p>
+            ) : (
+                adData.length > 0 ? (
+                    adData.map((item, index) => (
+                        <ItemBlock key={item.product_id} price={item.price} title={item.title} location={item.location_id} />
+                    ))
+                ) : (
+                    <p>No ad data available</p>
+                )
+            )}
         </div>
     );
 }
 
-
-export default adContainer;
+export default AdContainer;
