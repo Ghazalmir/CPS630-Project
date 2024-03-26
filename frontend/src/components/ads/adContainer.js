@@ -29,7 +29,7 @@ function AdContainer() {
             ) : (
                 adData.length > 0 ? (
                     adData.map((item, index) => (
-                        <ItemBlock key={item.product_id} price={item.price} title={item.title} location={item.location_id} />
+                        <ItemBlock key={index} id={item.product_id} price={item.price} title={item.title} location={item.location_id} />
                     ))
                 ) : (
                     <p>No ad data available</p>
