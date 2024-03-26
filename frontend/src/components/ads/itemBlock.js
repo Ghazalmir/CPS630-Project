@@ -2,7 +2,7 @@ import imageExample from './blacktshirt.png';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-function itemBlock( {id, price, title, location} ) {
+function ItemBlock( {id, price, title, location} ) {
 
     const handleClick = () => {
         window.location.href =`/adDetails/${id}`;
@@ -21,4 +21,4 @@ function itemBlock( {id, price, title, location} ) {
     );
 }
 
-export default itemBlock;
+export default ItemBlock;
