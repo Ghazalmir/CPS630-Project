@@ -9,10 +9,10 @@ function StatusFields(props) {
       <h2>Item Status</h2>
       <div className="mb-3">Status: <AvailabilityStatus available={currentStatus}/></div>
       <div className="mb-3 form-check form-switch">
-        <label className="form-check-label" htmlFor="meet-on-campus">
+        <label className="form-check-label" htmlFor="is_available">
           Availability
         </label>
-        <input className="form-check-input" type="checkbox" name="isAvailable" value={currentStatus} id="is-available" checked={currentStatus}
+        <input className="form-check-input" type="checkbox" name="is_available" value={currentStatus} id="is-available" checked={currentStatus}
                 onChange={() => {setStatus(!currentStatus)}
             }
         />

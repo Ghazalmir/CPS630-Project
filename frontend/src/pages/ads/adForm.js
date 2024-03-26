@@ -75,6 +75,27 @@ function AdForm(props) {
         console.error("Error uploading post:", error);
       }
     }
+
+    const updateAd = async() => {
+      try {
+        const response = await axios.post("http://localhost:8080/api/ads/updateAd", {
+          product_id: id,
+          values: {
+            location_id: 1, // TODO: FIX THIS LATER
+            title: title.current.value,
+            description: description.current.value,
+            price: price.current.value, 
+            category_id: category_id.current.value,
+            // TODO: ADD SUB CATEGORY
+            meet_on_campus: meetOnCampus === true ? 1 : 0,
+            is_available: is_available.current === true ? 1 : 0,
+          }
+
+        });
+      } catch (error) {
+        console.error("Error updating post:", error);
+      }
+    }
   
 
   return (
@@ -113,9 +134,9 @@ function AdForm(props) {
       </div>
       {/* Category */}
       <div className="mb-3">
-        <label htmlFor="category" className="form-label">Categoy <span className="text-danger">*</span></label>
+        <label htmlFor="category_id" className="form-label">Categoy <span className="text-danger">*</span></label>
         <select id="category" className="form-select bg-body-tertiary" ref={category_id} 
-                name="category" required
+                name="category_id" required
                 >
           <option value="0">Select a category</option>
           <option value="1">One</option>
@@ -138,7 +159,7 @@ function AdForm(props) {
       {/* Address */}
       {/* TODO: ADD LOCATION */}
       <div className="mb-3 form-check">
-        <input className="form-check-input" type="checkbox" name="meetOnCampus" value={meetOnCampus} id="meet-on-campus" checked={meetOnCampus}
+        <input className="form-check-input" type="checkbox" name="meet_on_campus" value={meetOnCampus} id="meet-on-campus" checked={meetOnCampus}
                 onChange={() => {setMeetOnCampusChecked(!meetOnCampus)}
             }
         />
@@ -162,7 +183,7 @@ function AdForm(props) {
           }
 
         <button className="btn btn-primary text-white rounded border-0 p-2 px-4 mx-1" 
-               type="submit" onClick={postAd}>
+               type="submit" onClick={props.isEditForm == true ? updateAd : postAd}>
                 {props.isEditForm == true ? "Update Ad" : "Post Ad"}
         </button>
         <a type="button" href="/" className="btn p-2 px-4" >Cancel</a>

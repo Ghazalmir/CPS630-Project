@@ -49,5 +49,22 @@ router.post("/postNewAd", async (req, res) => {
 
 
 
+router.post("/updateAd", async (req, res) => {
+	try {
+		const {product_id, values} = {...req.body};
+		const {location_id, title, description, price, category_id, meet_on_campus, is_available} = {...values};
+		const result = await pool.query(
+      `UPDATE products 
+			SET location_id = $1, title = $2, description = $3, price = $4, category_id = $5, meet_on_campus = $6, is_available = $7 
+			WHERE product_id = $8;`,
+			[location_id, title, description, price, category_id, meet_on_campus, is_available, product_id]
+		);
+		res.status(201).json(result.rows[0]);
+		console.log(result.rows[0]);
+	} catch (error) {
+		console.error(error);
+		res.status(500).send("Server Error");
+	}
+});
 
 module.exports = router;
