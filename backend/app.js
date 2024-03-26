@@ -23,11 +23,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const profileRoutes = require('./endpoints/profile'); 
 const messagesRoutes = require('./endpoints/messages');
 const postingRoutes = require('./endpoints/posts');
+const categoryRoutes = require('./endpoints/categories');
 
 
 app.use('/api/profile', profileRoutes); 
 app.use('/api/messages', messagesRoutes); 
 app.use('/api/ads', postingRoutes); 
+app.use('/api/categories', categoryRoutes);
 
 // Create a Socket.io server with the express application
 const server = http.createServer(app);
