@@ -29,7 +29,9 @@ function AdForm(props) {
   //const [street, setStreet] = useState(undefined);
   //const [city, setCity] = useState(undefined);
   //const [country, setCountry] = useState(undefined);
-  const is_available = useRef(true);
+  const [is_available, setAvailability] = useState(false);
+  const [loading, setLoading] = useState(true);
+
 
 
     useEffect(() => {
@@ -45,12 +47,14 @@ function AdForm(props) {
             description.current.value = response.data.rows[0].description;
             price.current.value = response.data.rows[0].price;
             category_id.current.value = response.data.rows[0].category_id;
-            is_available.current = response.data.rows[0].is_available;
+            setAvailability(response.data.rows[0].is_available === "1" ? true : false);
             
             setMeetOnCampusChecked(response.data.rows[0].meet_on_campus);
             console.log(response.data.rows[0]);
+            setLoading(false);
           } catch (error) {
             console.error("Error fetching user data:", error);
+            setLoading(false);
           }
         };
       
@@ -69,7 +73,7 @@ function AdForm(props) {
           category_id: category_id.current.value,
           // TODO: ADD SUB CATEGORY
           meet_on_campus: meetOnCampus === true ? 1 : 0,
-          is_available: is_available.current === true ? 1 : 0,
+          is_available: is_available === true ? 1 : 0,
         });
       } catch (error) {
         console.error("Error uploading post:", error);
@@ -88,7 +92,7 @@ function AdForm(props) {
             category_id: category_id.current.value,
             // TODO: ADD SUB CATEGORY
             meet_on_campus: meetOnCampus === true ? 1 : 0,
-            is_available: is_available.current === true ? 1 : 0,
+            is_available: is_available === true ? 1 : 0,
           }
 
         });
@@ -96,12 +100,14 @@ function AdForm(props) {
         console.error("Error updating post:", error);
       }
     }
-  
+  if (loading)
+    { return <p>Loading...</p> }
+
 
   return (
     <form className="m-5">
       {
-        props.isEditForm == true ? <StatusFields status={is_available}/> : ""
+        props.isEditForm == true ? <StatusFields status={is_available} change={() => setAvailability(!is_available)}/> : ""
       }
       <h2>Item Information</h2>
       <div className="row">
@@ -134,7 +140,7 @@ function AdForm(props) {
       </div>
       {/* Category */}
       <div className="mb-3">
-        <label htmlFor="category_id" className="form-label">Categoy <span className="text-danger">*</span></label>
+        <label htmlFor="category_id" className="form-label">Category <span className="text-danger">*</span></label>
         <select id="category" className="form-select bg-body-tertiary" ref={category_id} 
                 name="category_id" required
                 >
@@ -168,7 +174,7 @@ function AdForm(props) {
         </label>
       </div>
       {
-        meetOnCampus == true ? "": addressFields(" ", " ", " ") 
+        meetOnCampus === true ? "": addressFields(" ", " ", " ") 
       }
       
       {/* Submit/cancel buttons */}
