@@ -59,10 +59,11 @@ function SideBar() {
             ) : (
               <Link
                 className="btn align-items-center category"
-                to={`/${category.link}`}
-              >
-                {category.category_name}
-              </Link>
+                to={{
+                  search: `?selectedCategory=${category.category_id}&categoryName=${category.category_name}`,
+                }}>
+              {category.category_name}
+          </Link>
             )}
           </li>
         ))}

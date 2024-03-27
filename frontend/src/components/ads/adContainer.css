@@ -8,9 +8,8 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 300px)); /* Adjust minmax and breakpoints as needed */
     gap:50px;
-    padding: 50px 20px;
+    padding: 0px 20px;
     margin: 5px;
-    border-top: 2px solid #E3E3E3;
     justify-content: space-evenly;
 }
 
@@ -61,4 +60,10 @@
     background-color: #E7ECF3 !important;
 }
 
+.container-title-category {
+    border-top: 2px solid #E3E3E3;
+    padding: 20px;
+    font-weight: 600;
+    text-align: center;
+}
 
