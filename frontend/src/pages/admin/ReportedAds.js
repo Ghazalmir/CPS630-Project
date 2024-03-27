@@ -7,7 +7,7 @@ function ReportedAds() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/reported-ads")
+    fetch("http://localhost:8080/api/admin/reported-ads")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to fetch");
@@ -24,11 +24,14 @@ function ReportedAds() {
         setIsLoading(false);
       });
   }, []);
+  
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading reported ads: {error}</p>;
+  if (!reportedAds || reportedAds.length === 0) return <p>No reported ads found.</p>;
+
   const handleDelete = (adId) => {
-    fetch(`http://localhost:3000/api/reported-ads/${adId}`, {
+    fetch(`http://localhost:8080/api/admin/reported-ads/${adId}`, {
       method: "DELETE",
     })
       .then((response) => {
@@ -88,5 +91,6 @@ function ReportedAds() {
   );
 }
 
+export default ReportedAds;
 export default ReportedAds;
 
