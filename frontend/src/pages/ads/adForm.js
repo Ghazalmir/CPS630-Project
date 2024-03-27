@@ -100,6 +100,19 @@ function AdForm(props) {
         console.error("Error updating post:", error);
       }
     }
+
+    const [categories, setCategories] = useState([]);
+    const [subCategories, setSubCategories] = useState([]);
+
+    useEffect(() => {
+      fetch("http://localhost:8080/api/categories/sections")
+        .then((response) => response.json())
+        .then((data) => {
+          setCategories(data);
+        })
+        .catch((error) => console.error("Error fetching categories:", error));
+    }, []);
+
   if (loading)
     { return <p>Loading...</p> }
 
@@ -145,9 +158,7 @@ function AdForm(props) {
                 name="category_id" required
                 >
           <option value="0">Select a category</option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
+          {categories.map((category) => (<option value={category.category_id} key={category.category_id}>{category.category_name}</option>))}
         </select>
       </div>
       {/* File upload */}
