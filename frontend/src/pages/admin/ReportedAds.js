@@ -28,7 +28,7 @@ function ReportedAds() {
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading reported ads: {error}</p>;
-  if (!reportedAds || reportedAds.length === 0) return <p>No reported ads found.</p>;
+  if (!reportedAds || reportedAds.length === 0) return <p>No reported ads found.</p>; // Add this for empty response
 
   const handleDelete = (adId) => {
     fetch(`http://localhost:8080/api/admin/reported-ads/${adId}`, {
@@ -92,5 +92,5 @@ function ReportedAds() {
 }
 
 export default ReportedAds;
-export default ReportedAds;
+
 
