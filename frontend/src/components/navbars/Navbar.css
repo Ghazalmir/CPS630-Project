@@ -90,11 +90,12 @@
   border-radius: 5px;
   height: 50px;
   align-items: center;
+  width: 100%;
 }
 
 .search-bar-container input {
   border-style: none !important;
-  width: 250px;
+  max-width: 500px;
 }
 
 .search-icon {

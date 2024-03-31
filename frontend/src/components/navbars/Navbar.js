@@ -27,13 +27,18 @@ function Navbar({ logged_in, is_admin }) {
                 <Dropdown>
                   <Dropdown.Toggle id="dropdown-account" className="my-account-dropdown d-flex align-items-center border-style-none">
                   <li className="nav-item">
-                    <a className="nav-link" href="/MyAccount">My Account</a>
+                    <a className="nav-link">My Account</a>
                   </li>
                   </Dropdown.Toggle>
                   <Dropdown.Menu className="my-account-dropdown-menu">
                     <Dropdown.Item href="/MyListings" className="my-account-mylistings">
                       <li className="nav-item">
                         <a className="nav-link" href="/MyListings">My Listings</a>
+                      </li>
+                    </Dropdown.Item>
+                    <Dropdown.Item href="/MyAccount" className="my-account-settings">
+                      <li className="nav-item">
+                        <a className="nav-link" href="/MyAccount">Account Settings</a>
                       </li>
                     </Dropdown.Item>
                   </Dropdown.Menu>
