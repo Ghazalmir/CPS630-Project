@@ -1,13 +1,16 @@
 import React from 'react';
 import AdContainer from '../ads/adContainer';
+import Sidebar from '../ads/sideBar';
 import classes from "./MyListings.module.css"
 const MyListings = () => {
   return (
     <div className={classes.listingsContainer}>
-      <h3>My Listings</h3>
-      <div className={classes.container}>
-        <AdContainer/>
-      </div>
+      <div className="col-2 sidebar">
+            <Sidebar />
+        </div>
+        <div className="col-sm-12 col-md-10 ad-container">
+            <AdContainer />
+        </div>
     </div>
   );
 }

@@ -6,7 +6,6 @@
 .listingsContainer {
 	height: 100%;
 	display: flex;
-	flex-direction: column;
 	padding: 10px;
 	margin: 10px;
 }
