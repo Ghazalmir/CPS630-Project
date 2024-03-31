@@ -33,7 +33,7 @@
     width: 100% !important;
     display: block;
     position: sticky !important;
-    top: 120px;
+    top: 160px;
 }
 
 .sidebar-dropdown {
@@ -51,7 +51,7 @@
 }
 
 .category {
-    font-size: 20px !important;
+    font-size: clamp(10px, 2.5vw, 20px) !important;
     font-weight: 600 !important;
     white-space: normal !important;
 }

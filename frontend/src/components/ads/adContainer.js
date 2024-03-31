@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useUser } from "../../userContext";
 import axios from 'axios';
 import './adContainer.css';
 import ItemBlock from './itemBlock.js';
 import { useLocation } from 'react-router-dom';
 
-function AdContainer() {
+function AdContainer({}) {
+    const { userId, setUserId } = useUser();
+
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const selectedCategory = searchParams.get('selectedCategory');
@@ -15,10 +18,13 @@ function AdContainer() {
     const [filteredData, setFilteredData] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const isMyListings = location.pathname.includes('/MyListings');
+    
     useEffect(() => {
         const fetchAdData = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/ads/adProducts');
+                let apiUrl = 'http://localhost:8080/api/ads/availableProducts';
+                const response = await axios.get(apiUrl);
                 setAdData(response.data.rows);
                 setLoading(false);
             } catch (error) {
@@ -43,6 +49,18 @@ function AdContainer() {
         
     }, [selectedCategory, adData]);
 
+    useEffect(() => {
+        const pathname = location.pathname;
+        console.log(pathname.includes('MyListings'));
+        if (pathname.includes('/MyListings')) {
+            const userItems = adData.filter(item => item.user_id === userId);
+            setFilteredData(userItems);
+            setSelectedCategoryName('My Listings');
+            console.log(userItems);
+
+        }
+    }, [location.pathname, userId, adData]);
+
     return (
         <div>
             <h2 className="container-title-category">{selectedCategoryName}</h2>
@@ -52,7 +70,7 @@ function AdContainer() {
                 ) : (
                     filteredData.length > 0 ? (
                         filteredData.map((item, index) => (
-                            <ItemBlock key={index} id={item.product_id} price={item.price} title={item.title} location={item.location_id} />
+                            <ItemBlock key={index} id={item.product_id} price={item.price} title={item.title} location={item.location_id} isMyListings={isMyListings} />
                         ))
                     ) : (
                         <p>No ad data available for the selected category</p>
