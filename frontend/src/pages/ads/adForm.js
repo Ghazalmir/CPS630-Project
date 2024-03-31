@@ -203,7 +203,7 @@ function AdForm(props) {
                type="submit" onClick={props.isEditForm == true ? updateAd : postAd}>
                 {props.isEditForm == true ? "Update Ad" : "Post Ad"}
         </button>
-        <a type="button" href="/" className="btn p-2 px-4" >Cancel</a>
+        <a type="button" href="/MyListings" className="btn p-2 px-4" >Cancel</a>
       </div>
 
       {/* Delete confirmation modal */}
