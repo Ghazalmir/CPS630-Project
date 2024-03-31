@@ -43,13 +43,16 @@ router.get("/conversations", async (req, res) => {
       user1.first_name AS user1_first_name,
       user1.last_name AS user1_last_name,
       user2.first_name AS user2_first_name,
-      user2.last_name AS user2_last_name
+      user2.last_name AS user2_last_name,
+			p.title AS product_title
   FROM
       Conversations c
   INNER JOIN
       Users user1 ON c.Userid1 = user1.id
   INNER JOIN
       Users user2 ON c.Userid2 = user2.id
+	INNER JOIN
+			Products p ON c.product_id = p.product_id
   WHERE
       c.Userid1 = $1 OR c.Userid2 = $1;`,
 			[signedInUserID]
@@ -60,6 +63,60 @@ router.get("/conversations", async (req, res) => {
 		res.status(500).send("Server Error");
 	}
 });
+
+router.post("/conversations", async (req, res) => {
+	try {
+		const { product_id, userid } = req.body;
+
+		// Fetch product information to ensure it exists
+		const productQuery = await pool.query(
+			"SELECT user_id FROM Products WHERE product_id = $1",
+			[product_id]
+		);
+
+		if (productQuery.rows.length === 0) {
+			return res.status(404).json({ error: "Product not found" });
+		}
+
+		const { user_id } = productQuery.rows[0];
+
+		// Create a new conversation entry
+		const insertQuery = await pool.query(
+			"INSERT INTO Conversations (userid1, userid2, product_id) VALUES ($1, $2, $3) RETURNING conversation_id", // Just return the ID
+			[user_id, userid, product_id]
+		);
+
+		const conversationId = insertQuery.rows[0].conversation_id;
+
+		// Fetch the newly created conversation with additional details
+		const result = await pool.query(
+			`SELECT
+			  c.*,
+			  user1.first_name AS user1_first_name,
+			  user1.last_name AS user1_last_name,
+			  user2.first_name AS user2_first_name,
+			  user2.last_name AS user2_last_name,
+			  p.title AS product_title
+			FROM
+			  Conversations c
+			INNER JOIN
+			  Users user1 ON c.Userid1 = user1.id
+			INNER JOIN
+			  Users user2 ON c.Userid2 = user2.id
+			INNER JOIN
+			  Products p ON c.product_id = p.product_id
+			WHERE
+			  c.conversation_id = $1;`,
+			[conversationId]
+		);
+
+		res.status(201).json(result.rows[0]);
+	} catch (error) {
+		console.error("Error creating conversation:", error);
+		res.status(500).json({ error: "Server error" });
+	}
+});
+
 
 router.post("/messages", async (req, res) => {
 	try {
@@ -74,7 +131,5 @@ router.post("/messages", async (req, res) => {
 		res.status(500).send("Server Error");
 	}
 });
-
-
 
 module.exports = router;

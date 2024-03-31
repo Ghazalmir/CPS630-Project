@@ -68,7 +68,7 @@ function AdDetails() {
             <h6 className="text-blue">Location</h6>
             <h4 className="fw-normal">{adData.price}</h4>
             <p>{adData.description}</p>
-            <BlueButton href="/message/id" text="Message Sender" />
+            <BlueButton href={`/Messages/${id}`} text="Message Seller" />
           </div>
         </div>
       </div>

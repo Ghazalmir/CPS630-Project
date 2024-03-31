@@ -5,29 +5,29 @@ import io from "socket.io-client";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { useUser } from "../../userContext";
-import { parseISO, compareAsc } from 'date-fns';
-import { Link } from 'react-router-dom';
+import { parseISO, compareAsc } from "date-fns";
+import { Link, useParams } from "react-router-dom";
 
 function useChatScroll(dep) {
-  const ref = React.useRef();
-  React.useEffect(() => {
-    if (ref.current) {
-      ref.current.scrollTop = ref.current.scrollHeight;
-    }
-  }, [dep]);
-  return ref;
+	const ref = React.useRef();
+	React.useEffect(() => {
+		if (ref.current) {
+			ref.current.scrollTop = ref.current.scrollHeight;
+		}
+	}, [dep]);
+	return ref;
 }
 
-
 const MessagePanel = () => {
-	const { userId, setUserId } = useUser();
+	const { userId, setUserId, conversations, setConversations } = useUser();
 	const [newMessage, setNewMessage] = useState("");
-	const [conversations, setConversations] = useState([]);
 	const [messages, setMessages] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [selectedConversation, setSelectedConversation] = useState(null);
 	const [userData, setUserData] = useState(null);
 	const [socket, setSocket] = useState(null);
+	const [alreadyFetched, setAlreadyFetched] = useState(false);
+	const { id } = useParams();
 
 	const chatContainerRef = useChatScroll(messages);
 
@@ -43,16 +43,18 @@ const MessagePanel = () => {
 		});
 
 		newSocket.on("newMessage", (msg) => {
-			console.log(msg)
+			console.log(msg);
 			setMessages((prevMessages) => [...prevMessages, msg]);
 		});
 
 		setSocket(newSocket);
 
 		return () => {
-		  newSocket.disconnect();
+			newSocket.disconnect();
 		};
 	}, [userId, messages]);
+
+	useEffect(() => {}, [userData]);
 
 	useEffect(() => {
 		const fetchUserData = async () => {
@@ -69,7 +71,8 @@ const MessagePanel = () => {
 		};
 
 		fetchUserData();
-	}, [userId]);
+	}, []);
+
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -86,32 +89,69 @@ const MessagePanel = () => {
 						},
 					}),
 				]);
-
-				setConversations(conversationsResponse.data);
+				setAlreadyFetched(true);
 				setMessages(messagesResponse.data);
-				console.log(messagesResponse.data)
+				let conversationsToAdd = conversationsResponse.data.filter(
+					(newConvo) => !conversations.some((existingConvo) => existingConvo.product_id === newConvo.product_id)
+				);
+
+				if (id) {
+					const foundConvo = conversationsResponse.data.find((convo) => convo.product_id === id);
+
+					if (!foundConvo) {
+						const response = await axios.post("http://localhost:8080/api/messages/conversations", {
+							product_id: id,
+							userid: userId,
+						});
+						const newConvo = response.data;
+
+						setConversations([...conversations, ...conversationsToAdd, newConvo]);
+
+						setSelectedConversation(newConvo);
+					} else {
+						setConversations([...conversations, ...conversationsToAdd]);
+						setSelectedConversation(foundConvo);
+					}
+				} else {
+					setConversations([...conversations, ...conversationsToAdd]);
+				
+					setSelectedConversation(
+						window.innerWidth >= 764
+							? [...conversations, ...conversationsToAdd].sort(
+									(b, a) =>
+										new Date(
+											messagesResponse.data
+												.filter((message) => message.conversation_id === a.conversation_id)
+												.sort((b, a) => compareAsc(parseISO(a.time_stamp), parseISO(b.time_stamp)))[0].time_stamp
+										) -
+										new Date(
+											messagesResponse.data
+												.filter((message) => message.conversation_id === b.conversation_id)
+												.sort((b, a) => compareAsc(parseISO(a.time_stamp), parseISO(b.time_stamp)))[0].time_stamp
+										)
+							  )[0]
+							: null
+					);
+				}
+
 				setLoading(false);
-				setSelectedConversation(window.innerWidth >= 764 ? conversationsResponse.data[0] : null);
 			} catch (error) {
 				console.error("Error fetching data:", error);
 				setLoading(false);
 			}
 		};
-		if (userData) {
+		if (userData && !alreadyFetched) {
+			setAlreadyFetched(true);
 			fetchData();
 		}
-	}, [userId, userData]);
+	}, [userData]);
 
 	const handleConversationSelect = (conversation) => {
 		setSelectedConversation(conversation);
 	};
 
 	const latestMessage = (conversation) => {
-		
 		let conversationMessages = messages.filter((message) => message.conversation_id === conversation.conversation_id);
-		// console.log(conversationMessages.sort((a, b) => compareAsc(parseISO(a.time_stamp), parseISO(b.time_stamp)))[
-		// 	conversationMessages.length - 1
-		// ])
 		return conversationMessages.sort((a, b) => compareAsc(parseISO(a.time_stamp), parseISO(b.time_stamp)))[
 			conversationMessages.length - 1
 		];
@@ -162,8 +202,6 @@ const MessagePanel = () => {
 		setNewMessage("");
 	};
 
-
-
 	const [screenSize, setScreenSize] = useState({
 		width: window.innerWidth,
 		height: window.innerHeight,
@@ -175,7 +213,6 @@ const MessagePanel = () => {
 
 	useEffect(() => {
 		const handleResize = () => {
-
 			setScreenSize({
 				width: window.innerWidth,
 				height: window.innerHeight,
@@ -204,20 +241,22 @@ const MessagePanel = () => {
 							<h2>Conversations</h2>
 							<div className={classes.listGroupContainer}>
 								<ul className="list-group">
-									{conversations.sort((a, b) => new Date(latestMessage(b).time_stamp) - new Date(latestMessage(a).time_stamp)).map((conversation) => (
-										<li
-											key={conversation.conversation_id}
-											className={`list-group-item ${classes.listGroupItem} ${
-												selectedConversation?.conversation_id === conversation.conversation_id ? "active" : ""
-											}`}
-											onClick={() => handleConversationSelect(conversation)}
-										>
-											<div>
-												<strong>{otherUsersName(conversation)}</strong>
-											</div>
-											<div className="latest-message">{cropContent(latestMessage(conversation)?.message, 80)}</div>
-										</li>
-									))}
+									{conversations
+										.sort((a, b) => new Date(latestMessage(b)?.time_stamp) - new Date(latestMessage(a)?.time_stamp))
+										.map((conversation) => (
+											<li
+												key={conversation.conversation_id}
+												className={`list-group-item ${classes.listGroupItem} ${
+													selectedConversation?.conversation_id === conversation.conversation_id ? "active" : ""
+												}`}
+												onClick={() => handleConversationSelect(conversation)}
+											>
+												<div>
+													<strong>{otherUsersName(conversation)}</strong>
+												</div>
+												<div className="latest-message">{cropContent(latestMessage(conversation)?.message, 80)}</div>
+											</li>
+										))}
 								</ul>
 							</div>
 						</div>
@@ -238,8 +277,8 @@ const MessagePanel = () => {
 											&#x2B05;
 										</a>
 									)}
-									<h2>{otherUsersName(selectedConversation)}</h2>
-									<Link to={'/adDetails/' + selectedConversation.product_id}>
+									<h2>{otherUsersName(selectedConversation) + "  -  " + selectedConversation.product_title}</h2>
+									<Link to={"/adDetails/" + selectedConversation.product_id}>
 										<button className="btn btn-primary">View Item Details</button>
 									</Link>
 								</div>
