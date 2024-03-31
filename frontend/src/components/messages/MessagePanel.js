@@ -115,21 +115,27 @@ const MessagePanel = () => {
 				} else {
 					setConversations([...conversations, ...conversationsToAdd]);
 				
+					// setSelectedConversation(
+					// 	window.innerWidth >= 764
+					// 		? [...conversations, ...conversationsToAdd].sort(
+					// 				(b, a) =>
+					// 					new Date(
+					// 						messagesResponse.data
+					// 							.filter((message) => message.conversation_id === a.conversation_id)
+					// 							.sort((b, a) => compareAsc(parseISO(a.time_stamp), parseISO(b.time_stamp)))[0].time_stamp
+					// 					) -
+					// 					new Date(
+					// 						messagesResponse.data
+					// 							.filter((message) => message.conversation_id === b.conversation_id)
+					// 							.sort((b, a) => compareAsc(parseISO(a.time_stamp), parseISO(b.time_stamp)))[0].time_stamp
+					// 					)
+					// 		  )[0]
+					// 		: null
+					// );
+
 					setSelectedConversation(
 						window.innerWidth >= 764
-							? [...conversations, ...conversationsToAdd].sort(
-									(b, a) =>
-										new Date(
-											messagesResponse.data
-												.filter((message) => message.conversation_id === a.conversation_id)
-												.sort((b, a) => compareAsc(parseISO(a.time_stamp), parseISO(b.time_stamp)))[0].time_stamp
-										) -
-										new Date(
-											messagesResponse.data
-												.filter((message) => message.conversation_id === b.conversation_id)
-												.sort((b, a) => compareAsc(parseISO(a.time_stamp), parseISO(b.time_stamp)))[0].time_stamp
-										)
-							  )[0]
+							? [...conversations, ...conversationsToAdd][0]
 							: null
 					);
 				}
