@@ -19,9 +19,9 @@ router.get('/adDetails/:id', async (req, res) => {
 	}
 });
 
-router.get('/adProducts', async (req, res) => {
+router.get('/availableProducts', async (req, res) => {
 	try {
-		const result = await pool.query('SELECT * FROM products;');
+		const result = await pool.query('SELECT * FROM products WHERE products.is_available = 1;');
 		res.json(result);
 	} catch (error) {
 		console.error(error);
@@ -46,8 +46,6 @@ router.post("/postNewAd", async (req, res) => {
 		res.status(500).send("Server Error");
 	}
 });
-
-
 
 router.post("/updateAd", async (req, res) => {
 	try {
