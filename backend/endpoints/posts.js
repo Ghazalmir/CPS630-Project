@@ -19,9 +19,9 @@ router.get('/adDetails/:id', async (req, res) => {
 	}
 });
 
-router.get('/availableProducts', async (req, res) => {
+router.get('/products', async (req, res) => {
 	try {
-		const result = await pool.query('SELECT * FROM products WHERE products.is_available = 1;');
+		const result = await pool.query('SELECT * FROM products;');
 		res.json(result);
 	} catch (error) {
 		console.error(error);
