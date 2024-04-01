@@ -1,19 +1,39 @@
 import './Navbar.css'
+import axios from 'axios';
 import { ReactComponent as SearchIcon } from '../../Other/icons8-search.svg';
 import React, { useState } from 'react';
 import { Dropdown, Nav } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 function Navbar({ logged_in, is_admin }) {
   const [showDiv, setShowDiv] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
   const toggleDiv = () => {
     setShowDiv(!showDiv)
+  };
+  
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    try {
+      navigate(`/search?searchQuery=${searchQuery}`);
+      window.location.reload();
+    } catch (error) {
+      console.error('Error fetching search results:', error);
+    }
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
   };
 
     return (
       <nav className="navbar navbar-expand-lg mb-3">
         <div className="container-fluid">
-          <a className="navbar-brand" href="/HomePage">Website Name</a>
+          <a className="navbar-brand" href="/">Website Name</a>
           <button className="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" onClick={toggleDiv}>
             <span className="navbar-toggler-icon"></span>
           </button>
@@ -85,8 +105,8 @@ function Navbar({ logged_in, is_admin }) {
             </ul>
             <form className="d-flex search-form" role="search">
               <div className="search-bar-container">
-                <input className="form-control me-2" type="search" placeholder="What are you looking for?" aria-label="Search" />
-                <button className="btn btn-outline-light search-icon" type="button">
+                <input className="form-control me-2" id = "search"type="search" placeholder="What are you looking for?" aria-label="Search" value={searchQuery} onKeyDown={handleKeyPress} onChange={(e) => setSearchQuery(e.target.value)} />
+                <button className="btn btn-outline-light search-icon" type="button" onClick={handleSearch}>
                   <SearchIcon />
                 </button>
               </div>
