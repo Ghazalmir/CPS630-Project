@@ -1,16 +1,17 @@
 import imageExample from './blacktshirt.png';
 import React from 'react';
+import AvailabilityStatus from "../../components/general/availabilityStatus";
 import { Link, useLocation } from 'react-router-dom';
 
-function ItemBlock({ id, price, title, locationId, isMyListings }) {
+function ItemBlock({ item, isMyListings }) {
     const location = useLocation();
 
     const handleClick = () => {
-        window.location.href = `/adDetails/${id}`;
+        window.location.href = `/adDetails/${item.product_id}`;
     };
 
     const handleEditClick = () => {
-        window.location.href = `/EditAd/${id}`;
+        window.location.href = `/EditAd/${item.product_id}`;
     };
 
     const handleDeleteClick = () => {
@@ -23,7 +24,7 @@ function ItemBlock({ id, price, title, locationId, isMyListings }) {
             {/* Image and item details */}
             <a>
                 <div className='imageHolder' style={{ width: '300px', height: '300px', maxWidth: '100%', maxHeight: '100%', backgroundImage: `url(${imageExample})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundColor: '#F5F5F5', cursor: 'pointer' }}>
-                <img src={imageExample} alt={title} style={{ width: '100%', height: '100%', objectFit: 'cover'}} onClick={handleClick}/>
+                <img src={imageExample} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover'}} onClick={handleClick}/>
                 {isMyListings && (
                     <>
                     <div className="button-container" style ={{ position: 'absolute', top: '10px', right: '5px'}}>
@@ -35,9 +36,16 @@ function ItemBlock({ id, price, title, locationId, isMyListings }) {
                 </div>
             </a>
             <div className='pt-2'>
-                <h6 style={{ color: '#004C9B', fontWeight: 'bold' }}>${price}</h6>
-                <a href="#" className="item-title" style={{ textDecoration: 'none' }}><h5 style={{ color: 'black', fontWeight: 'bold' }} onClick={handleClick}>{title}</h5></a>
-                <h6 style={{ color: '#80A5CD' }}>{locationId}</h6>
+                <div style={{ display: 'flex', alignItems: 'center'}}>
+                    <h6 style={{ color: '#004C9B', fontWeight: 'bold', margin: '0' }}>${item.price}</h6>
+                    {isMyListings && (
+                        <>
+                        <AvailabilityStatus available={item.is_available === "1"}/>
+                        </>                    
+                )}
+                </div>
+                <a href="#" className="item-title" style={{ textDecoration: 'none' }}><h5 style={{ color: 'black', fontWeight: 'bold' }} onClick={handleClick}>{item.title}</h5></a>
+                <h6 style={{ color: '#80A5CD' }}>{item.location_id}</h6>
             </div>
         </div>
     );

@@ -54,7 +54,6 @@ function AdContainer({}) {
             const userItems = adData.filter(item => item.is_available == 1);
             setFilteredData(userItems);
             setSelectedCategoryName('Today\'s Picks');
-            console.log(userItems);
         }
     }, [adData]);
 
@@ -65,8 +64,6 @@ function AdContainer({}) {
             const userItems = adData.filter(item => item.user_id === userId);
             setFilteredData(userItems);
             setSelectedCategoryName('My Listings');
-            console.log(userItems);
-
         }
     }, [location.pathname, userId, adData]);
 
@@ -79,13 +76,13 @@ function AdContainer({}) {
                 ) : (
                     filteredData.length > 0 ? (
                         filteredData.map((item, index) => (
-                            <ItemBlock key={index} id={item.product_id} price={item.price} title={item.title} location={item.location_id} isMyListings={isMyListings} />
+                            <ItemBlock key={index} item={item} isMyListings={isMyListings} />
                         ))
                     ) : (
                         <p>No ad data available for the selected category</p>
                     )
                 )}
-        </div>
+            </div>
         </div>
     );
 }
