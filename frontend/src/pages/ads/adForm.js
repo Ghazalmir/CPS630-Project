@@ -243,7 +243,7 @@ function AdForm(props) {
 
       {/* Delete confirmation modal */}
       <DeleteConfirmationModal show={isDeleteModalShown} 
-            id={props.id}
+            id={id}
             onHide={() => setIsDeleteModalShown(false)}
             />
     </form>

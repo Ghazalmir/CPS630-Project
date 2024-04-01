@@ -76,4 +76,19 @@ router.post("/updateAd", async (req, res) => {
 	}
 });
 
+router.post("/deleteAd", async (req, res) => {
+	try {
+		const {product_id} = {...req.body};
+		const result = await pool.query(
+      `DELETE FROM products Where product_id = $1;`,
+			[product_id]
+		);
+		res.status(200).json({ success: true });		//res.redirect('http://localhost:3000/MyListings');
+	} catch (error) {
+		console.error(error);
+		res.status(500).send("Server Error");
+	}
+});
+
+
 module.exports = router;

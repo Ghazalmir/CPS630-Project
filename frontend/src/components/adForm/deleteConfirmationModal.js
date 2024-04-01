@@ -4,22 +4,25 @@ import  { useNavigate } from 'react-router-dom'
 
 function DeleteConfirmationModal(props) {
   const navigate = useNavigate();
-  const handleDelete = async (event) => {
+  const handleDelete = async () => {
     //event.preventDefault(); // Prevent default form submission
     try {
-      const response = await fetch(`/deleteAd?id=${props.id}`, {
-        method: 'get',
-      });
-  
-      if (response.ok) {
-        console.log('Ad deleted successfully');
+      fetch("http://localhost:8080/api/ads/deleteAd", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({product_id: props.id}),
+      })
+      .then(() => {
+        navigate("/MyListings");
+        window.location.reload();
+      })
+      .catch((error) => console.error("Error deleting post :", error));
         
-        navigate("/profile", { state: { message: "Ad deleted successfully!" } });
-      } else {
-        console.error('Failed to delete ad');
-      }
+        
     } catch (error) {
-      console.error('Error deleting ad:', error);
+      console.error("Error deleting post:", error);
     }
   };
 
