@@ -11,6 +11,11 @@ const app = express();
 app.use(cors());
 app.use(express.static('public'));
 
+// Increasing the limit for image upload
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+
 dotenv.config();
 
 const PORT = 8080;
@@ -25,6 +30,7 @@ const messagesRoutes = require('./endpoints/messages');
 const postingRoutes = require('./endpoints/posts');
 const categoryRoutes = require('./endpoints/categories');
 const adminRoutes = require('./endpoints/admin');
+const cloudinaryRoutes = require('./endpoints/cloudinary');
 
 
 app.use('/api/profile', profileRoutes); 
@@ -32,6 +38,7 @@ app.use('/api/messages', messagesRoutes);
 app.use('/api/ads', postingRoutes); 
 app.use('/api/categories', categoryRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/cloudinary', cloudinaryRoutes);
 
 // Create a Socket.io server with the express application
 const server = http.createServer(app);

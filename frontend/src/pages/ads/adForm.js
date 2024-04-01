@@ -6,7 +6,11 @@ import axios from "axios";
 import { useUser } from "../../userContext";
 import  { useNavigate } from 'react-router-dom'
 
-var files = [];
+var imageFiles = [];
+var rawImageFiles = [];
+var imageLinks = [];
+var new_product_id; // for when you create a new posting
+
 {/* 
 This page is used for both making and editing an ad. 
 The only difference between the two is that the edit page has the fields pre-filled, 
@@ -24,6 +28,7 @@ function AdForm(props) {
   const [isDeleteModalShown, setIsDeleteModalShown] = useState(false);
   const { id } = useParams();
   const { userId, setUserId } = useUser();
+  const [url, setUrl] = useState("");
 
   // Form fields
   const title= useRef(undefined);
@@ -35,7 +40,7 @@ function AdForm(props) {
   //const [street, setStreet] = useState(undefined);
   //const [city, setCity] = useState(undefined);
   //const [country, setCountry] = useState(undefined);
-  const [is_available, setAvailability] = useState(false);
+  const [is_available, setAvailability] = useState(true);
   const [loading, setLoading] = useState(true);
 
 
@@ -44,6 +49,7 @@ function AdForm(props) {
       if (props.isEditForm) {
         const fetchAdData = async () => {
           try {
+            
             const response = await axios.get(`http://localhost:8080/api/ads/adDetails/${id}`, {
               params: {
                 id: id
@@ -73,24 +79,42 @@ function AdForm(props) {
       }
     }, [id]);
 
-    const postAd = async() => {
-      try {
-        const response = await axios.post("http://localhost:8080/api/ads/postNewAd", {
-          user_id: userId,
-          location_id: 1, // TODO: FIX THIS LATER
-          title: title.current.value,
-          description: description.current.value,
-          price: price.current.value, 
-          category_id: categoryId,
-          subcategory_id: subcategoryId,
-          // TODO: ADD SUB CATEGORY
-          meet_on_campus: meetOnCampus === true ? 1 : 0,
-          is_available: is_available === 1,
-        });
-      } catch (error) {
-        console.error("Error uploading post:", error);
-      }
-    }
+    const postAd = (event) => {
+      event.preventDefault();
+      var editFormData = {
+        user_id: userId,
+        location_id: 1, // TODO: FIX THIS LATER
+        title: title.current.value,
+        description: description.current.value,
+        price: price.current.value, 
+        category_id: categoryId,
+        subcategory_id: subcategoryId,
+        // TODO: ADD SUB CATEGORY
+        meet_on_campus: meetOnCampus === true ? 1 : 0,
+        is_available: is_available === true ? 1 : 0,
+      };
+
+      
+      fetch("http://localhost:8080/api/ads/postNewAd", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editFormData),
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to post new ad');
+        }
+        return response.json(); // Parse JSON response
+      })
+      .then(data => {
+        console.log("Ad uploaded successfully with ID:", data.id);
+        uploadImage(data.id);
+      })
+      .catch(error => console.error("Error posting ad:", error));
+       
+    };
 
     const updateAd = async() => {
       try {
@@ -108,10 +132,63 @@ function AdForm(props) {
           }
 
         });
+        uploadImage();
       } catch (error) {
         console.error("Error updating post:", error);
       }
     }
+
+    const convertBase64 = (file) => {
+      return new Promise((resolve, reject) => {
+        const fileReader = new FileReader();
+        fileReader.readAsDataURL(file);
+    
+        fileReader.onload = () => {
+          resolve(fileReader.result);
+        };
+    
+        fileReader.onerror = (error) => {
+          reject(error);
+        };
+      });
+    };
+    
+    function uploadSingleImage(base64, product_id) {
+      setLoading(true);
+      return axios
+        .post("http://localhost:8080/api/cloudinary/uploadImage", { image: base64, product_id: product_id })
+        .then((res) => {
+          setUrl(res); // Assuming res contains the data with image URL
+          alert("Image uploaded Succesfully");
+        })
+        .finally(() => setLoading(false))
+        .catch(console.log);
+    }
+    
+    function uploadMultipleImages(images) {
+      setLoading(true);
+      return axios
+        .post("http://localhost:8080/api/cloudinary/uploadMultipleImages", { images })
+        .then((res) => {
+          setUrl(res.data); // Assuming res contains the data with image URLs
+          alert("Images uploaded Succesfully");
+        })
+        .finally(() => setLoading(false))
+        .catch(console.log);
+    }
+    
+    const uploadImage = async (product_id) => {
+      const files = rawImageFiles;
+      console.log(files.length);
+    
+      if (files.length === 1) {
+        const base64 = await convertBase64(files[0]);
+        await uploadSingleImage(base64, product_id);
+      } else {
+        const base64s = await Promise.all(files.map(convertBase64));
+        await uploadMultipleImages(base64s);
+      }
+    };
 
     const [categories, setCategories] = useState([]);
     const [subCategories, setSubCategories] = useState([]);
@@ -283,16 +360,20 @@ function AdForm(props) {
     
   }
 
-
-  function fileUpload(event) {
+  async function fileUpload(event) {
     if(!event.target.files || !window.FileReader) return;
+    
     let selDiv = document.querySelector("#selectedFiles");
     selDiv.innerHTML = "";
     
-    //var files = ;
-    var filesArr = Array.prototype.slice.call(event.target.files);
-    files.push(...filesArr);
-    files.forEach(function(f) {
+    //var imageFiles = ;
+    var files = event.target.files;
+    rawImageFiles.push(...files);
+
+    var filesArr = Array.prototype.slice.call(files);
+    imageFiles.push(...filesArr);
+
+    imageFiles.forEach(function(f) {
       if(!f.type.match("image.*")) {
         return;
       }

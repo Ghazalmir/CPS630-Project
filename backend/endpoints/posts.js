@@ -42,21 +42,30 @@ router.get('/search', async (req, res) => {
 
 router.post("/postNewAd", async (req, res) => {
 	try {
-		const {user_id, location_id, title, description, price, is_available, category_id, subcategory_id,meet_on_campus}
+		const {user_id, location_id, title, description, price, is_available, category_id, subcategory_id, meet_on_campus}
 		 = {...req.body};
-    /* FIX THE user id and location and SUB CATEGORY FIELD, also add images*/
+    
+		 /* FIX THE user id and location and SUB CATEGORY FIELD, also add images*/
 		const result = await pool.query(
       `INSERT INTO products (User_id, Location_id, title, Description, Price, Is_available, Category_id, Subcategory_id, meet_on_campus, Date_posted)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, CURRENT_TIMESTAMP);`,
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, CURRENT_TIMESTAMP) RETURNING product_id;`,
 			[user_id, location_id, title, description, price, is_available, category_id, subcategory_id, meet_on_campus]
 		);
-		res.status(201).json(result.rows[0]);
-		console.log(result.rows[0]);
+		
+		console.log(result);
+		if (result.rows.length > 0 && result.rows[0].product_id) {
+			const newPostId = result.rows[0].product_id; // Accessing the newly generated ID
+			res.status(201).json({ id: newPostId }); // Returning the ID in the response
+			
+		} else {
+				throw new Error('Failed to insert new post or no ID returned');
+		}
 	} catch (error) {
 		console.error(error);
 		res.status(500).send("Server Error");
 	}
 });
+
 
 router.post("/updateAd", async (req, res) => {
 	try {
@@ -69,7 +78,7 @@ router.post("/updateAd", async (req, res) => {
 			[location_id, title, description, price, category_id, subcategory_id, meet_on_campus, is_available, product_id]
 		);
 		res.status(201).json(result.rows[0]);
-		console.log(result.rows[0]);
+		console.log(res);
 	} catch (error) {
 		console.error(error);
 		res.status(500).send("Server Error");
