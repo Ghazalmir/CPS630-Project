@@ -1,8 +1,32 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const pool = require("../db");
+const bodyParser = require("body-parser");
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({ extended: true }));
 
-// Create reported ad
+router.get("/reported-ads", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * from reported_ads");
+    res.json(result);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server Error");
+  }
+});
+
+router.get("/reported-users", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * from reported_users");
+    res.json(result);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server Error");
+  }
+});
+
 router.post("/reported-ads", async (req, res) => {
   try {
     const { ad_id, reason } = req.body;
