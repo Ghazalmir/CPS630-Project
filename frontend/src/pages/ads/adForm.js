@@ -16,6 +16,9 @@ function AdForm(props) {
   
 
   const [meetOnCampus, setMeetOnCampusChecked] = useState(false);
+  const [categoryId, setCategoryId] = useState(0);
+  const [subcategoryId, setSubcategoryId] = useState(0);
+
   const [isDeleteModalShown, setIsDeleteModalShown] = useState(false);
   const { id } = useParams();
   const { userId, setUserId } = useUser();
@@ -24,7 +27,8 @@ function AdForm(props) {
   const title= useRef(undefined);
   const price = useRef(0);
   const description = useRef(undefined);
-  const category_id = useRef(0);
+  //const category_id = useRef(0);
+  //const subcategory_id = useRef(0);
   const images = useRef([]);
   //const [street, setStreet] = useState(undefined);
   //const [city, setCity] = useState(undefined);
@@ -42,13 +46,14 @@ function AdForm(props) {
               params: {
                 id: id
               }
-            });            
+            });
+            console.log(response);       
             title.current.value = response.data.rows[0].title;
             description.current.value = response.data.rows[0].description;
             price.current.value = response.data.rows[0].price;
-            category_id.current.value = response.data.rows[0].category_id;
+            setSubcategoryId(response.data.rows[0].subcategory_id);
+            setCategoryId(response.data.rows[0].category_id);
             setAvailability(response.data.rows[0].is_available === "1" ? true : false);
-            
             setMeetOnCampusChecked(response.data.rows[0].meet_on_campus);
             console.log(response.data.rows[0]);
             setLoading(false);
@@ -60,6 +65,9 @@ function AdForm(props) {
       
         fetchAdData();
       }
+      else {
+        setLoading(false);
+      }
     }, [id]);
 
     const postAd = async() => {
@@ -70,10 +78,11 @@ function AdForm(props) {
           title: title.current.value,
           description: description.current.value,
           price: price.current.value, 
-          category_id: category_id.current.value,
+          category_id: categoryId,
+          subcategory_id: subcategoryId,
           // TODO: ADD SUB CATEGORY
           meet_on_campus: meetOnCampus === true ? 1 : 0,
-          is_available: is_available === true ? 1 : 0,
+          is_available: is_available === 1,
         });
       } catch (error) {
         console.error("Error uploading post:", error);
@@ -89,8 +98,8 @@ function AdForm(props) {
             title: title.current.value,
             description: description.current.value,
             price: price.current.value, 
-            category_id: category_id.current.value,
-            // TODO: ADD SUB CATEGORY
+            category_id: categoryId,
+            subcategory_id: subcategoryId,
             meet_on_campus: meetOnCampus === true ? 1 : 0,
             is_available: is_available === true ? 1 : 0,
           }
@@ -112,6 +121,17 @@ function AdForm(props) {
         })
         .catch((error) => console.error("Error fetching categories:", error));
     }, []);
+
+    useEffect(() => {
+      fetch("http://localhost:8080/api/categories/sections/subcategories")
+        .then((response) => response.json())
+        .then((data) => {
+          setSubCategories(data);
+          console.log(data);
+        })
+        .catch((error) => console.error("Error fetching categories:", error));
+    }, []);
+    
 
   if (loading)
     { return <p>Loading...</p> }
@@ -154,13 +174,28 @@ function AdForm(props) {
       {/* Category */}
       <div className="mb-3">
         <label htmlFor="category_id" className="form-label">Category <span className="text-danger">*</span></label>
-        <select id="category" className="form-select bg-body-tertiary" ref={category_id} 
-                name="category_id" required
+        <select id="category" className="form-select bg-body-tertiary" value={parseInt(categoryId)}
+                name="category_id" required onChange={(event) => {setCategoryId(event.target.value); }}
                 >
           <option value="0">Select a category</option>
           {categories.map((category) => (<option value={category.category_id} key={category.category_id}>{category.category_name}</option>))}
         </select>
       </div>
+      {
+        categoryId === "3" ? 
+          (<div className="mb-3">
+            <label htmlFor="subcategory_id" className="form-label">Subcategory <span className="text-danger">*</span></label>
+            <select id="subcategory_id" className="form-select bg-body-tertiary" defaultValue={parseInt(subcategoryId)}
+                    name="subcategory_id" required onChange={(event) => {setSubcategoryId(event.target.value);}}
+                    >
+              <option value="0">Select a subcategory</option>
+              {subCategories.map((sub) => (<option value={sub.subcategory_id} key={sub.subcategory_id}>{sub.subcategory_name}</option>))}
+            </select>
+          </div>)
+        : ""
+
+      }
+
       {/* File upload */}
       {/* TODO: ADD THE IMAGES */}
       <div className="mb-3">
