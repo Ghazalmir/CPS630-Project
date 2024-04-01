@@ -5,14 +5,16 @@ import AvailabilityStatus from "../../components/general/availabilityStatus";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate} from "react-router-dom";
 
 function AdDetails() {
   const { id } = useParams();
   const [adData, setAdData] = useState();
 	const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    
 		const fetchAdData = async () => {
 			try {
 				const response = await axios.get(`http://localhost:8080/api/ads/adDetails/${id}`, {
@@ -20,10 +22,15 @@ function AdDetails() {
             id: id
           }
         });
-				setAdData(response.data.rows[0]);
-				//setInitialUserData(response.data[0])
-				console.log(response.data.rows[0]);
-				setLoading(false);
+        if (response.data.rows.length === 0) {
+          navigate("/404");
+        }
+        else {
+          setAdData(response.data.rows[0]);
+          //setInitialUserData(response.data[0])
+          console.log(response.data.rows[0]);
+          setLoading(false);
+        }
 			} catch (error) {
 				console.error("Error fetching user data:", error);
 				setLoading(false);

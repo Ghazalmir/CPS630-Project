@@ -4,6 +4,7 @@ import DeleteConfirmationModal from "../../components/adForm/deleteConfirmationM
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useUser } from "../../userContext";
+import  { useNavigate } from 'react-router-dom'
 
 var files = [];
 {/* 
@@ -13,7 +14,8 @@ and also allows the user to delete an ad or change its status.
 */}
 
 function AdForm(props) {
-  
+  const navigate = useNavigate();
+
 
   const [meetOnCampus, setMeetOnCampusChecked] = useState(false);
   const [categoryId, setCategoryId] = useState(0);
@@ -47,7 +49,9 @@ function AdForm(props) {
                 id: id
               }
             });
-            console.log(response);       
+            if (response.data.rows.length === 0) {
+              navigate("/404");
+            }
             title.current.value = response.data.rows[0].title;
             description.current.value = response.data.rows[0].description;
             price.current.value = response.data.rows[0].price;
@@ -55,7 +59,6 @@ function AdForm(props) {
             setCategoryId(response.data.rows[0].category_id);
             setAvailability(response.data.rows[0].is_available === "1" ? true : false);
             setMeetOnCampusChecked(response.data.rows[0].meet_on_campus);
-            console.log(response.data.rows[0]);
             setLoading(false);
           } catch (error) {
             console.error("Error fetching user data:", error);
