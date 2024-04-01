@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from 'axios';
 import "./style.css";
 
 function ReportedUsers() {
@@ -7,26 +8,21 @@ function ReportedUsers() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/reported-users")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
+    const fetchAdData = async () => {
+        try {
+            let apiUrl = 'http://localhost:8080/api/admin/reported-users';
+            const response = await axios.get(apiUrl);
+            setReportedUsers(response.data.rows);
+            setIsLoading(false);
+        } catch (error) {
+            console.error('Error fetching ad data:', error);
+            setIsLoading(false);
         }
-        return response.json();
-      })
-      .then((data) => {
-        setReportedUsers(data);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error(
-          "There has been a problem with your fetch operation:",
-          error
-        );
-        setError(error.toString());
-        setIsLoading(false);
-      });
-  }, []);
+    };
+
+    fetchAdData();
+}, []);
+
   const handleDeleteUser = (userId) => {
     // Assuming API endpoint for deleting a reported user might look something like this
     fetch(`http://localhost:8080/api/reported-users/${userId}`, {

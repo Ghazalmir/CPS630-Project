@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from 'axios';
 import "./style.css";
 
 function ReportedAds() {
@@ -7,23 +8,21 @@ function ReportedAds() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/admin/reported-ads")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch");
+    const fetchAdData = async () => {
+        try {
+            let apiUrl = 'http://localhost:8080/api/admin/reported-ads';
+            const response = await axios.get(apiUrl);
+            setReportedAds(response.data.rows);
+            setIsLoading(false);
+        } catch (error) {
+            console.error('Error fetching ad data:', error);
+            setIsLoading(false);
         }
-        return response.json();
-      })
-      .then((data) => {
-        setReportedAds(data);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error("Fetching error:", error);
-        setError(error.toString());
-        setIsLoading(false);
-      });
-  }, []);
+    };
+
+    fetchAdData();
+}, []);
+
   
 
   if (isLoading) return <p>Loading...</p>;
