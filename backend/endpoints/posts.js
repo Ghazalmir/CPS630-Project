@@ -29,6 +29,17 @@ router.get('/products', async (req, res) => {
 	}
 });
 
+router.get('/search', async (req, res) => {
+    try {
+        const q = req.query.searchQuery; 
+        const result = await pool.query(`SELECT * FROM products WHERE products.title ILIKE '%' || $1 || '%' OR products.description ILIKE '%' || $1 || '%';`, [q]);
+        res.json(result);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server Error");
+    }
+});
+
 router.post("/postNewAd", async (req, res) => {
 	try {
 		const {user_id, location_id, title, description, price, is_available, category_id, meet_on_campus}
