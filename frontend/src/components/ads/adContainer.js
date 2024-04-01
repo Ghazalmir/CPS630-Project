@@ -23,7 +23,7 @@ function AdContainer({}) {
     useEffect(() => {
         const fetchAdData = async () => {
             try {
-                let apiUrl = 'http://localhost:8080/api/ads/availableProducts';
+                let apiUrl = 'http://localhost:8080/api/ads/products';
                 const response = await axios.get(apiUrl);
                 setAdData(response.data.rows);
                 setLoading(false);
@@ -50,8 +50,17 @@ function AdContainer({}) {
     }, [selectedCategory, adData]);
 
     useEffect(() => {
+        if (location.pathname === "/") {
+            const userItems = adData.filter(item => item.is_available == 1);
+            setFilteredData(userItems);
+            setSelectedCategoryName('Today\'s Picks');
+            console.log(userItems);
+        }
+    }, [adData]);
+
+
+    useEffect(() => {
         const pathname = location.pathname;
-        console.log(pathname.includes('MyListings'));
         if (pathname.includes('/MyListings')) {
             const userItems = adData.filter(item => item.user_id === userId);
             setFilteredData(userItems);
