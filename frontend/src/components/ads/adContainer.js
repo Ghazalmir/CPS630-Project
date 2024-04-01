@@ -5,7 +5,7 @@ import './adContainer.css';
 import ItemBlock from './itemBlock.js';
 import { useLocation } from 'react-router-dom';
 
-function AdContainer({}) {
+function AdContainer() {
     const { userId, setUserId } = useUser();
 
     const location = useLocation();
@@ -13,59 +13,55 @@ function AdContainer({}) {
     const selectedCategory = searchParams.get('selectedCategory');
     const categoryName = searchParams.get('categoryName');
     const [selectedCategoryName, setSelectedCategoryName] = useState('');
+    const searchQuery = searchParams.get('searchQuery');
+    const [inputSearchQuery, setInputSearchQuery] = useState('');
 
     const [adData, setAdData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [loading, setLoading] = useState(true);
 
     const isMyListings = location.pathname.includes('/MyListings');
-    
+
+
     useEffect(() => {
         const fetchAdData = async () => {
             try {
                 let apiUrl = 'http://localhost:8080/api/ads/products';
+                if (searchQuery) {
+                    apiUrl = `http://localhost:8080/api/ads/search?searchQuery=${searchQuery}`;
+                }
                 const response = await axios.get(apiUrl);
                 setAdData(response.data.rows);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching ad data:', error);
                 setLoading(false);
+                // Handle fetch error, e.g., show error message to the user
             }
         };
-
         fetchAdData();
-    }, []);
+    }, [searchQuery]);
 
     useEffect(() => {
         if (selectedCategory) {
-            const filteredItems = adData.filter(item => item.category_id === selectedCategory);
+            const filteredItems = adData.filter(item => item.category_id == selectedCategory);
             setFilteredData(filteredItems);
             setSelectedCategoryName(categoryName);
-        } else {
-            setFilteredData(adData); 
-            setSelectedCategoryName('Today\'s Picks')
-        }
-
-        
-    }, [selectedCategory, adData]);
-
-    useEffect(() => {
-        if (location.pathname === "/") {
-            const userItems = adData.filter(item => item.is_available == 1);
-            setFilteredData(userItems);
+        } else if (searchQuery) {
+            setFilteredData(adData);
+            setSelectedCategoryName(`Results for: ${searchQuery}`);
+        } else if (location.pathname == "/") {
+            const filteredItems = adData.filter(item => item.is_available == 1);
+            setFilteredData(filteredItems);
             setSelectedCategoryName('Today\'s Picks');
-        }
-    }, [adData]);
-
-
-    useEffect(() => {
-        const pathname = location.pathname;
-        if (pathname.includes('/MyListings')) {
-            const userItems = adData.filter(item => item.user_id === userId);
-            setFilteredData(userItems);
+        } else if (location.pathname.includes('/MyListings')) {
+            const filteredItems = adData.filter(item => item.user_id == userId);
+            setFilteredData(filteredItems);
             setSelectedCategoryName('My Listings');
+        } else {
+            setFilteredData(adData);
         }
-    }, [location.pathname, userId, adData]);
+    }, [selectedCategory, adData, location.pathname, userId]);
 
     return (
         <div>
