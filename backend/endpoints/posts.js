@@ -9,7 +9,7 @@ router.get('/adDetails/:id', async (req, res) => {
 	try {
 		const productId = req.query.id;
 
-    const result = await pool.query('SELECT * FROM products WHERE products.Product_id = $1;', [productId]);
+    const result = await pool.query('SELECT products.*, categories.category_name, subcategories.subcategory_name FROM products JOIN categories ON products.category_id = categories.category_id LEFT JOIN subcategories ON products.subcategory_id = subcategories.subcategory_id  WHERE products.Product_id = $1;', [productId]);
     console.log(productId);
     res.json(result);
 

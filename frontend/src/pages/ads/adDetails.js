@@ -41,8 +41,8 @@ function AdDetails() {
     <div className="mx-5">
       <div className="row align-items-around my-5">
         <span className="col"> 
-          <span className="text-muted">Category / </span>
-          <span className="fw-bolder">Subcategory</span>
+          <span className={adData.subcategory_name ? "text-muted" : "fw-bolder"}>{adData.category_name}</span>
+          {adData.subcategory_name ? (<span className="fw-bolder">  / {adData.subcategory_name}</span>) : ""}
         </span>
         <span className="col text-end">Back</span>
       </div>
