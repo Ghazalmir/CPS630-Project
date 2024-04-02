@@ -1,6 +1,6 @@
 import React from 'react';
 import AdContainer from '../ads/adContainer';
-import Sidebar from '../ads/sideBar';
+import Sidebar from '../sidebar/sideBar';
 import classes from "./MyListings.module.css"
 const MyListings = () => {
   return (
