@@ -9,8 +9,29 @@ router.get('/adDetails/:id', async (req, res) => {
 	try {
 		const productId = req.query.id;
 
-    const result = await pool.query('SELECT products.*, categories.category_name, subcategories.subcategory_name FROM products JOIN categories ON products.category_id = categories.category_id LEFT JOIN subcategories ON products.subcategory_id = subcategories.subcategory_id  WHERE products.Product_id = $1;', [productId]);
-    console.log(productId);
+    const result = await pool.query(
+					`SELECT 
+					products.*, 
+					categories.category_name, 
+					subcategories.subcategory_name, 
+					ARRAY_AGG(images.image_link) AS image_links
+					FROM 
+							products 
+					JOIN 
+							categories ON products.category_id = categories.category_id 
+					LEFT JOIN 
+							subcategories ON products.subcategory_id = subcategories.subcategory_id 
+					LEFT JOIN 
+							images ON products.product_id = images.product_id 
+					WHERE 
+							products.product_id = $1
+					GROUP BY 
+					products.product_id, 
+					categories.category_name, 
+					subcategories.subcategory_name;`
+					, [productId]);
+
+		console.log(productId);
     res.json(result);
 
 	} catch (error) {

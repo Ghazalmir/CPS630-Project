@@ -158,19 +158,19 @@ function AdForm(props) {
       return axios
         .post("http://localhost:8080/api/cloudinary/uploadImage", { image: base64, product_id: product_id })
         .then((res) => {
-          setUrl(res); // Assuming res contains the data with image URL
+          setUrl(res);
           alert("Image uploaded Succesfully");
         })
         .finally(() => setLoading(false))
         .catch(console.log);
     }
     
-    function uploadMultipleImages(images) {
+    function uploadMultipleImages(images, product_id) {
       setLoading(true);
       return axios
-        .post("http://localhost:8080/api/cloudinary/uploadMultipleImages", { images })
+        .post("http://localhost:8080/api/cloudinary/uploadMultipleImages", { images, product_id: product_id })
         .then((res) => {
-          setUrl(res.data); // Assuming res contains the data with image URLs
+          setUrl(res.data);
           alert("Images uploaded Succesfully");
         })
         .finally(() => setLoading(false))
@@ -186,7 +186,7 @@ function AdForm(props) {
         await uploadSingleImage(base64, product_id);
       } else {
         const base64s = await Promise.all(files.map(convertBase64));
-        await uploadMultipleImages(base64s);
+        await uploadMultipleImages(base64s, product_id);
       }
     };
 

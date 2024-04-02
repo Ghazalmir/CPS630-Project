@@ -60,20 +60,20 @@ const uploadMultipleImages = (images) => {
 };
 
 
-async function uploadImagesToDB(product_id, image_link) {
+async function uploadImagesToDB(product_id, image_links) {
   try {
-    console.log(`this is the image links: ${JSON.stringify(image_link)}`);
+    console.log("got to here");
 
-    const query = `INSERT INTO images (product_id, image_link) VALUES ($1, $2)`;
-    const values = [product_id, image_link]; // Assuming only one image link is provided
+    const images = image_links.map((link) => `(${product_id}, '${link}')`).join(', ');
+    const query = `INSERT INTO images (product_id, image_link) VALUES ${images};`;
 
-    const result = await pool.query(query, values);
+    const result = await pool.query(query);
     console.log("Images uploaded successfully:", result.rows);
 
-    return result.rows; // Return the uploaded image data if needed
+    return result.rows;
   } catch (error) {
     console.error("Error uploading images:", error);
-    throw error; // Rethrow the error for higher-level error handling
+    throw error;
   }
 }
 
@@ -102,9 +102,16 @@ router.post('/uploadImage', async (req, res) => {
   }
 });
 
+
 router.post("/uploadMultipleImages", (req, res) => {
-    uploadMultipleImages(req.body.images)
-    .then((urls) => res.status(201).json({urls: urls}))
+    const product_id = req.body.product_id;
+    const images = req.body.images;
+    uploadMultipleImages(images)
+    .then((urls) => {
+      //console.log(urls);
+      uploadImagesToDB(product_id, urls);
+      res.status(201).json({status: "Success!"});
+    })
     .catch((err) => res.status(500).send(err));
 });
 

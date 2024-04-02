@@ -40,12 +40,13 @@ function AdDetails() {
 		fetchAdData();
 	}, [id]);
 
+
   return (
     <>
 			{loading ? (
 				<div>Loading...</div>
 			) : (
-    <div className="mx-5">
+    <div className="mx-5 pb-5">
       <div className="row align-items-around my-5">
         <span className="col"> 
           <span className={adData.subcategory_name ? "text-muted" : "fw-bolder"}>{adData.category_name}</span>
@@ -56,15 +57,7 @@ function AdDetails() {
       <div className="container text-center mt-5">
         <div className="row align-items-around">
           <div className="col col-12 col-sm-6">
-          <Carousel 
-            items={[
-              {img: '../../logo512.png', alt: 'logo1', id: 1},
-              {img: '../../logo512.png', alt: 'logo2', id: 2},
-              {img: '../../logo512.png', alt: 'logo3', id: 3},
-            ]
-            }
-          
-          />
+          <Carousel items={adData.image_links.length > 0 && adData.image_links[0] != null ? adData.image_links : ['https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg']}/>
           </div>
           <div className="col col-12 col-sm-6 text-start">
             <h2 className="col col-12 col-sm-6 inline-block">
