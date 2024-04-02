@@ -44,9 +44,10 @@ function AdContainer() {
 
     useEffect(() => {
         if (selectedCategory) {
-            const filteredItems = adData.filter(item => item.category_id == selectedCategory);
-            setFilteredData(filteredItems);
+            let filteredItems = adData.filter(item => item.category_id == selectedCategory);
+
             setSelectedCategoryName(categoryName);
+            setFilteredData(filteredItems);
         } else if (searchQuery) {
             setFilteredData(adData);
             setSelectedCategoryName(`Results for: ${searchQuery}`);
