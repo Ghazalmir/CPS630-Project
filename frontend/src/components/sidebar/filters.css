@@ -1,0 +1,49 @@
+.collapsible-container {
+    border-top: 2px solid #ccc;
+    margin-bottom: 10px;
+  }
+  
+.collapsible-button-filter {
+  background-color: white !important;
+  font-size: clamp(8px, 2.5vw, 15px) !important;
+  font-weight: 600 !important;
+  border: none;
+  padding: 10px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.collapsible-button-filter:hover {
+  text-decoration: underline;
+}
+  
+  .collapsible-content {
+    display: none;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+  }
+  
+  .collapsible-content.collapsed {
+    max-height: 0;
+  }
+  
+  .collapsible-content.expanded {
+    max-height: 1000px; /* Set a height for the expanded content */
+  }
+
+.filters-heading {
+  padding-top:20px;
+  font-size: clamp(10px, 2.5vw, 20px) !important;
+  font-weight: 600 !important;
+  white-space: normal !important;
+  margin-bottom: 0 !important;
+}
+
+.filters-container {
+  margin-left:10px;
+}
+
+.form-check {
+ margin-left: 5px; 
+}
