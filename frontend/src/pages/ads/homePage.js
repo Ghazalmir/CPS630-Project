@@ -1,5 +1,5 @@
 import React from 'react';
-import Sidebar from '../../components/ads/sideBar.js';
+import Sidebar from '../../components/sidebar/sideBar.js';
 import AdContainer from '../../components/ads/adContainer.js';
 import './homePage.css';
 
