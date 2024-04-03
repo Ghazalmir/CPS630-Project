@@ -52,8 +52,9 @@ function App() {
 						<Route path="/MyAccount" element={<MyAccount />} />
 						<Route path="/MyListings" element={<MyListings />} />
 						<Route path="/AdminPanel" element={<AdminPanel />} />
-						<Route path="/ReportedAds" element={<AdminPanel />} />
-						<Route path="/ReportedUsers" element={<ReportedUsers />} />
+						<Route path="/AdminPanel/ReportedAds" element={<AdminPanel />} />
+						<Route path="/AdminPanel/ReportedUsers" element={<ReportedUsers />} />
+						<Route path="/AdminPanel/ManageUsers" element={<ManageUsers />} />
 						<Route path="/login" element={<SignUp isLogin={true} />} />
 						<Route path="/signup" element={<SignUp isLogin={false} />} />
 						<Route path="*" element={<PageNotFound />} />
