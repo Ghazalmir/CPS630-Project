@@ -50,7 +50,7 @@ router.get('/products', async (req, res) => {
 	}
 });
 
-router.get('/search', async (req, res) => {
+router.get('/products/search', async (req, res) => {
     try {
         const q = req.query.searchQuery; 
         const result = await pool.query(`SELECT * FROM products WHERE products.title ILIKE '%' || $1 || '%' OR products.description ILIKE '%' || $1 || '%';`, [q]);
