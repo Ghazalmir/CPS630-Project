@@ -78,6 +78,34 @@ async function uploadImagesToDB(product_id, image_links) {
 }
 
 
+async function updateImagesInDB(product_id, existing_images, new_images) {
+  try {
+    console.log("got to here");
+
+    const imagesInDBQuery = `SELECT ARRAY_AGG(image_link) AS image_links FROM images WHERE product_id = ${product_id};`;
+    const existing_images_in_DB = await pool.query(imagesInDBQuery);
+    console.log(existing_images_in_DB);
+    const deletedImages = existing_images_in_DB.rows[0].image_links.filter(item => existing_images.indexOf(item) === -1);
+
+    
+    const deleteQuery = `DELETE FROM images WHERE product_id = ${product_id} AND image_link IN (${deletedImages.map((image) => `'${image}'`).join(', ')});`;
+    console.log(existing_images_in_DB);
+    const deletionResult = await pool.query(deleteQuery);
+    console.log("Images deleted successfully:", deletionResult.rows);
+
+    const images = new_images.map((link) => `(${product_id}, '${link}')`).join(', ');
+    const query = `INSERT INTO images (product_id, image_link) VALUES ${images};`;
+
+    const result = await pool.query(query);
+    console.log("Images uploaded successfully:", result.rows);
+
+    return result.rows;
+  } catch (error) {
+    console.error("Error uploading images:", error);
+    throw error;
+  }
+}
+
 router.use(cors());
 /*
 router.post("/uploadImage", (req, res) => {
@@ -113,6 +141,20 @@ router.post("/uploadMultipleImages", (req, res) => {
       res.status(201).json({status: "Success!"});
     })
     .catch((err) => res.status(500).send(err));
+});
+
+router.post("/updateImages", (req, res) => {
+  const product_id = req.body.product_id;
+  const existingImages = req.body.existing_images;
+  const newImages = req.body.new_images;
+
+  uploadMultipleImages(newImages)
+  .then((urls) => {
+    console.log("here in cloudinary.js line 150");
+    updateImagesInDB(product_id, existingImages, urls);
+    res.status(201).json({status: "Success!"});
+  })
+  .catch((err) => res.status(500).send(err));
 });
 
 module.exports = router;

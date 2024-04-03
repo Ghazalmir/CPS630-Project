@@ -92,14 +92,15 @@ router.post("/updateAd", async (req, res) => {
 	try {
 		const {product_id, values} = {...req.body};
 		const {location_id, title, description, price, category_id, subcategory_id, meet_on_campus, is_available} = {...values};
+
 		const result = await pool.query(
       `UPDATE products 
 			SET location_id = $1, title = $2, description = $3, price = $4, category_id = $5, subcategory_id = $6, meet_on_campus = $7, is_available = $8 
 			WHERE product_id = $9;`,
 			[location_id, title, description, price, category_id, subcategory_id, meet_on_campus, is_available, product_id]
 		);
-		res.status(201).json(result.rows[0]);
-		console.log(res);
+
+		res.status(201).json({success: true});
 	} catch (error) {
 		console.error(error);
 		res.status(500).send("Server Error");

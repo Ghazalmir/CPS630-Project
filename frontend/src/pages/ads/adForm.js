@@ -6,10 +6,9 @@ import axios from "axios";
 import { useUser } from "../../userContext";
 import  { useNavigate } from 'react-router-dom'
 
-var imageFiles = [];
-var rawImageFiles = [];
-var imageLinks = [];
-var new_product_id; // for when you create a new posting
+//var imageFiles = []; // array of images
+var rawImageFiles = []; // for uploading new images
+//var imageLinks = []; // for edit form, cloudinary links
 
 {/* 
 This page is used for both making and editing an ad. 
@@ -24,6 +23,9 @@ function AdForm(props) {
   const [meetOnCampus, setMeetOnCampusChecked] = useState(false);
   const [categoryId, setCategoryId] = useState(0);
   const [subcategoryId, setSubcategoryId] = useState(0);
+  const [imageFiles, setImageFiles] = useState([]);
+  const [imageLinks, setImageLinks] = useState([]);
+
 
   const [isDeleteModalShown, setIsDeleteModalShown] = useState(false);
   const { id } = useParams();
@@ -61,10 +63,12 @@ function AdForm(props) {
             title.current.value = response.data.rows[0].title;
             description.current.value = response.data.rows[0].description;
             price.current.value = response.data.rows[0].price;
+            setImageLinks(response.data.rows[0].image_links);
             setSubcategoryId(response.data.rows[0].subcategory_id);
             setCategoryId(response.data.rows[0].category_id);
             setAvailability(response.data.rows[0].is_available === "1" ? true : false);
             setMeetOnCampusChecked(response.data.rows[0].meet_on_campus);
+            
             setLoading(false);
           } catch (error) {
             console.error("Error fetching user data:", error);
@@ -89,7 +93,6 @@ function AdForm(props) {
         price: price.current.value, 
         category_id: categoryId,
         subcategory_id: subcategoryId,
-        // TODO: ADD SUB CATEGORY
         meet_on_campus: meetOnCampus === true ? 1 : 0,
         is_available: is_available === true ? 1 : 0,
       };
@@ -106,7 +109,7 @@ function AdForm(props) {
         if (!response.ok) {
           throw new Error('Failed to post new ad');
         }
-        return response.json(); // Parse JSON response
+        return response.json(); 
       })
       .then(data => {
         console.log("Ad uploaded successfully with ID:", data.id);
@@ -116,10 +119,10 @@ function AdForm(props) {
        
     };
 
-    const updateAd = async() => {
-      try {
-        const response = await axios.post("http://localhost:8080/api/ads/updateAd", {
-          product_id: id,
+    const updateAd = (event) => {
+      event.preventDefault();
+      var editFormData = {
+        product_id: id,
           values: {
             location_id: 1, // TODO: FIX THIS LATER
             title: title.current.value,
@@ -130,12 +133,27 @@ function AdForm(props) {
             meet_on_campus: meetOnCampus === true ? 1 : 0,
             is_available: is_available === true ? 1 : 0,
           }
+      };
 
-        });
-        uploadImage();
-      } catch (error) {
-        console.error("Error updating post:", error);
-      }
+      fetch("http://localhost:8080/api/ads/updateAd", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editFormData),
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to update ad');
+        }
+        console.log("in response frontend");
+        return response.json(); 
+      })
+      .then(data => {
+        uploadImage(id);
+        console.log("Response from server:", data);
+      })
+      .catch(error => console.error("Error posting ad:", error));
     }
 
     const convertBase64 = (file) => {
@@ -176,19 +194,93 @@ function AdForm(props) {
         .finally(() => setLoading(false))
         .catch(console.log);
     }
+
+    function updateImages(images) {
+      setLoading(true);
+      return axios
+        .post("http://localhost:8080/api/cloudinary/updateImages", 
+        { product_id: id, existing_images: imageLinks, new_images: images })
+        .then((res) => {
+          setUrl(res.data);
+          alert("Images updated Succesfully");
+        })
+        .finally(() => setLoading(false))
+        .catch(console.log);
+    }
     
     const uploadImage = async (product_id) => {
       const files = rawImageFiles;
       console.log(files.length);
     
-      if (files.length === 1) {
-        const base64 = await convertBase64(files[0]);
-        await uploadSingleImage(base64, product_id);
-      } else {
+      if (props.isEditForm) {
+        console.log("hereeeeee");
         const base64s = await Promise.all(files.map(convertBase64));
-        await uploadMultipleImages(base64s, product_id);
+        await updateImages(base64s);
+      } else {
+        if (files.length === 1) {
+          const base64 = await convertBase64(files[0]);
+          await uploadSingleImage(base64, product_id);
+        } else {
+          const base64s = await Promise.all(files.map(convertBase64));
+          await uploadMultipleImages(base64s, product_id);
+        }
       }
     };
+
+    function removeImage(removeFromFiles, image) {
+      if (removeFromFiles) {
+        const arr = imageFiles.filter(ele => ele.name !== image);
+        setImageFiles(arr);
+      } else {
+        const arr = imageLinks.filter(ele => ele !== image);
+        setImageLinks(arr);
+      }
+    }
+
+
+    useEffect(() => {
+      console.log("Updated imageFiles:", imageFiles);
+
+      let selDiv = document.querySelector("#selectedFiles");
+      if (selDiv) {
+
+  
+      //selDiv.innerHTML = "";
+
+      imageFiles.forEach(function(f) {
+        if(!f.type.match("image.*")) {
+          return;
+        }
+    
+        var reader = new FileReader();
+        reader.onload = function (event) {
+          var html = 
+          "<div><img style='max-height:100px;' class='mt-3' src=\"" + event.target.result + "\">" 
+          + "<button class='btn align-self-center' onClick='{($event) => {$event.preventDefault(); removeImage(true, f)}}' data-id='" + f.name + "'>&#x2715;</button></div>";
+          selDiv.innerHTML += html;				
+        }
+        reader.readAsDataURL(f); 
+      });
+    }
+    }, [imageFiles]);
+
+    
+    useEffect(() => {
+      console.log("Updated imageLinks:", imageLinks);
+    }, [imageLinks]);
+  
+    
+    async function fileUpload(event) {
+      if(!event.target.files || !window.FileReader) return;
+      
+      var files = event.target.files;
+      rawImageFiles.push(...files);
+  
+      var filesArr = Array.prototype.slice.call(files);
+      
+      await setImageFiles([...imageFiles, ...filesArr]);
+    }
+
 
     const [categories, setCategories] = useState([]);
     const [subCategories, setSubCategories] = useState([]);
@@ -207,12 +299,10 @@ function AdForm(props) {
         .then((response) => response.json())
         .then((data) => {
           setSubCategories(data);
-          console.log(data);
         })
         .catch((error) => console.error("Error fetching categories:", error));
     }, []);
     
-
   if (loading)
     { return <p>Loading...</p> }
 
@@ -283,7 +373,13 @@ function AdForm(props) {
         <input onChange={(event) => {fileUpload(event);}}
                 className="form-control bg-body-tertiary" type="file" id="formFile" 
                 multiple="multiple" accept=".jpg,.png" required name="images"/>
-        <div id="selectedFiles" className="mt-3"></div>
+        <div id="selectedFiles" className="mt-3">
+          {
+            imageLinks.length > 0 ? imageLinks.map((f) => 
+            (<div key={f}><img className="mt-3" src={f} style={{maxHeight: '100px'}}/><button className='btn align-self-center' onClick={($event) => {$event.preventDefault(); removeImage(false, f)}} data-id={f}>&#x2715;</button></div>))
+            : (<div className="text-muted">No images for this ad yet. Use the file selector above to add some images.</div>)
+          }
+        </div>
       </div>
       <hr className="my-4"></hr>
       <h2>Meetup Information</h2>
@@ -360,31 +456,5 @@ function AdForm(props) {
     
   }
 
-  async function fileUpload(event) {
-    if(!event.target.files || !window.FileReader) return;
-    
-    let selDiv = document.querySelector("#selectedFiles");
-    selDiv.innerHTML = "";
-    
-    //var imageFiles = ;
-    var files = event.target.files;
-    rawImageFiles.push(...files);
-
-    var filesArr = Array.prototype.slice.call(files);
-    imageFiles.push(...filesArr);
-
-    imageFiles.forEach(function(f) {
-      if(!f.type.match("image.*")) {
-        return;
-      }
-  
-      var reader = new FileReader();
-      reader.onload = function (event) {
-        var html = "<img style='max-height:100px;' class='mt-3' src=\"" + event.target.result + "\">" +"   " + f.name + "<br clear=\"left\"/>";
-        selDiv.innerHTML += html;				
-      }
-      reader.readAsDataURL(f); 
-    });
-  }
 
 export default AdForm;
