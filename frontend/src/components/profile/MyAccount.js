@@ -1,16 +1,27 @@
 import React, { useState, useEffect } from "react";
 import classes from "./MyAccount.module.css";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
+var rawImageFiles = [];
 
-const MyAccount = () => {
-	
-	const [initialUserData, setInitialUserData] = useState()
-	const [userData, setUserData] = useState();
-	const [isEditing, setIsEditing] = useState(false);
+const MyAccount = (props) => {
+	const [firstName, setFirstName] = useState("");
+	const [lastName, setLastName] = useState("");
+	const [email, setEmail] = useState("");
+	const [phoneNumber, setPhoneNumber] = useState("");
+	const [currentPassword, setCurrentPassword] = useState("");
+	const [confirmNewPassword, setConfirmNewPassword] = useState("");
+	const [newPassword, setNewPassword] = useState("");
 	const [loading, setLoading] = useState(true);
+	const [imageFiles, setImageFiles] = useState([]);
+	const [isImageSelected, setIsImageSelected] = useState(false);
+	const [initialProfilePic, setInitialProfilePic] = useState();
+	const [imageLinks, setImageLinks] = useState([]);
+	const fileInputRef = React.useRef();
 
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const fetchUserData = async () => {
@@ -20,70 +31,143 @@ const MyAccount = () => {
 						authorization: sessionStorage.getItem("token"),
 					},
 					params: {
-						signedInUserID: jwtDecode(sessionStorage.getItem("token")).id
-					}
+						signedInUserID: jwtDecode(sessionStorage.getItem("token")).id,
+					},
 				});
-				setUserData(response.data[0]);
-				setInitialUserData(response.data[0])
-				console.log(response.data);
+				setEmail(response.data[0].email);
+				setFirstName(response.data[0].first_name);
+				setLastName(response.data[0].last_name);
+				setPhoneNumber(response.data[0].phone_number);
+				setInitialProfilePic(response.data[0].profile_picture_link);
 				setLoading(false);
 			} catch (error) {
 				console.error("Error fetching user data:", error);
 				setLoading(false);
 			}
 		};
-	
+
 		fetchUserData();
 	}, []);
-	
-	const handleInputChange = (e) => {
-		const { name, value } = e.target;
-		console.log(name, value)
-		console.log({ ...userData, [name]: value })
-		setUserData({ ...userData, [name]: value });
+
+	const handleDetailsSubmit = async (event) => {
+		event.preventDefault();
+
+		const emailRegex = /\S+@\S+\.\S+/;
+		const phoneRegex = /^[+]?[(]?[0-9]{1,3}[)]?[-\s.]?[0-9]{1,3}[-\s.]?[0-9]{4,6}$/im;
+
+		if (!emailRegex.test(email)) {
+			alert("Please enter a valid email address.");
+			return;
+		}
+
+		if (!phoneRegex.test(phoneNumber)) {
+			alert("Please enter a valid phone number.");
+			return;
+		}
+
+		try {
+			await axios.put("http://localhost:8080/api/profile/update", {
+				id: jwtDecode(sessionStorage.getItem("token")).id,
+				first_name: firstName,
+				last_name: lastName,
+				email: email,
+				phone_number: phoneNumber,
+			});
+		} catch (error) {
+			alert("Failed to save changes");
+			return;
+		}
+		alert("Successfully updated profile");
 	};
 
-	const toggleEditMode = () => {
-		setIsEditing(!isEditing);
+	const handlePasswordSubmit = async (event) => {
+		event.preventDefault();
+
+		if (newPassword.length < 6) {
+			alert("Password must be at least 6 characters long.");
+			return;
+		}
+
+		if (newPassword !== confirmNewPassword) {
+			alert("Passwords do not match.");
+			return;
+		}
+
+		try {
+			await axios.put("http://localhost:8080/api/profile/newPassword", {
+				id: jwtDecode(sessionStorage.getItem("token")).id,
+				currentPassword: currentPassword,
+				newPassword: newPassword,
+			});
+		} catch (error) {
+			alert(error.response.data.error);
+			return;
+		}
+		alert("Successfully updated password");
 	};
 
-	function fileUpload(event) {
+	async function fileUpload(event) {
 		if (!event.target.files || !window.FileReader) return;
 
-		var files = [];
-		var filesArr = Array.prototype.slice.call(event.target.files);
-		files.push(...filesArr);
-		files.forEach(function (f) {
-			if (!f.type.match("image.*")) {
+		var files = event.target.files;
+		rawImageFiles.push(...files);
+
+		var filesArr = Array.prototype.slice.call(files);
+
+		await setImageFiles([...imageFiles, ...filesArr]);
+		setIsImageSelected(true);
+	}
+
+	useEffect(() => {
+		if (imageFiles.length > 0) {
+			const file = imageFiles[0];
+			if (!file.type.match("image.*")) {
+				console.error("Selected file is not an image.");
 				return;
 			}
 
-			var reader = new FileReader();
+			const reader = new FileReader();
 			reader.onload = function (event) {
-				var html =
-					"<img style='max-height:100px;' class='mt-3' src=\"" +
-					event.target.result +
-					'">' +
-					"   " +
-					f.name +
-					'<br clear="left"/>';
+				const profilePic = document.querySelector("#profilePic");
+				if (profilePic) {
+					profilePic.src = event.target.result;
+				}
 			};
-			reader.readAsDataURL(f);
-		});
-	}
-
-	const saveChanges = async () => {
-		try {
-				await axios.put("http://localhost:8080/api/profile/update", userData)
-		} catch (error) {
-			console.error("Error saving changes", error)
+			reader.readAsDataURL(file);
+		} else {
+			const profilePic = document.querySelector("#profilePic");
+			if (profilePic) {
+				profilePic.src = initialProfilePic;
+			}
 		}
-		setIsEditing(false);
+	}, [imageFiles, initialProfilePic]);
+
+	const convertBase64 = (file) => {
+		return new Promise((resolve, reject) => {
+			const fileReader = new FileReader();
+			fileReader.readAsDataURL(file);
+
+			fileReader.onload = () => {
+				resolve(fileReader.result);
+			};
+
+			fileReader.onerror = (error) => {
+				reject(error);
+			};
+		});
 	};
 
-	const cancelEdit = () => {
-		setUserData(initialUserData);
-		setIsEditing(false);
+	const postImage = async (base64) => {
+		try {
+			await axios.put("http://localhost:8080/api/profile/profilepic", {
+				id: jwtDecode(sessionStorage.getItem("token")).id,
+				image: base64,
+			});
+		} catch (error) {
+			alert("Failed to upload image");
+			return;
+		}
+		alert("Successfully updated profile picture");
 	};
 
 	return (
@@ -91,133 +175,196 @@ const MyAccount = () => {
 			{loading ? (
 				<div>Loading...</div>
 			) : (
-				<div className={classes.myAccount}>
-					<h3>My Account</h3>
-					<div className={`form-container ${classes.formContainer}`}>
-						<div className="row">
-							<div className="col-md-6">
-								<form>
-									<div className={`form-row ${classes.formRow}`}>
-										<div className={`form-group ${classes.formGroup} col-md-12`}>
-											<label htmlFor="firstName">First Name</label>
-											<input
-												type="text"
-												className="form-control"
-												id="firstName"
-												name="first_name"
-												value={userData.first_name}
-												onChange={handleInputChange}
-												readOnly={!isEditing}
-											/>
+				<div className="container mt-3 mb-3">
+					<div className="row">
+						<div className="col-md-4 mb-3">
+							{/* First Div */}
+							<form onSubmit={handleDetailsSubmit} className="bg-light p-3 border rounded">
+								{/* Form fields */}
+								<h2>Edit Account Details</h2>
+								<div className="mb-3">
+									<label htmlFor="firstName" className="form-label">
+										First Name
+									</label>
+									<input
+										type="text"
+										className="form-control"
+										id="firstName"
+										name="firstName"
+										required
+										value={firstName}
+										onChange={(e) => setFirstName(e.target.value)}
+									/>
+								</div>
 
-											<label htmlFor="lastName">Last Name</label>
-											<input
-												type="text"
-												className="form-control"
-												id="lastName"
-												name="last_name"
-												value={userData.last_name}
-												onChange={handleInputChange}
-												readOnly={!isEditing}
-											/>
-										</div>
+								<div className="mb-3">
+									<label htmlFor="lastName" className="form-label">
+										Last Name
+									</label>
+									<input
+										type="text"
+										className="form-control"
+										id="lastName"
+										name="lastName"
+										required
+										value={lastName}
+										onChange={(e) => setLastName(e.target.value)}
+									/>
+								</div>
+								<div className="mb-3">
+									<label htmlFor="email" className="form-label">
+										Email
+									</label>
+									<input
+										type="email"
+										className="form-control"
+										id="email"
+										name="email"
+										required
+										value={email}
+										onChange={(e) => setEmail(e.target.value)}
+									/>
+								</div>
 
-										<label htmlFor="email">Email</label>
-										<input
-											type="email"
-											className="form-control"
-											id="email"
-											name="email"
-											value={userData.email}
-											onChange={handleInputChange}
-											readOnly={!isEditing}
-										/>
+								<div className="mb-3">
+									<label htmlFor="phoneNumber" className="form-label">
+										Phone Number
+									</label>
+									<input
+										type="tel"
+										className="form-control"
+										id="phoneNumber"
+										name="phoneNumber"
+										required
+										value={phoneNumber}
+										onChange={(e) => setPhoneNumber(e.target.value)}
+									/>
+								</div>
+								<div className="text-center">
+									<button type="submit" className="btn btn-primary">
+										Submit
+									</button>
+								</div>
+							</form>
+						</div>
+						<div className="col-md-4 mb-3">
+							{/* First Div */}
+							<form onSubmit={handlePasswordSubmit} className="bg-light p-3 border rounded">
+								{/* Form fields */}
+								<h2>Change Password</h2>
+								<div className="mb-3">
+									<label htmlFor="password" className="form-label">
+										Current Password
+									</label>
+									<input
+										type="password"
+										className="form-control"
+										id="currentPassword"
+										name="currentPassword"
+										required
+										value={currentPassword}
+										onChange={(e) => setCurrentPassword(e.target.value)}
+										minLength="6"
+									/>
+								</div>
+								<div className="mb-3">
+									<label htmlFor="password" className="form-label">
+										New Password
+									</label>
+									<input
+										type="password"
+										className="form-control"
+										id="newPassword"
+										name="newPassword"
+										required
+										value={newPassword}
+										onChange={(e) => setNewPassword(e.target.value)}
+										minLength="6"
+									/>
+								</div>
 
-										<label htmlFor="phoneNumber">Phone Number</label>
-										<input
-											type="tel"
-											className="form-control"
-											id="phoneNumber"
-											name="phone_number"
-											value={userData.phone_number}
-											onChange={handleInputChange}
-											readOnly={!isEditing}
-										/>
+								<div className="mb-3">
+									<label htmlFor="confirmPassword" className="form-label">
+										Confirm New Password
+									</label>
+									<input
+										type="password"
+										className="form-control"
+										id="confirmNewPassword"
+										name="confirmNewPassword"
+										required
+										value={confirmNewPassword}
+										onChange={(e) => setConfirmNewPassword(e.target.value)}
+									/>
+								</div>
+								<div className="text-center">
+									<button type="submit" className="btn btn-primary">
+										Submit
+									</button>
+								</div>
+							</form>
+						</div>
+						<div className="col-md-4 mb-3">
+							<div className="d-flex flex-column align-items-center bg-light p-3 border rounded">
+								<h2>Update Profile Picture</h2>
+								<img
+									src={imageLinks.length > 0 ? imageLinks[0] : initialProfilePic}
+									alt="Profile Pic"
+									className={`${classes.profilePicture} mb-3`}
+									id="profilePic"
+								/>
+								<input
+									onChange={(event) => {
+										fileUpload(event);
+									}}
+									className="form-control bg-body-tertiary"
+									type="file"
+									ref={fileInputRef}
+									id="formFile"
+									accept=".jpg,.png"
+									required
+									name="images"
+								/>
+								{isImageSelected && (
+									<div className="d-flex justify-content-center mt-3">
+										<button
+											className="btn btn-primary me-2"
+											onClick={async () => {
+												const base64 = await convertBase64(rawImageFiles[0]);
+												await postImage(base64);
+											}}
+										>
+											Save
+										</button>
+										<button
+											className="btn btn-secondary"
+											onClick={() => {
+												setIsImageSelected(false);
+												setImageFiles([]);
+												rawImageFiles = [];
+												if (fileInputRef.current) {
+													fileInputRef.current.value = "";
+												}
+											}}
+										>
+											Cancel
+										</button>
 									</div>
-
-									{isEditing && (
-										<>
-											<div className={`form-row ${classes.formRow}`}>
-												<div className={`form-group ${classes.formGroup} col-md-12`}>
-													<label htmlFor="formFile" className="form-label">
-														Profile Picture <span className="text-danger">*</span>
-													</label>
-													<input
-														onChange={(event) => {
-															fileUpload(event);
-														}}
-														className="form-control bg-body-tertiary"
-														type="file"
-														id="formFile"
-														accept=".jpg,.png"
-													/>
-
-													<label htmlFor="password">Password</label>
-													<input
-														type="password"
-														className="form-control"
-														id="password"
-														name="password"
-														value={userData.password}
-														onChange={handleInputChange}
-													/>
-
-													<label htmlFor="newPassword">New Password</label>
-													<input
-														type="password"
-														className="form-control"
-														id="newPassword"
-														name="newPassword"
-														value={userData.newPassword}
-														onChange={handleInputChange}
-													/>
-
-													<label htmlFor="confirmNewPassword">Confirm New Password</label>
-													<input
-														type="password"
-														className="form-control"
-														id="confirmNewPassword"
-														name="confirmNewPassword"
-														value={userData.confirmNewPassword}
-														onChange={handleInputChange}
-													/>
-												</div>
-											</div>
-										</>
-									)}
-									<div className={`form-row ${classes.formRow}`}>
-										<div className={`form-group ${classes.formGroup} col-md-12`}>
-											{isEditing ? (
-												<>
-													<button type="button" className="btn btn-primary me-2" onClick={saveChanges}>
-														Save
-													</button>
-													<button type="button" className="btn btn-secondary" onClick={cancelEdit}>
-														Cancel
-													</button>
-												</>
-											) : (
-												<button type="button" className="btn btn-primary" onClick={toggleEditMode}>
-													Edit
-												</button>
-											)}
-										</div>
-									</div>
-								</form>
+								)}
 							</div>
-							<div className={`col-md-6 ${classes.rightDiv}`}>
-								<img src={require("./profile_picture.jpg")} alt="Profile Pic" className={classes.profilePicture} />
-							</div>
+						</div>
+					</div>
+					<div className="row mt-3">
+						<div className="col text-center">
+							<button
+								className="btn btn-danger"
+								onClick={() => {
+									sessionStorage.setItem("token", "");
+									navigate("/");
+								}}
+							>
+								Log Out
+							</button>
 						</div>
 					</div>
 				</div>

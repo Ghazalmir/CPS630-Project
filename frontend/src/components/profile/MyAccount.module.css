@@ -1,36 +1,5 @@
-.myAccount {
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-	padding: 10px;
-	margin: 10px;
-}
-
-.formRow {
-	margin-bottom: 20px;
-}
-
-.formContainer {
-	flex: 1;
-	overflow-y: auto;
-	width: 100%;
-	overflow-x: hidden;
-}
-
-.rightDiv {
-	height: 100%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-
-.profile-info {
-	text-align: center;
-}
-
 .profilePicture {
 	width: 200px;
 	height: 200px;
 	border-radius: 50%;
-	margin-bottom: 20px;
 }
