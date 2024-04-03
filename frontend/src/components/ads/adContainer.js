@@ -8,6 +8,7 @@ import { useLocation } from 'react-router-dom';
 function AdContainer() {
     const { userId, setUserId } = useUser();
 
+    // Stuff for filtering, categories, etc.
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const selectedCategory = searchParams.get('selectedCategory');
@@ -17,19 +18,20 @@ function AdContainer() {
     const sortBy = searchParams.get('sortby');
     const priceRange = searchParams.get('priceRange');
     const locationFilter = searchParams.get('location');
-    const [inputSearchQuery, setInputSearchQuery] = useState('');
 
     const [adData, setAdData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
+    const [reportedAdData, setReportedAdData] = useState([]);
     const [loading, setLoading] = useState(true);
 
     const isMyListings = location.pathname.includes('/MyListings');
-
+    const isReportedAds = location.pathname.includes('/AdminPanel/ReportedAds');
 
     useEffect(() => {
         const fetchAdData = async () => {
             try {
                 let apiUrl = 'http://localhost:8080/api/ads/products';
+
                 if (searchQuery) {
                     apiUrl += `/search?&searchQuery=${searchQuery}`;
                 }
@@ -41,7 +43,19 @@ function AdContainer() {
                 setLoading(false);
             }
         };
+
+        const fetchReportedAdData = async () => {
+            try {
+                let apiUrl = 'http://localhost:8080/api/admin/reported-ads';
+                const response = await axios.get(apiUrl);
+                setReportedAdData(response.data.rows);
+            } catch (error) {
+                console.error('Error fetching ad data:', error);
+            }
+        };
+
         fetchAdData();
+        fetchReportedAdData();
     }, [searchQuery]);
 
     useEffect(() => {
@@ -112,9 +126,14 @@ function AdContainer() {
             }
         }
 
+        if (isReportedAds) {
+            filteredItems = filteredItems.filter(item => reportedAdData.some(ad => ad.ad_id === item.product_id));
+            filteredItems = filteredItems.map(item => ({ ...item, reason: reportedAdData.find(ad => ad.ad_id === item.product_id).reason }));
+        }
+
     setFilteredData(filteredItems);
 
-    }, [selectedCategory, locationFilter, priceRange, sortBy, adData, location.pathname, userId]);
+    }, [isReportedAds, selectedCategory, locationFilter, priceRange, sortBy, adData, location.pathname, userId]);
 
     return (
         <div>
