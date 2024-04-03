@@ -111,7 +111,7 @@ function Navbar() {
             { sessionStorage.getItem("token") && isAdminStatus ? (
               <>
               <li className="nav-item">
-                  <a className="nav-link" href="/AdminPanel">Admin Panel</a>
+                  <a className="nav-link" href="/AdminPanel/ReportedAds">Admin Panel</a>
                 </li>
               </>
             ) : (<></>)  }
