@@ -44,6 +44,7 @@ function App() {
 						<Route path="/" element={<HomePage />} />
 						<Route path="/AdDetails/:id" element={<AdDetails />} />
 						<Route path="/search" element={<HomePage />} />
+						<Route path="/filters" element={<HomePage />} />
 						<Route path="/NewAd" element={<AdForm isEditForm={false}/>} />
 						<Route path="/EditAd/:id" element={<AdForm vals={vals} isEditForm={true} />} />
 						<Route path="/Messages/:id" element={<MessagePanel />} />

@@ -14,6 +14,9 @@ function AdContainer() {
     const categoryName = searchParams.get('categoryName');
     const [selectedCategoryName, setSelectedCategoryName] = useState('');
     const searchQuery = searchParams.get('searchQuery');
+    const sortBy = searchParams.get('sortby');
+    const priceRange = searchParams.get('priceRange');
+    const locationFilter = searchParams.get('location');
     const [inputSearchQuery, setInputSearchQuery] = useState('');
 
     const [adData, setAdData] = useState([]);
@@ -28,7 +31,7 @@ function AdContainer() {
             try {
                 let apiUrl = 'http://localhost:8080/api/ads/products';
                 if (searchQuery) {
-                    apiUrl = `http://localhost:8080/api/ads/search?searchQuery=${searchQuery}`;
+                    apiUrl += `/search?&searchQuery=${searchQuery}`;
                 }
                 const response = await axios.get(apiUrl);
                 setAdData(response.data.rows);
@@ -36,33 +39,82 @@ function AdContainer() {
             } catch (error) {
                 console.error('Error fetching ad data:', error);
                 setLoading(false);
-                // Handle fetch error, e.g., show error message to the user
             }
         };
         fetchAdData();
     }, [searchQuery]);
 
     useEffect(() => {
+        let filteredItems = adData;
         if (selectedCategory) {
-            let filteredItems = adData.filter(item => item.category_id == selectedCategory);
-
+            filteredItems = filteredItems.filter(item => item.category_id == selectedCategory);
             setSelectedCategoryName(categoryName);
-            setFilteredData(filteredItems);
         } else if (searchQuery) {
             setFilteredData(adData);
             setSelectedCategoryName(`Results for: ${searchQuery}`);
         } else if (location.pathname == "/") {
-            const filteredItems = adData.filter(item => item.is_available == 1);
-            setFilteredData(filteredItems);
+            filteredItems = filteredItems.filter(item => item.is_available == 1);
             setSelectedCategoryName('Today\'s Picks');
         } else if (location.pathname.includes('/MyListings')) {
-            const filteredItems = adData.filter(item => item.user_id == userId);
-            setFilteredData(filteredItems);
+            filteredItems = filteredItems.filter(item => item.user_id == userId);
             setSelectedCategoryName('My Listings');
         } else {
             setFilteredData(adData);
         }
-    }, [selectedCategory, adData, location.pathname, userId]);
+
+        if (locationFilter) {
+            switch(locationFilter) {
+                case 'campus':
+                    filteredItems = filteredItems.filter(item => item.meet_on_campus == 1);
+                    break;
+            }
+        }
+
+        if (priceRange) {
+            console.log(priceRange);
+            switch (priceRange) {
+                case 'under25':
+                    filteredItems = filteredItems.filter(item => item.price < 25.00);
+                    break;
+                case '25to50':
+                    filteredItems = filteredItems.filter(item => item.price >= 25 && item.price <= 50);
+                    break;
+                case '50to100':
+                    filteredItems = filteredItems.filter(item => item.price >= 50 && item.price <= 100);
+                    break;
+                case '100to200':
+                    filteredItems = filteredItems.filter(item => item.price >= 100 && item.price <= 200);
+                    break;
+                case 'over200':
+                    filteredItems = filteredItems.filter(item => item.price >= 200);
+                    break;
+                default:
+                    console.log('Error sorting');
+            }
+        }
+
+        if (sortBy) {
+            switch (sortBy) {
+                case 'priceASC':
+                    filteredItems = filteredItems.slice().sort((a, b) => a.price - b.price);
+                    break;
+                case 'priceDESC':
+                    filteredItems = filteredItems.slice().sort((a, b) => b.price - a.price);
+                    break;
+                case 'alphaASC':
+                    filteredItems = filteredItems.slice().sort((a, b) => a.title.localeCompare(b.title));
+                    break;
+                case 'alphaDESC':
+                    filteredItems = filteredItems.slice().sort((a, b) => b.title.localeCompare(a.title));
+                    break;
+                default:
+                    console.log('Error sorting');
+            }
+        }
+
+    setFilteredData(filteredItems);
+
+    }, [selectedCategory, locationFilter, priceRange, sortBy, adData, location.pathname, userId]);
 
     return (
         <div>

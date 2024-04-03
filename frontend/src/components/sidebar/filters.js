@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './filters.css';
 
 function Filters() {
@@ -8,11 +9,9 @@ function Filters() {
   const [selectedSortBy, setSelectedSortBy] = useState('');
   const [selectedPriceRange, setSelectedPriceRange] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
-  const [category, setCategory] = useState('');
-  const [minPrice, setMinPrice] = useState('');
-  const [maxPrice, setMaxPrice] = useState('');
-  const [location, setLocation] = useState('');
-  
+  const [isChecked, setIsChecked] = useState(false);
+  const navigate = useNavigate();
+
   const handleSortByToggle = () => {
     setIsSortByCollapsed(!isSortByCollapsed);
   };
@@ -25,21 +24,18 @@ function Filters() {
     setIsLocationCollapsed(!isLocationCollapsed);
   };
 
-  const handleSortBySelect = (e) => {
-    setSelectedSortBy(e.target.value);
-  };
-
-  const handlePriceSelect = (e) => {
-    setSelectedPriceRange(e.target.value);
-  };
-
-  const handleLocationSelect = (e) => {
-    setSelectedLocation(e.target.value);
+  const applyFilter = (e) => {
+    e.preventDefault();
+    try {
+      navigate(`/filters?${selectedLocation ? `&location=${selectedLocation}` : ""}${selectedPriceRange ? `&priceRange=${selectedPriceRange}` : ""}${selectedSortBy ? `&sortby=${selectedSortBy}` : ""}`)
+    } catch (error) {
+      console.error('Error navigating:', error);
+    }
   };
 
   return (
     <div className="collapsible-container">
-      <p className="filters-heading">Filters</p>
+      <p className="filters-heading">Filters <button className="filter-submit" onClick={applyFilter}>Apply</button></p>
       <div className="filters-container">
       <div className="filter-sortby">
         <button className="collapsible-button-filter" onClick={handleSortByToggle}>
@@ -48,25 +44,25 @@ function Filters() {
         <div className={`collapsible-content d-${isSortByCollapsed ? 'none' : 'block'}`}>
           <div className="form-check">
             <div>
-              <input className="form-check-input" type="radio" name="exampleRadios" id="sortby-lowest-first" value="ORDER BY price ASC" onChange={handleSortBySelect} />
+              <input className="form-check-input" type="radio" name="sortBy" id="sortby-lowest-first" value="priceASC"  onChange={(e) => setSelectedSortBy(e.target.value) }  />
               <label className="form-check-label">
                 Price: lowest first
               </label>
             </div>
             <div>
-              <input className="form-check-input" type="radio" name="exampleRadios" id="sortby-highest-first" value="ORDER BY price DESC" onChange={handleSortBySelect}/> 
+              <input className="form-check-input" type="radio" name="sortBy" id="sortby-highest-first" value="priceDESC"  onChange={(e) => setSelectedSortBy(e.target.value)}/> 
               <label className="form-check-label">
                 Price: highest first
               </label>
             </div>
             <div>
-              <input className="form-check-input" type="radio" name="exampleRadios" id="sortby-ascending" value="ORDER BY title ASC" onChange={handleSortBySelect}/> 
+              <input className="form-check-input" type="radio" name="sortBy" id="sortby-ascending" value="alphaASC"  onChange={(e) => setSelectedSortBy(e.target.value)}/> 
               <label className="form-check-label">
                 Order: A-Z
               </label>
             </div>
             <div> 
-              <input className="form-check-input" type="radio" name="exampleRadios" id="sortby-descending" value="ORDER BY title DESC" onChange={handleSortBySelect}/> 
+              <input className="form-check-input" type="radio" name="sortBy" id="sortby-descending" value="alphaDESC"  onChange={(e) => setSelectedSortBy(e.target.value)}/> 
               <label className="form-check-label">
                 Order: Z-A
               </label>
@@ -81,31 +77,31 @@ function Filters() {
         <div className={`collapsible-content d-${isPriceCollapsed ? 'none' : 'block'}`}>
           <div className="form-check">
             <div>
-              <input className="form-check-input" type="radio" name="exampleRadios" id="price-under25" value="price <= 25" onChange={handlePriceSelect} />
+              <input className="form-check-input" type="radio" name="price" id="price-under25" value="under25"  onChange={(e) => setSelectedPriceRange(e.target.value)} />
               <label className="form-check-label">
                 Under $25
               </label>
             </div>
             <div>
-              <input className="form-check-input" type="radio" name="exampleRadios" id="price-25to50" value="price >= 25 AND price <= 50" onChange={handlePriceSelect} /> 
+              <input className="form-check-input" type="radio" name="price" id="price-25to50" value="25to50"  onChange={(e) => setSelectedPriceRange(e.target.value)} /> 
               <label className="form-check-label">
                 $25 to $50
               </label>
             </div>
             <div>
-              <input className="form-check-input" type="radio" name="exampleRadios" id="price-50to100" value="price >= 50 AND price <= 100" onChange={handlePriceSelect} /> 
+              <input className="form-check-input" type="radio" name="price" id="price-50to100" value="50to100"  onChange={(e) => setSelectedPriceRange(e.target.value)} /> 
               <label className="form-check-label">
                 $50 to $100
               </label>
             </div>
             <div>
-            <input className="form-check-input" type="radio" name="exampleRadios" id="price-100to200" value="price >= 100 AND price <= 200" onChange={handlePriceSelect} /> 
+            <input className="form-check-input" type="radio" name="price" id="price-100to200" value="100to200"  onChange={(e) => setSelectedPriceRange(e.target.value)} /> 
             <label className="form-check-label">
               $100 to $200
             </label>
             </div>
             <div>
-              <input className="form-check-input" type="radio" name="exampleRadios" id="price-above200" value="price <= 200" onChange={handlePriceSelect} /> 
+              <input className="form-check-input" type="radio" name="price" id="price-above200" value="over200"  onChange={(e) => setSelectedPriceRange(e.target.value)} /> 
               <label className="form-check-label">
                 $200 & Above
               </label>
@@ -120,15 +116,15 @@ function Filters() {
         <div className={`collapsible-content d-${isLocationCollapsed ? 'none' : 'block'}`}>
           <div className="form-check">
             <div>
-              <input className="form-check-input" type="radio" name="exampleRadios" id="meet-on-campus" value="meet_on_campus = 1" /> 
+              <input className="form-check-input" type="radio" name="location" id="meet-on-campus" value="campus"  onChange={(e) => setSelectedLocation(e.target.value)}/> 
               <label className="form-check-label">
                 Meet on Campus
               </label>
             </div>
             <div>
-              <input className="form-check-input" type="radio" name="exampleRadios" id="custom-location" value="option1" /> 
+              <input className="form-check-input" type="radio" name="location" id="custom-location" value="option1" /> 
               <label className="form-check-label">
-                location search box
+                change this later
               </label>
             </div>
             </div>
