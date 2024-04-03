@@ -3,7 +3,7 @@ const router = express.Router();
 const pool = require("../db");
 
 // Get reported ads
-router.get("/", async (req, res) => {
+router.get("/reported-ads", async (req, res) => {
   try {
     const sqlQuery =
       "SELECT ads.*, reported_ads.reason FROM ads INNER JOIN reported_ads ON ads.id = reported_ads.ad_id";
@@ -16,7 +16,7 @@ router.get("/", async (req, res) => {
 });
 
 // Get reported users
-router.get("/", async (req, res) => {
+router.get("/reported-users", async (req, res) => {
   try {
     const sqlQuery =
       "SELECT users.*, reported_users.reason FROM users INNER JOIN reported_users ON users.id = reported_users.reported_user_id";
