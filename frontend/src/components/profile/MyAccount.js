@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useUser } from "../../userContext";
 import classes from "./MyAccount.module.css";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+
 
 const MyAccount = () => {
 	
-	const { userId, setUserId } = useUser();
-
 	const [initialUserData, setInitialUserData] = useState()
 	const [userData, setUserData] = useState();
 	const [isEditing, setIsEditing] = useState(false);
@@ -17,8 +16,11 @@ const MyAccount = () => {
 		const fetchUserData = async () => {
 			try {
 				const response = await axios.get("http://localhost:8080/api/profile/details", {
+					headers: {
+						authorization: sessionStorage.getItem("token"),
+					},
 					params: {
-						signedInUserID: userId
+						signedInUserID: jwtDecode(sessionStorage.getItem("token")).id
 					}
 				});
 				setUserData(response.data[0]);
@@ -32,7 +34,7 @@ const MyAccount = () => {
 		};
 	
 		fetchUserData();
-	}, [userId]);
+	}, []);
 	
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;

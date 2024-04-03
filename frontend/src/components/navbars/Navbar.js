@@ -1,13 +1,16 @@
 import './Navbar.css'
 import axios from 'axios';
 import { ReactComponent as SearchIcon } from '../../Other/icons8-search.svg';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dropdown, Nav } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import isLoggedIn from '../../util/isLoggedIn';
+import isAdmin from '../../util/isAdmin';
 
-function Navbar({ logged_in, is_admin }) {
+function Navbar() {
   const [showDiv, setShowDiv] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isAdminStatus, setIsAdminStatus] = useState(false);
   const navigate = useNavigate();
 
   const toggleDiv = () => {
@@ -30,6 +33,17 @@ function Navbar({ logged_in, is_admin }) {
     }
   };
 
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      setTimeout(() => {
+    }, 1000);
+      const adminStatus = await isAdmin();
+      setIsAdminStatus(adminStatus); 
+    };
+
+    checkAdminStatus();
+  }, [sessionStorage.getItem("token")]);
+
     return (
       <nav className="navbar navbar-expand-lg mb-3">
         <div className="container-fluid">
@@ -42,7 +56,7 @@ function Navbar({ logged_in, is_admin }) {
               <li className="nav-item">
                 <a className="nav-link active" aria-current="page" href="/">Home</a>
               </li>
-              { logged_in ? (
+              { isLoggedIn() ? (
                 <>
                 <Dropdown>
                   <Dropdown.Toggle id="dropdown-account" className="my-account-dropdown d-flex align-items-center border-style-none">
@@ -77,9 +91,9 @@ function Navbar({ logged_in, is_admin }) {
                 </li>
                 <li className="nav-item">
                   <div className="nav-link-group">
-                    <a className="nav-link" href="#">Sign Up</a>
+                    <a className="nav-link" href="/signup">Sign Up</a>
                     <span>/</span>
-                    <a className="nav-link" href="#">Log In</a>
+                    <a className="nav-link" href="/login">Log In</a>
                   </div>
                 </li>
                 </>
@@ -94,7 +108,7 @@ function Navbar({ logged_in, is_admin }) {
               </Dropdown.Menu>
             </Dropdown>
 
-            { is_admin ? (
+            { sessionStorage.getItem("token") && isAdminStatus ? (
               <>
               <li className="nav-item">
                   <a className="nav-link" href="/AdminPanel">Admin Panel</a>

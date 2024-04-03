@@ -4,9 +4,9 @@ import classes from "./MessagePanel.module.css";
 import io from "socket.io-client";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
-import { useUser } from "../../userContext";
 import { parseISO, compareAsc } from "date-fns";
 import { Link, useParams } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 function useChatScroll(dep) {
 	const ref = React.useRef();
@@ -19,10 +19,10 @@ function useChatScroll(dep) {
 }
 
 const MessagePanel = () => {
-	const { userId, setUserId, conversations, setConversations } = useUser();
 	const [newMessage, setNewMessage] = useState("");
 	const [messages, setMessages] = useState([]);
 	const [loading, setLoading] = useState(true);
+	const [conversations, setConversations] = useState([]);
 	const [selectedConversation, setSelectedConversation] = useState(null);
 	const [userData, setUserData] = useState(null);
 	const [socket, setSocket] = useState(null);
@@ -34,7 +34,7 @@ const MessagePanel = () => {
 	useEffect(() => {
 		const newSocket = io("http://localhost:8080", {
 			query: {
-				userId: userId,
+				userId: jwtDecode(sessionStorage.getItem("token")).id,
 			},
 		});
 
@@ -52,16 +52,18 @@ const MessagePanel = () => {
 		return () => {
 			newSocket.disconnect();
 		};
-	}, [userId, messages]);
+	}, [jwtDecode(sessionStorage.getItem("token")).id]);
 
-	useEffect(() => {}, [userData]);
 
 	useEffect(() => {
 		const fetchUserData = async () => {
 			try {
 				const response = await axios.get("http://localhost:8080/api/profile/details", {
+					headers: {
+						authorization: sessionStorage.getItem("token"),
+					},
 					params: {
-						signedInUserID: userId,
+						signedInUserID: jwtDecode(sessionStorage.getItem("token")).id,
 					},
 				});
 				setUserData(response.data[0]);
@@ -73,48 +75,61 @@ const MessagePanel = () => {
 		fetchUserData();
 	}, []);
 
-
 	useEffect(() => {
+		console.log("token id: ", jwtDecode(sessionStorage.getItem("token")).id);
 		const fetchData = async () => {
 			try {
 				const [conversationsResponse, messagesResponse] = await Promise.all([
 					axios.get("http://localhost:8080/api/messages/conversations", {
+						headers: {
+							authorization: sessionStorage.getItem("token"),
+						},
 						params: {
-							signedInUserID: userId,
+							signedInUserID: jwtDecode(sessionStorage.getItem("token")).id,
 						},
 					}),
 					axios.get("http://localhost:8080/api/messages/messages", {
+						headers: {
+							authorization: sessionStorage.getItem("token"),
+						},
 						params: {
-							signedInUserID: userId,
+							signedInUserID: jwtDecode(sessionStorage.getItem("token")).id,
 						},
 					}),
 				]);
 				setAlreadyFetched(true);
 				setMessages(messagesResponse.data);
-				let conversationsToAdd = conversationsResponse.data.filter(
-					(newConvo) => !conversations.some((existingConvo) => existingConvo.product_id === newConvo.product_id)
-				);
+				setConversations(conversationsResponse.data);
+				console.log("from db: ", conversationsResponse.data);
+				// let conversationsToAdd = conversationsResponse.data.filter(
+				// 	(newConvo) => !conversations.some((existingConvo) => existingConvo.product_id === newConvo.product_id)
+				// );
 
 				if (id) {
 					const foundConvo = conversationsResponse.data.find((convo) => convo.product_id === id);
 
 					if (!foundConvo) {
-						const response = await axios.post("http://localhost:8080/api/messages/conversations", {
-							product_id: id,
-							userid: userId,
-						});
+						const response = await axios.post(
+							"http://localhost:8080/api/messages/conversations",
+							{
+								product_id: id,
+								userid: jwtDecode(sessionStorage.getItem("token")).id,
+							},
+							{
+								headers: {
+									authorization: sessionStorage.getItem("token"),
+								},
+							}
+						);
 						const newConvo = response.data;
 
-						setConversations([...conversations, ...conversationsToAdd, newConvo]);
+						setConversations([...conversationsResponse.data, newConvo]);
 
 						setSelectedConversation(newConvo);
 					} else {
-						setConversations([...conversations, ...conversationsToAdd]);
 						setSelectedConversation(foundConvo);
 					}
 				} else {
-					setConversations([...conversations, ...conversationsToAdd]);
-				
 					// setSelectedConversation(
 					// 	window.innerWidth >= 764
 					// 		? [...conversations, ...conversationsToAdd].sort(
@@ -133,11 +148,7 @@ const MessagePanel = () => {
 					// 		: null
 					// );
 
-					setSelectedConversation(
-						window.innerWidth >= 764
-							? [...conversations, ...conversationsToAdd][0]
-							: null
-					);
+					setSelectedConversation(window.innerWidth >= 764 ? conversationsResponse.data[0] : null);
 				}
 
 				setLoading(false);
@@ -164,7 +175,7 @@ const MessagePanel = () => {
 	};
 
 	const otherUsersName = (conversation) => {
-		return conversation.userid1 === userId
+		return conversation.userid1 === jwtDecode(sessionStorage.getItem("token")).id
 			? conversation.user2_first_name + " " + conversation.user2_last_name
 			: conversation.user1_first_name + " " + conversation.user1_last_name;
 	};
@@ -175,9 +186,13 @@ const MessagePanel = () => {
 			const response = await axios.post("http://localhost:8080/api/messages/messages", {
 				conversation_id: selectedConversation.conversation_id,
 				message: newMessage,
-				senderID: userId,
+				senderID: jwtDecode(sessionStorage.getItem("token")).id,
 				recieverID:
-					userId === selectedConversation.userid1 ? selectedConversation.userid2 : selectedConversation.userid1,
+				jwtDecode(sessionStorage.getItem("token")).id === selectedConversation.userid1 ? selectedConversation.userid2 : selectedConversation.userid1,
+			}, {
+				headers: {
+					"authorization": sessionStorage.getItem("token")
+				},
 			});
 		} catch (error) {
 			console.error("Error uploading message:", error);
@@ -188,17 +203,17 @@ const MessagePanel = () => {
 			message: newMessage,
 			message_id: uuidv4().toString(),
 			receiver_first_name:
-				selectedConversation.userid1 === userId
+				selectedConversation.userid1 === jwtDecode(sessionStorage.getItem("token")).id
 					? selectedConversation.user2_first_name
 					: selectedConversation.user1_first_name,
 			receiver_id:
-				userId === selectedConversation.userid1 ? selectedConversation.userid2 : selectedConversation.userid1,
+			jwtDecode(sessionStorage.getItem("token")).id === selectedConversation.userid1 ? selectedConversation.userid2 : selectedConversation.userid1,
 			receiver_last_name:
-				selectedConversation.userid1 === userId
+				selectedConversation.userid1 === jwtDecode(sessionStorage.getItem("token")).id
 					? selectedConversation.user2_last_name
 					: selectedConversation.user1_last_name,
 			sender_first_name: userData.first_name,
-			sender_id: userId,
+			sender_id: jwtDecode(sessionStorage.getItem("token")).id,
 			sender_last_name: userData.last_name,
 			time_stamp: new Date().toISOString(),
 		};

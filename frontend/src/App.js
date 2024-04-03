@@ -13,16 +13,14 @@ import MyListings from "./components/profile/MyListings.js";
 import AdminPanel from "./pages/admin/ReportedAds.js";
 import ReportedUsers from "./pages/admin/ReportedUsers.js";
 import ManageUsers from "./pages/admin/ManageUsers.js";
+import SignUp from "./components/login/SignUp.js";
 
-import { UserProvider } from "./userContext.js";
 // Styling
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import "./App.css";
 
 function App() {
-	const logged_in = true;
-	const is_admin = true;
 	// This is meant to mock an existing ad, will be replaced when developing the backend
 	var vals = {
 		title: "title 11",
@@ -38,10 +36,9 @@ function App() {
 	};
 
 	return (
-		<UserProvider>
 			<Router>
 				<div>
-					<Navbar logged_in={logged_in} is_admin={is_admin} />
+					<Navbar />
 					<Routes>
 						{/* Add the actual main page once you have it */}
 						<Route path="/" element={<HomePage />} />
@@ -56,7 +53,8 @@ function App() {
 						<Route path="/AdminPanel" element={<AdminPanel />} />
 						<Route path="/ReportedAds" element={<AdminPanel />} />
 						<Route path="/ReportedUsers" element={<ReportedUsers />} />
-						<Route path="/ManageUsers" element={<ManageUsers />} />
+						<Route path="/login" element={<SignUp isLogin={true} />} />
+						<Route path="/signup" element={<SignUp isLogin={false} />} />
 						<Route path="*" element={<PageNotFound />} />
 					</Routes>
 					{/* Add the componenet once you have it
@@ -64,7 +62,6 @@ function App() {
       */}
 				</div>
 			</Router>
-		</UserProvider>
 	);
 }
 

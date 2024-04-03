@@ -2,10 +2,12 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../db");
 const bodyParser = require("body-parser");
+const jwtMiddleware = require('../jwtMiddleware')
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 
-router.get("/messages", async (req, res) => {
+router.get("/messages", jwtMiddleware, async (req, res) => {
+	console.log("in messages")
 	try {
 		const signedInUserID = req.query.signedInUserID;
 
@@ -33,7 +35,7 @@ router.get("/messages", async (req, res) => {
 	}
 });
 
-router.get("/conversations", async (req, res) => {
+router.get("/conversations", jwtMiddleware, async (req, res) => {
 	try {
 		const signedInUserID = req.query.signedInUserID;
 
@@ -64,7 +66,7 @@ router.get("/conversations", async (req, res) => {
 	}
 });
 
-router.post("/conversations", async (req, res) => {
+router.post("/conversations", jwtMiddleware, async (req, res) => {
 	try {
 		const { product_id, userid } = req.body;
 
@@ -118,7 +120,7 @@ router.post("/conversations", async (req, res) => {
 });
 
 
-router.post("/messages", async (req, res) => {
+router.post("/messages", jwtMiddleware, async (req, res) => {
 	try {
 		const result = await pool.query(
 			`INSERT INTO messages (sender_id, receiver_id, message, time_stamp, conversation_id)
