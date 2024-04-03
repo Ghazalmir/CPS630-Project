@@ -375,7 +375,7 @@ function AdForm(props) {
                 multiple="multiple" accept=".jpg,.png" required name="images"/>
         <div id="selectedFiles" className="mt-3">
           {
-            imageLinks.length > 0 ? imageLinks.map((f) => 
+            imageLinks.length > 0 && imageLinks[0] !== null ? imageLinks.map((f) => 
             (<div key={f}><img className="mt-3" src={f} style={{maxHeight: '100px'}}/><button className='btn align-self-center' onClick={($event) => {$event.preventDefault(); removeImage(false, f)}} data-id={f}>&#x2715;</button></div>))
             : (<div className="text-muted">No images for this ad yet. Use the file selector above to add some images.</div>)
           }
