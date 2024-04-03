@@ -66,7 +66,7 @@ function AdDetails() {
 
             </h2>
             <h6 className="text-blue">
-              {adData.meet_on_campus === 1? 'Meet on Campus' : 
+              {adData.meet_on_campus === "1"? 'Meet on Campus' : 
                 adData.city + ', ' + adData.province_name
               }
             </h6>
