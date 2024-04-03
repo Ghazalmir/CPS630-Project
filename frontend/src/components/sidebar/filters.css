@@ -1,12 +1,13 @@
 .collapsible-container {
     border-top: 2px solid #ccc;
     margin-bottom: 10px;
+    width: 200px !important;
   }
   
 .collapsible-button-filter {
   background-color: white !important;
   font-size: clamp(8px, 2.5vw, 15px) !important;
-  font-weight: 600 !important;
+  font-weight: 400 !important;
   border: none;
   padding: 10px;
   width: 100%;
@@ -15,24 +16,23 @@
 }
 
 .collapsible-button-filter:hover {
-  text-decoration: underline;
+  background-color: #E7ECF3 !important;
 }
   
-  .collapsible-content {
-    display: none;
-    overflow: hidden;
-    transition: max-height 0.3s ease-out;
-    border-bottom: 2px solid #ccc;
-    padding-bottom: 10px;
-  }
+.collapsible-content {
+  display: none;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+  padding-bottom: 10px;
+}
   
-  .collapsible-content.collapsed {
-    max-height: 0;
-  }
+.collapsible-content.collapsed {
+  max-height: 0;
+}
   
-  .collapsible-content.expanded {
-    max-height: 1000px; /* Set a height for the expanded content */
-  }
+.collapsible-content.expanded {
+  max-height: 1000px; 
+}
 
 .filters-heading {
   padding-top:20px;
@@ -49,10 +49,16 @@
 }
 
 .filter-submit {
+  background-color: white !important;
+  border: none;
   float: right;
   font-size: clamp(8px, 2.5vw, 15px) !important;
-
 }
+
+.filter-submit:hover {
+  text-decoration: underline;
+}
+
 
 .form-check {
  margin-left: 5px; 

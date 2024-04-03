@@ -30,21 +30,30 @@
 }
 
 .btn.align-items-center.category {
-    font-size: clamp(10px, 2.5vw, 20px) !important;
-    font-weight: 600 !important;
+    font-family: Poppins, sans-serif;
+    font-size: clamp(8px, 2.5vw, 15px) !important;
+    font-weight: 400 !important;
     white-space: normal !important;
     padding: 6px 12px 6px 0px !important;
 }
 
 .btn.align-items-center.subcategory {
-    font-size: clamp(12px, 2.5vw, 18px) !important;
-    font-weight: 600 !important;
+    font-size: clamp(8px, 2.5vw, 15px) !important;
+    font-weight: 400 !important;
     white-space: normal !important;
-    padding: 6px 12px 6px 0px !important;
+    padding: 6px !important;
 }
 
 .categories-container {
-    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    margin-left: 10px;
+}
+
+.categories-container-title {
+    font-size: clamp(10px, 2.5vw, 20px) !important;
+    font-weight: 600;
 }
 
 .category:hover {
@@ -60,14 +69,26 @@
 }
 
 .collapsible-button {
-    font-size: clamp(10px, 2.5vw, 20px) !important;
-    font-weight: 600 !important;
+    font-family: Poppins, sans-serif;
+    font-size: clamp(8px, 2.5vw, 15px) !important;
+    font-weight: 400 !important;
     white-space: normal !important;
     padding: 6px 12px 6px 0 !important;
     background-color: white !important;
+    border: none;
 }
 
 .collapsible-button:hover{
     background-color: #E7ECF3 !important;
 }
+
+.collapsible-content {
+    border: none !important;
+    padding-bottom: 0 !important;
+}
+
+.active-link {
+    font-weight: 600;
+    color: #004C9B !important; 
+  }
 
