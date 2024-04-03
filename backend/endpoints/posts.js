@@ -14,11 +14,17 @@ router.get('/adDetails/:id', async (req, res) => {
 					products.*, 
 					categories.category_name, 
 					subcategories.subcategory_name, 
+					locations.city, 
+					provinces.province_name,
 					ARRAY_AGG(images.image_link) AS image_links
 					FROM 
 							products 
 					JOIN 
 							categories ON products.category_id = categories.category_id 
+          JOIN
+							locations ON products.location_id = locations.location_id
+					JOIN 
+							provinces ON locations.province_id = provinces.province_id
 					LEFT JOIN 
 							subcategories ON products.subcategory_id = subcategories.subcategory_id 
 					LEFT JOIN 
@@ -28,7 +34,9 @@ router.get('/adDetails/:id', async (req, res) => {
 					GROUP BY 
 					products.product_id, 
 					categories.category_name, 
-					subcategories.subcategory_name;`
+					subcategories.subcategory_name, 
+					locations.city,  
+					provinces.province_name;`
 					, [productId]);
 
 		console.log(productId);
