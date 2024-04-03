@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
+import SideBar from "../../components/sidebar/sideBar";
+import DeleteConfirmationModal from "../../components/adForm/deleteConfirmationModal";
 import "./style.css";
 
 function ReportedUsers() {
   const [reportedUsers, setReportedUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isDeleteModalShown, setIsDeleteModalShown] = useState(false);
 
   useEffect(() => {
     const fetchAdData = async () => {
@@ -45,32 +48,12 @@ function ReportedUsers() {
 
   return (
     <div>
-      <meta charSet="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Document</title>
-      <link rel="stylesheet" href="./style.css" />
-      <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-        crossOrigin="anonymous"
-        referrerPolicy="no-referrer"
-      />
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-        rel="stylesheet"
-      />
-
-      <main>
-        <section className="links">
-          <a href="./ReportedAds">Reported Ads</a>
-          <a href="./ReportedUsers" className="active">
-            Reported Users
-          </a>
-          <a href="./ManageUsers">Manage Users</a>
-        </section>
+      <div className="container-fluid">
+      <div className="row">
+        <div className="col-2 sidebar">
+            <SideBar />
+        </div>
+        <div className="col-sm-12 col-md-10 ad-container">
         <section className="reportedUsers">
           {reportedUsers.map((user) => (
             <article key={user.id}>
@@ -79,15 +62,22 @@ function ReportedUsers() {
               </p>
               <div className="deleteUserContainer">
                 <p>{user.name}</p>
-                <button onClick={() => handleDeleteUser(user.id)}>
-                  Delete User
-                </button>
+                <button className="btn btn-yellow rounded border-0 p-2 px-2 mx-1"
+            onClick={($event) => {$event.preventDefault(); setIsDeleteModalShown(!isDeleteModalShown)}}
+            >Delete</button>
               </div>
+              <DeleteConfirmationModal show={isDeleteModalShown} 
+            id={user.id}
+            onHide={() => setIsDeleteModalShown(false)}
+            />
             </article>
           ))}
         </section>
-      </main>
+        </div>
+      </div>
     </div>
+    </div>
+       
   );
 }
 
