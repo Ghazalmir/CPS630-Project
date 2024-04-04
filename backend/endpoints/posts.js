@@ -22,9 +22,9 @@ router.get('/adDetails/:id', async (req, res) => {
 							products 
 					JOIN 
 							categories ON products.category_id = categories.category_id 
-          JOIN
+          LEFT JOIN
 							locations ON products.location_id = locations.location_id
-					JOIN 
+					LEFT JOIN 
 							provinces ON locations.province_id = provinces.province_id
 					LEFT JOIN 
 							subcategories ON products.subcategory_id = subcategories.subcategory_id 
