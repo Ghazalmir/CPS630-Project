@@ -1,185 +1,205 @@
 import React, { useEffect, useState } from "react";
+import SideBar from "../../components/sidebar/sideBar";
+import DeleteConfirmationModal from "../../components/adForm/deleteConfirmationModal";
+import axios from 'axios';
 import "./style.css";
 
 function ManageUsers() {
   const [users, setUsers] = useState([]);
+  const [isDeleteModalShown, setIsDeleteModalShown] = useState(false);
   const [selectedUser, setSelectedUser] = useState({});
+  const [confirmPassword, setConfirmPassword] = useState([]);
   const [editFormData, setEditFormData] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     phone: "",
     isAdmin: false,
+    currentPassword: "",
+    newPassword: ""
   });
 
   useEffect(() => {
-    // Placeholder for API endpoint
-    fetch("http://localhost:8080/api/users")
+    fetch("http://localhost:8080/api/admin/users")
       .then((response) => response.json())
       .then((data) => setUsers(data))
       .catch((error) => console.error("Error fetching users:", error));
   }, []);
 
   const handleSelectChange = (event) => {
-    const userId = Number(event.target.value);
-    const user = users.find((u) => u.id === userId);
+    const selectedUserId = event.target.value;
+    const user = users.find((user) => user.id === selectedUserId);
+
+    if (selectedUserId == "nothing") {
+      return;
+    }
+
     setSelectedUser(user);
     setEditFormData({
-      ...user,
+      firstName: user.first_name,
+      lastName: user.last_name,
+      email: user.email,
+      phone: user.phone_number,
+      isAdmin: user.is_admin,
+      currentPassword: "",
+      newPassword: ""
     });
   };
+
+  const refreshPage= () => {
+    window.location.reload();
+  }
+
+  const handleConfirmPassword = (event) => {
+    setConfirmPassword(event.target.value);
+  }
 
   const handleFormChange = (event) => {
-    const { name, value, type, checked } = event.target;
-    setEditFormData({
-      ...editFormData,
-      [name]: type === "checkbox" ? checked : value,
-    });
+    const { id, value, type, checked } = event.target;
+    console.log(value);
+    let updatedFormData = {};
+
+  
+    if (type === "checkbox") {
+      updatedFormData = {
+        ...editFormData,
+        [id]: checked ? 1 : 0,
+      };
+    }  else {
+      updatedFormData = {
+        ...editFormData,
+        [id]: value,
+      };
+    }
+  
+    setEditFormData(updatedFormData);
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Placeholder for update API endpoint
-    const updateUserEndpoint = `http:/localhost:8080/api/users/${selectedUser.id}`;
+  const handleSubmit = async (event) => {
 
-    // Example using fetch to update the user
-    fetch(updateUserEndpoint, {
-      method: "PUT", // or 'PATCH'
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(editFormData),
-    })
-      .then((response) => response.json())
-      .then(() => {
-        console.log("User updated successfully");
-        // Refresh the user list or update the UI as needed
-      })
-      .catch((error) => console.error("Error updating user:", error));
+    event.preventDefault();
+
+    if (editFormData.newPassword != confirmPassword) {
+      alert('Passwords do not match.');
+      return;
+    }
+
+    try {
+      console.log(editFormData);
+
+      if (editFormData.currentPassword && editFormData.newPassword) {
+
+        await axios.put("http://localhost:8080/api/profile/newPassword", {
+          id: selectedUser.id,
+          currentPassword: editFormData.currentPassword,
+          newPassword: editFormData.newPassword,
+        });
+        console.log("Password updated successfully");
+      } 
+
+      await axios.put("http://localhost:8080/api/profile/update", {
+        id: selectedUser.id,
+        first_name: editFormData.firstName,
+        last_name: editFormData.lastName,
+        email: editFormData.email,
+        phone_number: editFormData.phone,
+        is_admin: editFormData.isAdmin
+      });
+      console.log("User details updated successfully");
+    
+      alert('User updates successful');
+    } catch (error) {
+      console.error("Error updating user details or password:", error);
+    }
   };
 
   return (
-    <div>
-      <link rel="stylesheet" href="./style.css" />
-      <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-        crossOrigin="anonymous"
-        referrerPolicy="no-referrer"
-      />
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-        rel="stylesheet"
-      />
-
-      <main>
-        <section className="links">
-          <a href="./ReportedAds">Reported Ads</a>
-          <a href="./ReportedUsers">Reported Users</a>
-          <a href="./ManageUsers" className="active">
-            Manage Users
-          </a>
-        </section>
-        <section>
-          <select onChange={handleSelectChange} value={selectedUser.id || ""}>
-            <option>Select a user</option>
-            {users.map((user) => (
+    <div className="container-fluid">
+      <div className="row">
+        <div className="col-2 sidebar">
+            <SideBar />
+        </div>
+        <div className="col-sm-12 col-md-10 ad-container">
+        <div>
+          <select className="user-list" onChange={handleSelectChange}>
+            <option className="option-user" value="nothing">Select a user</option>
+            {users.map((user, index) => (
               <option key={user.id} value={user.id}>
-                {user.name}
+                {user.last_name}, {user.first_name}
               </option>
             ))}
           </select>
-          {selectedUser.id && (
+          {selectedUser.id ? (
             <section>
-              <form onSubmit={handleSubmit}>
-                <h3>Edit User Profile</h3>
+              <form onSubmit={handleSubmit} className="edit-form">
+              <p className="form-title-user_name">{editFormData.firstName} {editFormData.lastName}</p>
+                <p className="form-title">Edit User Profile</p>
                 <div className="form-group">
-                  <label htmlFor="name">Name:</label>
+                <div className="row">
+                  <div className="col-md-6 mb-3">
+                    <label className="form-label">First Name</label>
+                    <input className="form-control" id="firstName" placeholder={editFormData.firstName}  onChange={handleFormChange} />  
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <label className="form-label">Last Name</label>
+                    <input className="form-control" id="lastName" placeholder={editFormData.lastName}  onChange={handleFormChange}  />
+                  </div>
+                </div>
+                  <div className="row">
+                    <div className="col-md-6 mb-3">
+                      <label className="form-label">Email</label>
+                      <input className="form-control" id="email" placeholder={editFormData.email} onChange={handleFormChange}  />  
+                    </div>
+                    <div className="col-md-6 mb-3">
+                      <label className="form-label">Phone Number</label>
+                      <input className="form-control" id="phone" placeholder={editFormData.phone}  onChange={handleFormChange} />
+                    </div>
+                  </div>
+                  <div className="row">
+                  <div className="col-md-12 mb-3">
+                    <label className="form-label">Password Changes</label>
+                    <input className="form-control" type="password" id="currentPassword" placeholder="Current Password" onChange={handleFormChange} />  
+                  </div>
+                  <div className="col-md-12 mb-3">
+                    <input className="form-control" type="password" id="newPassword" placeholder="New Password"  onChange={handleFormChange}  />
+                  </div>
+                  <div className="col-md-12 mb-3">
+                    <input className="form-control" type="password" id="confirmNewPassword" placeholder="Confirm New Password" onChange={handleConfirmPassword}/>  
+                  </div>
+                </div>
+                <div className="row">
+                  <div htmlFor="isAdmin">Make Admin? 
                   <input
-                    id="name"
-                    type="text"
-                    name="name"
-                    value={editFormData.name}
-                    onChange={handleFormChange}
-                    placeholder="Name"
-                  />
+                      className="admin-button"
+                      id="isAdmin"
+                      type="checkbox"
+                      name="isAdmin"
+                      onChange={handleFormChange}       
+                      checked={editFormData.isAdmin}               
+                    /></div>
                 </div>
-                <div className="form-group">
-                  <label htmlFor="email">Email:</label>
-                  <input
-                    id="email"
-                    type="email"
-                    name="email"
-                    value={editFormData.email}
-                    onChange={handleFormChange}
-                    placeholder="Email"
-                  />
+                <div className="row button-options">
+                  <div className="option-buttons">
+                  <button className="btn btn-yellow rounded border-0 p-2 px-2 mx-1"
+            onClick={($event) => {$event.preventDefault(); setIsDeleteModalShown(!isDeleteModalShown)}}
+            >
+              Delete User
+            </button>
+                    <button className="save-changes-button btn rounded border-0 p-2 px-2 mx-1"type="submit">Save Changes</button>
+                    <button className="cancel-button btn rounded border-0 p-2 px-2 mx-1"type="submit" onClick={refreshPage}>Cancel</button>
+                    <DeleteConfirmationModal show={isDeleteModalShown} 
+            id={selectedUser.id}
+            onHide={() => setIsDeleteModalShown(false)}
+            />
+                  </div>
                 </div>
-                <div className="form-group">
-                  <label htmlFor="phone">Phone:</label>
-                  <input
-                    id="phone"
-                    type="text"
-                    name="phone"
-                    value={editFormData.phone}
-                    onChange={handleFormChange}
-                    placeholder="Phone"
-                  />
                 </div>
-                <div className="form-group">
-                  <label htmlFor="username">Username:</label>
-                  <input
-                    id="username"
-                    type="text"
-                    name="username"
-                    value={editFormData.username || ""}
-                    onChange={handleFormChange}
-                    placeholder="Username"
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="status">Status:</label>
-                  <select
-                    id="status"
-                    name="status"
-                    value={editFormData.status || ""}
-                    onChange={handleFormChange}
-                  >
-                    <option value="">Select Status</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label htmlFor="role">Role:</label>
-                  <input
-                    id="role"
-                    type="text"
-                    name="role"
-                    value={editFormData.role || ""}
-                    onChange={handleFormChange}
-                    placeholder="Role"
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="isAdmin">Make Admin:</label>
-                  <input
-                    id="isAdmin"
-                    type="checkbox"
-                    name="isAdmin"
-                    checked={editFormData.isAdmin}
-                    onChange={handleFormChange}
-                  />
-                </div>
-                {/* Consider adding a password change section, with appropriate security considerations */}
-                <button type="submit">Save Changes</button>
               </form>
             </section>
-          )}
-        </section>
-      </main>
+          ) : (<></>)}
+        </div>
+        </div>
+      </div>
     </div>
   );
 }
