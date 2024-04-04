@@ -40,6 +40,9 @@ function AdDetails() {
 		fetchAdData();
 	}, [id]);
 
+  const goBack = () => {
+    navigate(-1);
+  };
 
   return (
     <>
@@ -52,7 +55,7 @@ function AdDetails() {
           <span className={adData.subcategory_name ? "text-muted" : "fw-bolder"}>{adData.category_name}</span>
           {adData.subcategory_name ? (<span className="fw-bolder">  / {adData.subcategory_name}</span>) : ""}
         </span>
-        <span className="col text-end">Back</span>
+        <button className="btn col text-end" onClick={goBack}>Back</button>
       </div>
       <div className="container text-center mt-5">
         <div className="row align-items-around">

@@ -63,8 +63,9 @@ const uploadMultipleImages = (images) => {
 async function uploadImagesToDB(product_id, image_links) {
   try {
     console.log("got to here");
+    
 
-    const images = image_links.map((link) => `(${product_id}, '${link}')`).join(', ');
+    const images = Array.isArray(image_links) ? image_links.map((link) => `(${product_id}, '${link}')`).join(', ') : `(${product_id}, '${image_links}')`;
     const query = `INSERT INTO images (product_id, image_link) VALUES ${images};`;
 
     const result = await pool.query(query);
@@ -87,19 +88,21 @@ async function updateImagesInDB(product_id, existing_images, new_images) {
     console.log(existing_images_in_DB);
     const deletedImages = existing_images_in_DB.rows[0].image_links.filter(item => existing_images.indexOf(item) === -1);
 
-    
-    const deleteQuery = `DELETE FROM images WHERE product_id = ${product_id} AND image_link IN (${deletedImages.map((image) => `'${image}'`).join(', ')});`;
-    console.log(existing_images_in_DB);
-    const deletionResult = await pool.query(deleteQuery);
-    console.log("Images deleted successfully:", deletionResult.rows);
+    if (deletedImages.length > 0) {
+      const deleteQuery = `DELETE FROM images WHERE product_id = ${product_id} AND image_link IN (${deletedImages.map((image) => `'${image}'`).join(', ')});`;
+      console.log(existing_images_in_DB);
+      const deletionResult = await pool.query(deleteQuery);
+      console.log("Images deleted successfully:", deletionResult.rows);
+    }
+    if (new_images.length > 0) {
+      const images = new_images.map((link) => `(${product_id}, '${link}')`).join(', ');
+      const query = `INSERT INTO images (product_id, image_link) VALUES ${images};`;
 
-    const images = new_images.map((link) => `(${product_id}, '${link}')`).join(', ');
-    const query = `INSERT INTO images (product_id, image_link) VALUES ${images};`;
-
-    const result = await pool.query(query);
-    console.log("Images uploaded successfully:", result.rows);
-
-    return result.rows;
+      const result = await pool.query(query);
+      console.log("Images uploaded successfully:", result.rows);
+        
+      return result.rows;
+    }
   } catch (error) {
     console.error("Error uploading images:", error);
     throw error;

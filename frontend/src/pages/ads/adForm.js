@@ -154,7 +154,9 @@ function AdForm(props) {
       })
       .then(data => {
         uploadImage(id);
-        console.log("Response from server:", data);
+        alert("Ad updated Succesfully!");
+        navigate("/MyListings");
+        //console.log("Response from server:", data);
       })
       .catch(error => console.error("Error posting ad:", error));
     }
@@ -180,7 +182,8 @@ function AdForm(props) {
         .post("http://localhost:8080/api/cloudinary/uploadImage", { image: base64, product_id: product_id })
         .then((res) => {
           setUrl(res);
-          alert("Image uploaded Succesfully");
+          //alert("Image uploaded Succesfully");
+          navigate("/MyListings");
         })
         .finally(() => setLoading(false))
         .catch(console.log);
@@ -192,7 +195,8 @@ function AdForm(props) {
         .post("http://localhost:8080/api/cloudinary/uploadMultipleImages", { images, product_id: product_id })
         .then((res) => {
           setUrl(res.data);
-          alert("Images uploaded Succesfully");
+          //alert("Images uploaded Succesfully");
+          navigate("/MyListings");
         })
         .finally(() => setLoading(false))
         .catch(console.log);
@@ -205,7 +209,6 @@ function AdForm(props) {
         { product_id: id, existing_images: imageLinks, new_images: images })
         .then((res) => {
           setUrl(res.data);
-          alert("Images updated Succesfully");
         })
         .finally(() => setLoading(false))
         .catch(console.log);
