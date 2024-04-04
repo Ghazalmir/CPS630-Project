@@ -33,7 +33,7 @@ function AdContainer() {
     useEffect(() => {
         const fetchAdData = async () => {
             try {
-                let apiUrl = 'http://localhost:8080/api/ads/products';
+                let apiUrl = process.env.REACT_APP_APIURL + '/ads/products';
 
                 if (searchQuery) {
                     apiUrl += `/search?&searchQuery=${searchQuery}`;
@@ -49,7 +49,7 @@ function AdContainer() {
 
         const fetchReportedAdData = async () => {
             try {
-                let apiUrl = 'http://localhost:8080/api/admin/reported-ads';
+                let apiUrl = process.env.REACT_APP_APIURL + '/admin/reported-ads';
                 const response = await axios.get(apiUrl);
                 setReportedAdData(response.data.rows);
             } catch (error) {

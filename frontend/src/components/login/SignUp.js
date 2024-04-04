@@ -18,7 +18,7 @@ const SignUp = (props) => {
 		if (props.isLogin) {
 			try {
 				const response = await axios.post(
-					"http://localhost:8080/api/profile/login",
+					process.env.REACT_APP_APIURL + "/profile/login",
 					{
 						email,
 						password,
@@ -55,7 +55,7 @@ const SignUp = (props) => {
 
 			try {
 				const response = await axios.post(
-					"http://localhost:8080/api/profile",
+					process.env.REACT_APP_APIURL + "/profile",
 					{
 						firstName,
 						lastName,

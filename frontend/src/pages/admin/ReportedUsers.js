@@ -13,7 +13,7 @@ function ReportedUsers() {
   useEffect(() => {
     const fetchAdData = async () => {
         try {
-            let apiUrl = 'http://localhost:8080/api/admin/reported-users';
+            let apiUrl = process.env.REACT_APP_APIURL + '/admin/reported-users';
             const response = await axios.get(apiUrl);
             setReportedUsers(response.data.rows);
             setIsLoading(false);
@@ -27,7 +27,7 @@ function ReportedUsers() {
 }, []);
 
   const handleDeleteUser = (userId) => {
-    fetch(`http://localhost:8080/api/reported-users/${userId}`, {
+    fetch(process.env.REACT_APP_APIURL + `/reported-users/${userId}`, {
       method: "DELETE",
     })
       .then((response) => {

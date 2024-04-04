@@ -18,7 +18,7 @@ function AdDetails() {
   useEffect(() => {
 		const fetchAdData = async () => {
 			try {
-				const response = await axios.get(`http://localhost:8080/api/ads/adDetails/${id}`, {
+				const response = await axios.get(process.env.REACT_APP_APIURL + `/ads/adDetails/${id}`, {
           params: {
             id: id
           }

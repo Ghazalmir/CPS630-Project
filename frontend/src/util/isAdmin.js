@@ -5,7 +5,7 @@ const isAdmin = async () => {
   console.log("in is admin. token: ", sessionStorage.getItem("token"))
   try {
     console.log("in isadmin top of try")
-    const response = await axios.get("http://localhost:8080/api/profile/details", {
+    const response = await axios.get(process.env.REACT_APP_APIURL + "/profile/details", {
       headers: {
         authorization: sessionStorage.getItem("token"),
       },

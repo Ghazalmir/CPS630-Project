@@ -26,7 +26,7 @@ const MyAccount = (props) => {
 	useEffect(() => {
 		const fetchUserData = async () => {
 			try {
-				const response = await axios.get("http://localhost:8080/api/profile/details", {
+				const response = await axios.get(process.env.REACT_APP_APIURL + "/profile/details", {
 					headers: {
 						authorization: sessionStorage.getItem("token"),
 					},
@@ -67,7 +67,7 @@ const MyAccount = (props) => {
 
 		try {
 			await axios.put(
-				"http://localhost:8080/api/profile/update",
+				process.env.REACT_APP_APIURL + "/profile/update",
 				{
 					id: jwtDecode(sessionStorage.getItem("token")).id,
 					first_name: firstName,
@@ -103,7 +103,7 @@ const MyAccount = (props) => {
 
 		try {
 			await axios.put(
-				"http://localhost:8080/api/profile/newPassword",
+				process.env.REACT_APP_APIURL + "/profile/newPassword",
 				{
 					id: jwtDecode(sessionStorage.getItem("token")).id,
 					currentPassword: currentPassword,
@@ -176,7 +176,7 @@ const MyAccount = (props) => {
 	const postImage = async (base64) => {
 		try {
 			await axios.put(
-				"http://localhost:8080/api/profile/profilepic",
+				process.env.REACT_APP_APIURL + "/profile/profilepic",
 				{
 					id: jwtDecode(sessionStorage.getItem("token")).id,
 					image: base64,

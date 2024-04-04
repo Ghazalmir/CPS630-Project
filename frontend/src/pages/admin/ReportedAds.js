@@ -12,7 +12,7 @@ function ReportedAds() {
   useEffect(() => {
     const fetchAdData = async () => {
         try {
-            let apiUrl = 'http://localhost:8080/api/admin/reported-ads';
+            let apiUrl = process.env.REACT_APP_APIURL + '/admin/reported-ads';
             const response = await axios.get(apiUrl);
             setReportedAds(response.data.rows);
             setIsLoading(false);

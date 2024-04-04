@@ -33,7 +33,7 @@ const MessagePanel = () => {
 	const chatContainerRef = useChatScroll(messages);
 
 	useEffect(() => {
-		const newSocket = io("http://localhost:8080", {
+		const newSocket = io(process.env.REACT_APP_APIURL, {
 			query: {
 				userId: jwtDecode(sessionStorage.getItem("token")).id,
 			},
@@ -56,9 +56,10 @@ const MessagePanel = () => {
 	}, [jwtDecode(sessionStorage.getItem("token")).id]);
 
 	useEffect(() => {
+		console.log("backend url: ", process.env.REACT_APP_APIURL)
 		const fetchUserData = async () => {
 			try {
-				const response = await axios.get("http://localhost:8080/api/profile/details", {
+				const response = await axios.get(process.env.REACT_APP_APIURL + "/profile/details", {
 					headers: {
 						authorization: sessionStorage.getItem("token"),
 					},
@@ -79,7 +80,7 @@ const MessagePanel = () => {
 		const fetchData = async () => {
 			try {
 				const [conversationsResponse, messagesResponse] = await Promise.all([
-					axios.get("http://localhost:8080/api/messages/conversations", {
+					axios.get(process.env.REACT_APP_APIURL + "/messages/conversations", {
 						headers: {
 							authorization: sessionStorage.getItem("token"),
 						},
@@ -87,7 +88,7 @@ const MessagePanel = () => {
 							signedInUserID: jwtDecode(sessionStorage.getItem("token")).id,
 						},
 					}),
-					axios.get("http://localhost:8080/api/messages/messages", {
+					axios.get(process.env.REACT_APP_APIURL + "/messages/messages", {
 						headers: {
 							authorization: sessionStorage.getItem("token"),
 						},
@@ -109,7 +110,7 @@ const MessagePanel = () => {
 
 					if (!foundConvo) {
 						const response = await axios.post(
-							"http://localhost:8080/api/messages/conversations",
+							process.env.REACT_APP_APIURL + "/messages/conversations",
 							{
 								product_id: id,
 								userid: jwtDecode(sessionStorage.getItem("token")).id,
@@ -183,7 +184,7 @@ const MessagePanel = () => {
 		if (newMessage.trim() === "") return;
 		try {
 			const response = await axios.post(
-				"http://localhost:8080/api/messages/messages",
+				process.env.REACT_APP_APIURL + "/messages/messages",
 				{
 					conversation_id: selectedConversation.conversation_id,
 					message: newMessage,

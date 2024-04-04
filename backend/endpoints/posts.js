@@ -214,7 +214,7 @@ router.post("/deleteAd", jwtMiddleware, async (req, res) => {
       `DELETE FROM products Where product_id = $1;`,
 			[product_id]
 		);
-		res.status(200).json({ success: true });		//res.redirect('http://localhost:3000/MyListings');
+		res.status(200).json({ success: true });	
 	} catch (error) {
 		console.error(error);
 		res.status(500).send("Server Error");

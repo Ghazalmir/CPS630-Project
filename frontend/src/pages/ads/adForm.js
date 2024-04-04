@@ -57,7 +57,7 @@ function AdForm(props) {
       if (props.isEditForm) {
         const fetchAdData = async () => {
           try {
-            const response = await axios.get(`http://localhost:8080/api/ads/editDetails/${id}`, {
+            const response = await axios.get(process.env.REACT_APP_APIURL + `/ads/editDetails/${id}`, {
               headers: {
                 authorization: sessionStorage.getItem("token"),
               },
@@ -114,7 +114,7 @@ function AdForm(props) {
       };
 
       
-      fetch("http://localhost:8080/api/ads/postNewAd", {
+      fetch(process.env.REACT_APP_APIURL + "/ads/postNewAd", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -152,7 +152,7 @@ function AdForm(props) {
           }
       };
 
-      fetch("http://localhost:8080/api/ads/updateAd", {
+      fetch(process.env.REACT_APP_APIURL + "/ads/updateAd", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -194,7 +194,7 @@ function AdForm(props) {
     function uploadSingleImage(base64, product_id) {
       setLoading(true);
       return axios
-        .post("http://localhost:8080/api/cloudinary/uploadImage", { image: base64, product_id: product_id })
+        .post(process.env.REACT_APP_APIURL + "/cloudinary/uploadImage", { image: base64, product_id: product_id })
         .then((res) => {
           setUrl(res);
           alert("Ad Posted Succesfully!");
@@ -207,7 +207,7 @@ function AdForm(props) {
     function uploadMultipleImages(images, product_id) {
       setLoading(true);
       return axios
-        .post("http://localhost:8080/api/cloudinary/uploadMultipleImages", { images, product_id: product_id })
+        .post(process.env.REACT_APP_APIURL + "/cloudinary/uploadMultipleImages", { images, product_id: product_id })
         .then((res) => {
           setUrl(res.data);
           alert("Ad Posted Succesfully!");
@@ -220,7 +220,7 @@ function AdForm(props) {
     function updateImages(images) {
       setLoading(true);
       return axios
-        .post("http://localhost:8080/api/cloudinary/updateImages", 
+        .post(process.env.REACT_APP_APIURL + "/cloudinary/updateImages", 
         { product_id: id, existing_images: imageLinks, new_images: images })
         .then((res) => {
           setUrl(res.data);
@@ -307,7 +307,7 @@ function AdForm(props) {
     const [subCategories, setSubCategories] = useState([]);
 
     useEffect(() => {
-      fetch("http://localhost:8080/api/categories/sections")
+      fetch(process.env.REACT_APP_APIURL + "/categories/sections")
         .then((response) => response.json())
         .then((data) => {
           setCategories(data);
@@ -316,7 +316,7 @@ function AdForm(props) {
     }, []);
 
     useEffect(() => {
-      fetch("http://localhost:8080/api/categories/sections/subcategories")
+      fetch(process.env.REACT_APP_APIURL + "/categories/sections/subcategories")
         .then((response) => response.json())
         .then((data) => {
           setSubCategories(data);

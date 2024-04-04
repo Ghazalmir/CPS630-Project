@@ -12,7 +12,7 @@ function LocationField(props) {
     
 		const fetchProvinceData = async () => {
 			try {
-				const response = await axios.get(`http://localhost:8080/api/locations/getProvinces`);
+				const response = await axios.get(process.env.REACT_APP_APIURL + `/locations/getProvinces`);
 
           setProvincesData(response.data);
           setLoading(false);
@@ -34,7 +34,7 @@ function LocationField(props) {
   const fetchCitiesData = async () => {
     try {
 
-      const response = await axios.get(`http://localhost:8080/api/locations/getCities`, {
+      const response = await axios.get(process.env.REACT_APP_APIURL + `/locations/getCities`, {
           params: {
             province_id: selectedProvince !== 0 ? selectedProvince : parseInt(props.selectedProvince),
           }

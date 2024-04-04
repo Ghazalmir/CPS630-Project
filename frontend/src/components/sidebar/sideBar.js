@@ -16,7 +16,7 @@ function SideBar() {
   const isMyListings = location.pathname.includes("/MyListings"); 
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/categories/sections")
+    fetch(process.env.REACT_APP_APIURL + "/categories/sections")
       .then((response) => response.json())
       .then((data) => {
         setCategories(data);
@@ -25,7 +25,7 @@ function SideBar() {
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/categories/sections/subcategories")
+    fetch(process.env.REACT_APP_APIURL + "/categories/sections/subcategories")
       .then((response) => response.json())
       .then((data) => {
         setSubCategories(data);

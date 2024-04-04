@@ -20,7 +20,7 @@ function ManageUsers() {
   });
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/admin/users")
+    fetch(process.env.REACT_APP_APIURL + "/admin/users")
       .then((response) => response.json())
       .then((data) => setUsers(data))
       .catch((error) => console.error("Error fetching users:", error));
@@ -89,7 +89,7 @@ function ManageUsers() {
 
       if (editFormData.currentPassword && editFormData.newPassword) {
 
-        await axios.put("http://localhost:8080/api/profile/newPassword", {
+        await axios.put(process.env.REACT_APP_APIURL + "/profile/newPassword", {
           id: selectedUser.id,
           currentPassword: editFormData.currentPassword,
           newPassword: editFormData.newPassword,
@@ -97,7 +97,7 @@ function ManageUsers() {
         console.log("Password updated successfully");
       } 
 
-      await axios.put("http://localhost:8080/api/profile/update", {
+      await axios.put(process.env.REACT_APP_APIURL + "/profile/update", {
         id: selectedUser.id,
         first_name: editFormData.firstName,
         last_name: editFormData.lastName,

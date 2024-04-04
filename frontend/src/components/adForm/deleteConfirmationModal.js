@@ -10,7 +10,7 @@ function DeleteConfirmationModal(props) {
     //event.preventDefault(); // Prevent default form submission
     try {
       if (isAdminPanel) {
-        fetch("http://localhost:8080/api/admin/delete-user", {
+        fetch(process.env.REACT_APP_APIURL + "/admin/delete-user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -23,7 +23,7 @@ function DeleteConfirmationModal(props) {
       })
       .catch((error) => console.error("Error deleting user :", error));
       } else {
-        fetch("http://localhost:8080/api/ads/deleteAd", {
+        fetch(process.env.REACT_APP_APIURL + "/ads/deleteAd", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
