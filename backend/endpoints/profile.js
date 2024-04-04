@@ -32,15 +32,16 @@ router.get("/details", jwtMiddleware, async (req, res) => {
 	}
 });
 
-router.put("/update", jwtMiddleware, async (req, res) => {
-	const { id, first_name, last_name, email, phone_number } = req.body;
+router.put("/update", async (req, res) => {
+	const { id, first_name, last_name, email, phone_number, is_admin } = req.body;
 	try {
-		await pool.query("UPDATE users SET first_name = $1, last_name = $2, email = $3, phone_number = $4 WHERE id = $5", [
+		await pool.query("UPDATE users SET first_name = $1, last_name = $2, email = $3, phone_number = $4, is_admin = $5 WHERE id = $6", [
 			first_name,
 			last_name,
 			email,
 			phone_number,
-			id,
+			is_admin,
+			id
 		]);
 		res.status(200).json({ message: "User details updated successfully" });
 	} catch (error) {
@@ -49,7 +50,7 @@ router.put("/update", jwtMiddleware, async (req, res) => {
 	}
 });
 
-router.put("/newPassword", jwtMiddleware, async (req, res) => {
+router.put("/newPassword", async (req, res) => {
 	const { id, currentPassword, newPassword } = req.body;
 	try {
 		const currentHashResult = await pool.query("SELECT * FROM passwords WHERE user_id = $1", [id]);
@@ -173,7 +174,7 @@ router.post("/login", async (req, res) => {
 });
 
 //update profile pictures endpoint
-router.put("/profilepic", jwtMiddleware, async (req, res) => {
+router.put("/profilepic", async (req, res) => {
 	try {
 		const fileStr = req.body.image;
 		const uploadResponse = await cloudinary.uploader.upload(fileStr);
