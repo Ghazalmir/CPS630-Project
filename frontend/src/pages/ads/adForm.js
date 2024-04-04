@@ -40,12 +40,8 @@ function AdForm(props) {
   const title= useRef(undefined);
   const price = useRef(0);
   const description = useRef(undefined);
-  //const category_id = useRef(0);
-  //const subcategory_id = useRef(0);
-  const images = useRef([]);
-  //const [street, setStreet] = useState(undefined);
-  //const [city, setCity] = useState(undefined);
-  //const [country, setCountry] = useState(undefined);
+  const [province_id, setProvincesId] = useState(0);
+
   const [is_available, setAvailability] = useState(true);
   const [loading, setLoading] = useState(true);
 
@@ -64,9 +60,11 @@ function AdForm(props) {
             if (response.data.rows.length === 0) {
               navigate("/404");
             }
+            //console.log(response.data.rows);
             title.current.value = response.data.rows[0].title;
             description.current.value = response.data.rows[0].description;
             price.current.value = response.data.rows[0].price;
+            setProvincesId(response.data.rows[0].province_id);
             setImageLinks(response.data.rows[0].image_links);
             setSubcategoryId(response.data.rows[0].subcategory_id);
             setCategoryId(response.data.rows[0].category_id);
@@ -74,7 +72,7 @@ function AdForm(props) {
             setMeetOnCampusChecked(response.data.rows[0].meet_on_campus);
             setLocationId(response.data.rows[0].location_id);
 
-            setLoading(false);
+            //setLoading(false);
           } catch (error) {
             console.error("Error fetching user data:", error);
             setLoading(false);
@@ -129,7 +127,7 @@ function AdForm(props) {
       var editFormData = {
         product_id: id,
           values: {
-            location_id: 1, // TODO: FIX THIS LATER
+            location_id: locationId,
             title: title.current.value,
             description: description.current.value,
             price: price.current.value, 
@@ -404,7 +402,7 @@ function AdForm(props) {
         meetOnCampus === true ? "": 
         <>
         Or specify a location: 
-        <LocationField selectedCity={locationId}
+        <LocationField selectedCity={locationId} selectedProvince={province_id}
         changeSelectedCity={(val) => setLocationId(val)}/> 
         </>
       }

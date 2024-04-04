@@ -16,6 +16,7 @@ router.get('/adDetails/:id', async (req, res) => {
 					subcategories.subcategory_name, 
 					locations.city, 
 					provinces.province_name,
+					provinces.province_id,
 					ARRAY_AGG(images.image_link) AS image_links
 					FROM 
 							products 
@@ -36,7 +37,8 @@ router.get('/adDetails/:id', async (req, res) => {
 					categories.category_name, 
 					subcategories.subcategory_name, 
 					locations.city,  
-					provinces.province_name;`
+					provinces.province_name,
+					provinces.province_id;`
 					, [productId]);
 
 		console.log(productId);

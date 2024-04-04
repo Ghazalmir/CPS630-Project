@@ -6,49 +6,49 @@ function LocationField(props) {
   const [provincesData, setProvincesData] = useState([]);
   const [citiesData, setCitiesData] = useState([]);
 
-  const [selectedProvince, setSelectedProvince] = useState(0);
-  //const [selectedCity, setSelectedCity] = useState(0);
+  const [selectedProvince, setSelectedProvince] = useState(props.selectedProvince);
 
   useEffect(() => {
     
 		const fetchProvinceData = async () => {
 			try {
 				const response = await axios.get(`http://localhost:8080/api/locations/getProvinces`);
-          console.log(response);
+
           setProvincesData(response.data);
           setLoading(false);
-        
 			} catch (error) {
 				console.error("Error fetching province data:", error);
 				setLoading(false);
 			}
 		};
-	
+
 		fetchProvinceData();
 	}, []);
 
   useEffect(() => {
-    
-		const fetchCitiesData = async () => {
-			try {
-				const response = await axios.get(`http://localhost:8080/api/locations/getCities`, {
-            params: {
-              province_id: selectedProvince,
-            }
-          });
-          console.log(response);
-          setCitiesData(response.data);
-          setLoading(false);
-        
-			} catch (error) {
-				console.error("Error fetching city data:", error);
-				setLoading(false);
-			}
-		};
-	
-		fetchCitiesData();
+      fetchCitiesData();
+
 	}, [selectedProvince]);
   
+
+  const fetchCitiesData = async () => {
+    try {
+
+      const response = await axios.get(`http://localhost:8080/api/locations/getCities`, {
+          params: {
+            province_id: selectedProvince !== 0 ? selectedProvince : parseInt(props.selectedProvince),
+          }
+        });
+
+        setCitiesData(response.data);
+        setLoading(false);
+      
+    } catch (error) {
+      console.error("Error fetching city data:", error);
+      setLoading(false);
+    }
+  };
+
 
   return (
     <>
@@ -60,19 +60,19 @@ function LocationField(props) {
 
         <div className="col col-12 col-md-6 mb-3">
         <label htmlFor="province" className="form-label">Province <span className="text-danger">*</span></label>
-          <select className="form-select bg-body-tertiary" name="province" aria-label="Select a province" defaultValue={selectedProvince} onChange={($event)=> setSelectedProvince($event.target.value)} required>
+          <select className="form-select bg-body-tertiary" name="province" aria-label="Select a province" defaultValue={props.selectedProvince !== 0 ? parseInt(props.selectedProvince) : selectedProvince} onChange={($event)=> setSelectedProvince($event.target.value)} required>
           <option value="0">Select a province</option>
             {provincesData.map((province) => 
-              (<option value={province.province_id} key={province.province_id}>{province.province_name}</option>))}
+              (<option value={province.province_id} key={province.province_id} selected={province.province_id == parseInt(props.selectedProvince)}>{province.province_name}</option>))}
           </select>
         </div>
         <div className="col col-12 col-md-6 mb-3">
         <label htmlFor="location_id" className="form-label">City <span className="text-danger">*</span></label>
 
-        <select className="form-select bg-body-tertiary" name="location_id" aria-label="Select a city" defaultValue={props.selectedCity} onChange={($event)=> props.changeSelectedCity($event.target.value)} disabled={citiesData.length > 0 ? false : true} required>
-          <option value="0">{citiesData.length > 0 ? 'Select a city' : 'Select a province first'}</option>
+        <select className="form-select bg-body-tertiary" name="location_id" aria-label="Select a city" defaultValue={props.selectedCity} onChange={($event)=> props.changeSelectedCity($event.target.value)} disabled={selectedProvince !== 0 ? false : true} required>
+          <option value="0">{selectedProvince !== 0 ? 'Select a city' : 'Select a province first'}</option>
 
-          {citiesData.length > 0 ? 
+          {selectedProvince !== 0  ? 
             <>
             {citiesData.map((city) => 
             (<option value={city.location_id} key={city.location_id}>{city.city}</option>))}
