@@ -41,7 +41,6 @@ router.post("/reported-ads", async (req, res) => {
   }
 });
 
-// Create reported user
 router.post("/reported-users", async (req, res) => {
   try {
     const { reported_user_id, reported_by_user_id, reason } = req.body;
@@ -63,6 +62,17 @@ router.get("/users", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send("Server Error");
+  }
+});
+
+router.post('/api/admin/delete-user', async (req, res) => {
+  const { id } = req.body;
+  try {
+    await pool.query('DELETE FROM users WHERE id = $1', [id]);
+    res.status(200).json({ success: true, message: 'User deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
   }
 });
 
