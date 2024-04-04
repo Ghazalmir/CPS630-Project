@@ -66,13 +66,21 @@ const MyAccount = (props) => {
 		}
 
 		try {
-			await axios.put("http://localhost:8080/api/profile/update", {
-				id: jwtDecode(sessionStorage.getItem("token")).id,
-				first_name: firstName,
-				last_name: lastName,
-				email: email,
-				phone_number: phoneNumber,
-			});
+			await axios.put(
+				"http://localhost:8080/api/profile/update",
+				{
+					id: jwtDecode(sessionStorage.getItem("token")).id,
+					first_name: firstName,
+					last_name: lastName,
+					email: email,
+					phone_number: phoneNumber,
+				},
+				{
+					headers: {
+						authorization: `${sessionStorage.getItem("token")}`,
+					},
+				}
+			);
 		} catch (error) {
 			alert("Failed to save changes");
 			return;
@@ -94,11 +102,19 @@ const MyAccount = (props) => {
 		}
 
 		try {
-			await axios.put("http://localhost:8080/api/profile/newPassword", {
-				id: jwtDecode(sessionStorage.getItem("token")).id,
-				currentPassword: currentPassword,
-				newPassword: newPassword,
-			});
+			await axios.put(
+				"http://localhost:8080/api/profile/newPassword",
+				{
+					id: jwtDecode(sessionStorage.getItem("token")).id,
+					currentPassword: currentPassword,
+					newPassword: newPassword,
+				},
+				{
+					headers: {
+						authorization: `${sessionStorage.getItem("token")}`,
+					},
+				}
+			);
 		} catch (error) {
 			alert(error.response.data.error);
 			return;
@@ -159,10 +175,18 @@ const MyAccount = (props) => {
 
 	const postImage = async (base64) => {
 		try {
-			await axios.put("http://localhost:8080/api/profile/profilepic", {
-				id: jwtDecode(sessionStorage.getItem("token")).id,
-				image: base64,
-			});
+			await axios.put(
+				"http://localhost:8080/api/profile/profilepic",
+				{
+					id: jwtDecode(sessionStorage.getItem("token")).id,
+					image: base64,
+				},
+				{
+					headers: {
+						authorization: `${sessionStorage.getItem("token")}`,
+					},
+				}
+			);
 		} catch (error) {
 			alert("Failed to upload image");
 			return;

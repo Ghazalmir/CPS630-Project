@@ -32,7 +32,7 @@ router.get("/details", jwtMiddleware, async (req, res) => {
 	}
 });
 
-router.put("/update", async (req, res) => {
+router.put("/update", jwtMiddleware, async (req, res) => {
 	const { id, first_name, last_name, email, phone_number } = req.body;
 	try {
 		await pool.query("UPDATE users SET first_name = $1, last_name = $2, email = $3, phone_number = $4 WHERE id = $5", [
@@ -49,7 +49,7 @@ router.put("/update", async (req, res) => {
 	}
 });
 
-router.put("/newPassword", async (req, res) => {
+router.put("/newPassword", jwtMiddleware, async (req, res) => {
 	const { id, currentPassword, newPassword } = req.body;
 	try {
 		const currentHashResult = await pool.query("SELECT * FROM passwords WHERE user_id = $1", [id]);
@@ -72,7 +72,7 @@ router.put("/newPassword", async (req, res) => {
 });
 
 //signup end point
-router.post("/", async (req, res) => {
+router.post("/", jwtMiddleware, async (req, res) => {
 	const { firstName, lastName, email, phoneNumber, password } = req.body;
 
 	//checking if user already exists
@@ -134,7 +134,7 @@ router.post("/", async (req, res) => {
 	}
 });
 
-router.post("/login", async (req, res) => {
+router.post("/login", jwtMiddleware, async (req, res) => {
 	const { email, password } = req.body;
 
 	try {
@@ -173,7 +173,7 @@ router.post("/login", async (req, res) => {
 });
 
 //update profile pictures endpoint
-router.put("/profilepic", async (req, res) => {
+router.put("/profilepic", jwtMiddleware, async (req, res) => {
 	try {
 		const fileStr = req.body.image;
 		const uploadResponse = await cloudinary.uploader.upload(fileStr);

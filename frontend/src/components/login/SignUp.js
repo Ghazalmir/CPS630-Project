@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import classes from "./SignUp.module.css";
 import axios from "axios";
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
 
 const SignUp = (props) => {
 	const [firstName, setFirstName] = useState("");
@@ -10,21 +10,29 @@ const SignUp = (props) => {
 	const [phoneNumber, setPhoneNumber] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 
 		if (props.isLogin) {
-      try {
-				const response = await axios.post("http://localhost:8080/api/profile/login", {
-					email,
-					password,
-				});
-        sessionStorage.setItem("token", response.data.token)
-        navigate('/');
+			try {
+				const response = await axios.post(
+					"http://localhost:8080/api/profile/login",
+					{
+						email,
+						password,
+					},
+					{
+						headers: {
+							authorization: `${sessionStorage.getItem("token")}`,
+						},
+					}
+				);
+				sessionStorage.setItem("token", response.data.token);
+				navigate("/");
 			} catch (error) {
-				alert(error.response.data.error)
+				alert(error.response.data.error);
 			}
 		} else {
 			const emailRegex = /\S+@\S+\.\S+/;
@@ -51,18 +59,26 @@ const SignUp = (props) => {
 			}
 
 			try {
-				const response = await axios.post("http://localhost:8080/api/profile", {
-					firstName,
-					lastName,
-					email,
-					phoneNumber,
-					password,
-				});
-				sessionStorage.setItem("token", response.data.token)
-        navigate('/');
+				const response = await axios.post(
+					"http://localhost:8080/api/profile",
+					{
+						firstName,
+						lastName,
+						email,
+						phoneNumber,
+						password,
+					},
+					{
+						headers: {
+							authorization: `${sessionStorage.getItem("token")}`,
+						},
+					}
+				);
+				sessionStorage.setItem("token", response.data.token);
+				navigate("/");
 			} catch (error) {
-				alert(error.response.data.error)
-			} 
+				alert(error.response.data.error);
+			}
 		}
 	};
 
