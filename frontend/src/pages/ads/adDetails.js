@@ -14,7 +14,6 @@ function AdDetails() {
 	const [loading, setLoading] = useState(true);
   const [isOwner, setIsOwner] = useState(false);
   const navigate = useNavigate();
-  const userId = jwtDecode(sessionStorage.getItem("token")).id;
 
   useEffect(() => {
 		const fetchAdData = async () => {
@@ -87,10 +86,17 @@ function AdDetails() {
             </h6>
             <h4 className="fw-normal">{adData.price}</h4>
             <p>{adData.description}</p>
-            {isOwner 
-              ?<CustomButton href={`/EditAd/${id}`} text="Edit Ad" isBlue="false"/>
-              :<CustomButton href={`/Messages/${id}`} text="Message Seller"/>
+            {
+              isLoggedIn() ? 
+                (isOwner 
+                  ?<CustomButton href={`/EditAd/${id}`} text="Edit Ad" isBlue="false"/>
+                  :<CustomButton href={`/Messages/${id}`} text="Message Seller"/>
+                )
+              :
+              <CustomButton href={`/Login`} text="Login To Message Seller"/>
             }
+            
+            
           </div>
         </div>
       </div>

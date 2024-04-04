@@ -169,7 +169,7 @@ function AdForm(props) {
       })
       .then(data => {
         uploadImage(id);
-        alert("Ad updated Succesfully!");
+        alert("Ad Updated Succesfully!");
         navigate("/MyListings");
         //console.log("Response from server:", data);
       })
@@ -197,7 +197,7 @@ function AdForm(props) {
         .post("http://localhost:8080/api/cloudinary/uploadImage", { image: base64, product_id: product_id })
         .then((res) => {
           setUrl(res);
-          //alert("Image uploaded Succesfully");
+          alert("Ad Posted Succesfully!");
           navigate("/MyListings");
         })
         .finally(() => setLoading(false))
@@ -210,7 +210,7 @@ function AdForm(props) {
         .post("http://localhost:8080/api/cloudinary/uploadMultipleImages", { images, product_id: product_id })
         .then((res) => {
           setUrl(res.data);
-          //alert("Images uploaded Succesfully");
+          alert("Ad Posted Succesfully!");
           navigate("/MyListings");
         })
         .finally(() => setLoading(false))
