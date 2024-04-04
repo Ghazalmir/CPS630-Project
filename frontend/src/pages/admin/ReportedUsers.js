@@ -27,7 +27,6 @@ function ReportedUsers() {
 }, []);
 
   const handleDeleteUser = (userId) => {
-    // Assuming API endpoint for deleting a reported user might look something like this
     fetch(`http://localhost:8080/api/reported-users/${userId}`, {
       method: "DELETE",
     })
@@ -35,7 +34,6 @@ function ReportedUsers() {
         if (!response.ok) {
           throw new Error("Failed to delete reported user");
         }
-        // Remove the user from the state to update the UI
         setReportedUsers(reportedUsers.filter((user) => user.id !== userId));
       })
       .catch((error) => {
@@ -57,11 +55,11 @@ function ReportedUsers() {
         <section className="reportedUsers">
           {reportedUsers.map((user) => (
             <article key={user.id}>
-              <p>
-                Reported For: <span>{user.reason}</span>
+              <p style={{ marginBottom: '5px', marginTop: '20px' }}>
+                Reported for: <span>{user.reason}</span>
               </p>
               <div className="deleteUserContainer">
-                <p>{user.name}</p>
+                <p>{user.first_name} {user.last_name}</p>
                 <button className="btn btn-yellow rounded border-0 p-2 px-2 mx-1"
             onClick={($event) => {$event.preventDefault(); setIsDeleteModalShown(!isDeleteModalShown)}}
             >Delete</button>
