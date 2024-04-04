@@ -28,12 +28,6 @@ function Navbar() {
     }
   };
 
-  const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      handleSearch();
-    }
-  };
-
   useEffect(() => {
     const checkAdminStatus = async () => {
       setTimeout(() => {
@@ -117,9 +111,9 @@ function Navbar() {
             ) : (<></>)  }
               
             </ul>
-            <form className="d-flex search-form" role="search">
+            <form className="d-flex search-form" role="search" onSubmit={handleSearch}>
               <div className="search-bar-container">
-                <input className="form-control me-2" id = "search"type="search" placeholder="What are you looking for?" aria-label="Search" value={searchQuery} onKeyDown={handleKeyPress} onChange={(e) => setSearchQuery(e.target.value)} />
+                <input className="form-control me-2" id = "search"type="search" placeholder="What are you looking for?" aria-label="Search" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                 <button className="btn btn-outline-light search-icon" type="button" onClick={handleSearch}>
                   <SearchIcon />
                 </button>
