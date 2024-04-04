@@ -4,9 +4,9 @@ import { ReactComponent as SearchIcon } from '../../Other/icons8-search.svg';
 import React, { useState, useEffect } from 'react';
 import { Dropdown, Nav } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import isLoggedIn from '../../util/isLoggedIn';
 import isAdmin from '../../util/isAdmin';
 import SideBar from '../sidebar/sideBar';
+import isLoggedIn from '../../util/isLoggedIn';
 
 function Navbar() {
   const [showDiv, setShowDiv] = useState(false);

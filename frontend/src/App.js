@@ -14,6 +14,7 @@ import AdminPanel from "./pages/admin/ReportedAds.js";
 import ReportedUsers from "./pages/admin/ReportedUsers.js";
 import ManageUsers from "./pages/admin/ManageUsers.js";
 import SignUp from "./components/login/SignUp.js";
+import ForbiddenPage from "./pages/forbiddenPage.js";
 
 // Styling
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -57,6 +58,7 @@ function App() {
 						<Route path="/AdminPanel/ManageUsers" element={<ManageUsers />} />
 						<Route path="/login" element={<SignUp isLogin={true} />} />
 						<Route path="/signup" element={<SignUp isLogin={false} />} />
+						<Route path="/forbidden" element={<ForbiddenPage />} />
 						<Route path="*" element={<PageNotFound />} />
 					</Routes>
 					{/* Add the componenet once you have it

@@ -4,8 +4,9 @@ const pool = require("../db");
 const bodyParser = require('body-parser')
 router.use(bodyParser.json()); 
 router.use(bodyParser.urlencoded({ extended: true })); 
+const jwtMiddleware = require('../jwtMiddleware')
 
-router.get('/adDetails/:id', async (req, res) => {
+async function getDetails (req) {
 	try {
 		const productId = req.query.id;
 
@@ -41,7 +42,19 @@ router.get('/adDetails/:id', async (req, res) => {
 					provinces.province_id;`
 					, [productId]);
 
-		console.log(productId);
+			return result;
+		} catch {
+			console.error(error);
+			return;
+		}
+
+}
+
+router.get('/adDetails/:id', async (req, res) => {
+	try {
+		console.log("here in line 55");
+
+		const result = await getDetails(req);
     res.json(result);
 
 	} catch (error) {
@@ -49,6 +62,26 @@ router.get('/adDetails/:id', async (req, res) => {
 		res.status(500).send("Server Error");
 	}
 });
+
+router.get('/editDetails/:id', jwtMiddleware, async (req, res) => {
+	try {
+		console.log("here in line 67");
+		const userId = req.query.userId;
+		const result = await getDetails(req);
+
+		if (userId === result.rows[0].user_id) {
+			res.json(result);
+		}
+		else {
+    	res.status(403).json({auth: false});
+		}
+
+	} catch (error) {
+		console.error(error);
+		res.status(500).send("Server Error");
+	}
+});
+
 
 router.get('/products', async (req, res) => {
 	try {
@@ -128,7 +161,7 @@ router.get('/products/search', async (req, res) => {
     }
 });
 
-router.post("/postNewAd", async (req, res) => {
+router.post("/postNewAd", jwtMiddleware, async (req, res) => {
 	try {
 		const {user_id, location_id, title, description, price, is_available, category_id, subcategory_id, meet_on_campus}
 		 = {...req.body};
@@ -155,7 +188,7 @@ router.post("/postNewAd", async (req, res) => {
 });
 
 
-router.post("/updateAd", async (req, res) => {
+router.post("/updateAd", jwtMiddleware, async (req, res) => {
 	try {
 		const {product_id, values} = {...req.body};
 		const {location_id, title, description, price, category_id, subcategory_id, meet_on_campus, is_available} = {...values};
@@ -174,7 +207,7 @@ router.post("/updateAd", async (req, res) => {
 	}
 });
 
-router.post("/deleteAd", async (req, res) => {
+router.post("/deleteAd", jwtMiddleware, async (req, res) => {
 	try {
 		const {product_id} = {...req.body};
 		const result = await pool.query(

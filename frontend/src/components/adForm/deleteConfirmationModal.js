@@ -27,10 +27,12 @@ function DeleteConfirmationModal(props) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          authorization: sessionStorage.getItem("token"),
         },
         body: JSON.stringify({product_id: props.id}),
       })
       .then(() => {
+        alert("Ad deleted successfully!")
         navigate("/MyListings");
         window.location.reload();
       })

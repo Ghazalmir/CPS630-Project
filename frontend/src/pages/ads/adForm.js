@@ -7,6 +7,7 @@ import { useUser } from "../../userContext";
 import  { useNavigate } from 'react-router-dom'
 import { jwtDecode } from "jwt-decode";
 import LocationField from "../../components/adForm/locationField";
+import isLoggedIn from '../../util/isLoggedIn';
 
 //var imageFiles = []; // array of images
 var rawImageFiles = []; // for uploading new images
@@ -37,9 +38,10 @@ function AdForm(props) {
   const [url, setUrl] = useState("");
 
   // Form fields
-  const title= useRef(undefined);
-  const price = useRef(0);
-  const description = useRef(undefined);
+  const [title, setTitle] = useState("");
+  const [price, setPrice] = useState(0);
+  const [description, setDescription] = useState("");
+
   const [province_id, setProvincesId] = useState(0);
 
   const [is_available, setAvailability] = useState(true);
@@ -48,22 +50,30 @@ function AdForm(props) {
 
 
     useEffect(() => {
+      if (!isLoggedIn()) {
+        navigate("/login");
+      }
+      
       if (props.isEditForm) {
         const fetchAdData = async () => {
           try {
-            
-            const response = await axios.get(`http://localhost:8080/api/ads/adDetails/${id}`, {
+            const response = await axios.get(`http://localhost:8080/api/ads/editDetails/${id}`, {
+              headers: {
+                authorization: sessionStorage.getItem("token"),
+              },
               params: {
-                id: id
-              }
+                id: id,
+                userId: jwtDecode(sessionStorage.getItem("token")).id,
+              },
+              
             });
+            
             if (response.data.rows.length === 0) {
               navigate("/404");
             }
-            //console.log(response.data.rows);
-            title.current.value = response.data.rows[0].title;
-            description.current.value = response.data.rows[0].description;
-            price.current.value = response.data.rows[0].price;
+            setTitle(response.data.rows[0].title);
+            setDescription(response.data.rows[0].description);
+            setPrice(response.data.rows[0].price);
             setProvincesId(response.data.rows[0].province_id);
             setImageLinks(response.data.rows[0].image_links);
             setSubcategoryId(response.data.rows[0].subcategory_id);
@@ -72,9 +82,12 @@ function AdForm(props) {
             setMeetOnCampusChecked(response.data.rows[0].meet_on_campus);
             setLocationId(response.data.rows[0].location_id);
 
-            //setLoading(false);
+            setLoading(false);
           } catch (error) {
-            console.error("Error fetching user data:", error);
+            console.error("Error fetching ad data:", error);
+            if (error.response.status == 403) {
+              navigate("/forbidden");
+            }
             setLoading(false);
           }
         };
@@ -91,9 +104,9 @@ function AdForm(props) {
       var editFormData = {
         user_id: jwtDecode(sessionStorage.getItem("token")).id,
         location_id: locationId,
-        title: title.current.value,
-        description: description.current.value,
-        price: price.current.value, 
+        title: title,
+        description: description,
+        price: price, 
         category_id: categoryId,
         subcategory_id: subcategoryId,
         meet_on_campus: meetOnCampus === true ? 1 : 0,
@@ -105,6 +118,7 @@ function AdForm(props) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          authorization: sessionStorage.getItem("token"),
         },
         body: JSON.stringify(editFormData),
       })
@@ -128,9 +142,9 @@ function AdForm(props) {
         product_id: id,
           values: {
             location_id: locationId,
-            title: title.current.value,
-            description: description.current.value,
-            price: price.current.value, 
+            title: title,
+            description: description,
+            price: price, 
             category_id: categoryId,
             subcategory_id: subcategoryId,
             meet_on_campus: meetOnCampus === true ? 1 : 0,
@@ -142,6 +156,7 @@ function AdForm(props) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          authorization: sessionStorage.getItem("token"),
         },
         body: JSON.stringify(editFormData),
       })
@@ -325,7 +340,7 @@ function AdForm(props) {
           <label htmlFor="title" className="form-label">Title <span className="text-danger">*</span></label>
           <input type="text" id="title" placeholder="Title" required
                  className="form-control bg-body-tertiary" maxLength="100" 
-                 ref={title} name="title"
+                defaultValue={title} onChange={($event) => setTitle($event.target.value)} name="title"
                  />
         </div>
         {/* Price */}
@@ -334,7 +349,8 @@ function AdForm(props) {
           <div className="input-group">
           <span className="input-group-text">$</span>
           <input type="number" className="form-control bg-body-tertiary" name="price"
-                 id="price" placeholder="Price" min="0" required ref={price}
+                 id="price" placeholder="Price" min="0" required
+                 defaultValue={price} onChange={($event) => setPrice($event.target.value)}
                  />  
           </div>    
         </div>
@@ -343,7 +359,8 @@ function AdForm(props) {
       <div className="mb-3">
         <label htmlFor="description" className="form-label">Description</label>
         <textarea className="form-control bg-body-tertiary" id="description" 
-                  placeholder="Lorem ipsum..." rows="3" name="description" ref={description}
+                  placeholder="Lorem ipsum..." rows="3" name="description"
+                  defaultValue={description} onChange={($event) => setDescription($event.target.value)}
                   >
         </textarea>
       </div>
