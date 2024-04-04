@@ -52,7 +52,34 @@ router.get('/adDetails/:id', async (req, res) => {
 
 router.get('/products', async (req, res) => {
 	try {
-		const result = await pool.query('SELECT * FROM products;');
+		const result = await pool.query(
+			`SELECT 
+			products.*, 
+			categories.category_name, 
+			subcategories.subcategory_name, 
+			locations.city, 
+			provinces.province_name,
+			provinces.province_id,
+			ARRAY_AGG(images.image_link) AS image_links
+			FROM 
+					products 
+			JOIN 
+					categories ON products.category_id = categories.category_id 
+			LEFT JOIN
+					locations ON products.location_id = locations.location_id
+			LEFT JOIN 
+					provinces ON locations.province_id = provinces.province_id
+			LEFT JOIN 
+					subcategories ON products.subcategory_id = subcategories.subcategory_id 
+			LEFT JOIN 
+					images ON products.product_id = images.product_id 
+			GROUP BY 
+			products.product_id, 
+			categories.category_name, 
+			subcategories.subcategory_name, 
+			locations.city,  
+			provinces.province_name,
+			provinces.province_id;`);
 		res.json(result);
 	} catch (error) {
 		console.error(error);
@@ -63,7 +90,37 @@ router.get('/products', async (req, res) => {
 router.get('/products/search', async (req, res) => {
     try {
         const q = req.query.searchQuery; 
-        const result = await pool.query(`SELECT * FROM products WHERE products.title ILIKE '%' || $1 || '%' OR products.description ILIKE '%' || $1 || '%';`, [q]);
+        const result = await pool.query(
+					`SELECT 
+					products.*, 
+					categories.category_name, 
+					subcategories.subcategory_name, 
+					locations.city, 
+					provinces.province_name,
+					provinces.province_id,
+					ARRAY_AGG(images.image_link) AS image_links
+					FROM 
+							products 
+					JOIN 
+							categories ON products.category_id = categories.category_id 
+          LEFT JOIN
+							locations ON products.location_id = locations.location_id
+					LEFT JOIN 
+							provinces ON locations.province_id = provinces.province_id
+					LEFT JOIN 
+							subcategories ON products.subcategory_id = subcategories.subcategory_id 
+					LEFT JOIN 
+							images ON products.product_id = images.product_id 
+					WHERE 
+							products.title ILIKE '%' || $1 || '%' OR products.description ILIKE '%' || $1 || '%'
+					GROUP BY 
+					products.product_id, 
+					categories.category_name, 
+					subcategories.subcategory_name, 
+					locations.city,  
+					provinces.province_name,
+					provinces.province_id;`
+					, [q]);
         res.json(result);
     } catch (error) {
         console.error(error);

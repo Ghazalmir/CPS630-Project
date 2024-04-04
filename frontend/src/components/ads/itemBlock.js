@@ -35,7 +35,7 @@ function ItemBlock({ item, isMyListings }) {
                 </>
             )}
             <div className='imageHolder' style={{ width: '300px', height: '300px', maxWidth: '100%', maxHeight: '100%', backgroundImage: `url(${imageExample})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundColor: '#F5F5F5', cursor: 'pointer', position: 'relative' }}>
-                <img src={imageExample} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover'}} onClick={handleClick}/>
+                <img src={item.image_links.length > 0 ? item.image_links[0] : imageExample} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover'}} onClick={handleClick}/>
                 {isMyListings || isReportedAds ? (
                     <div className="button-container" style={{ position: 'absolute', top: '10px', right: '5px' }}>
                         { isMyListings ? (
@@ -59,7 +59,7 @@ function ItemBlock({ item, isMyListings }) {
                     </div>
                 </div>
                 <a href="#" className="item-title" style={{ textDecoration: 'none' }}><h5 style={{ color: 'black', fontWeight: 'bold' }} onClick={handleClick}>{item.title}</h5></a>
-                <h6 style={{ color: '#80A5CD' }}>{item.location_id}</h6>
+                <h6 style={{ color: '#80A5CD' }}>{item.city ? `${item.city}, ${item.province_name}` : "Meet on Campus"}</h6>
             </div>
             <DeleteConfirmationModal show={isDeleteModalShown} 
             id={item.product_id}
