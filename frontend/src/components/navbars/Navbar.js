@@ -42,7 +42,7 @@ function Navbar() {
     return (
       <nav className="navbar navbar-expand-lg mb-3">
         <div className="container-fluid">
-          <a className="navbar-brand" href="/">Website Name</a>
+          <a className="navbar-brand" href="/">MetMarket</a>
           <button className="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" onClick={toggleDiv}>
             <span className="navbar-toggler-icon"></span>
           </button>
