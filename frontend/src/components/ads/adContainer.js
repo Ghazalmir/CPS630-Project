@@ -5,6 +5,7 @@ import './adContainer.css';
 import ItemBlock from './itemBlock.js';
 import { useLocation } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
+import SideBar from '../sidebar/sideBar.js';
 
 
 function AdContainer() {
@@ -80,8 +81,11 @@ function AdContainer() {
 
         if (locationFilter) {
             switch(locationFilter) {
-                case 'campus':
+                case 0:
                     filteredItems = filteredItems.filter(item => item.meet_on_campus == 1);
+                    break;
+                default:
+                    filteredItems = filteredItems.filter(item => item.location_id == locationFilter);
                     break;
             }
         }
