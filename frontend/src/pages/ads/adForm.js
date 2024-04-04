@@ -79,7 +79,7 @@ function AdForm(props) {
             setSubcategoryId(response.data.rows[0].subcategory_id);
             setCategoryId(response.data.rows[0].category_id);
             setAvailability(response.data.rows[0].is_available === "1" ? true : false);
-            setMeetOnCampusChecked(response.data.rows[0].meet_on_campus);
+            setMeetOnCampusChecked(response.data.rows[0].meet_on_campus === "1" ? true : false);
             setLocationId(response.data.rows[0].location_id);
 
             setLoading(false);

@@ -1,9 +1,10 @@
 import Carousel from "../../components/carousel/carousel";
-import BlueButton from "../../components/general/blueButton";
+import CustomButton from "../../components/general/customButton";
 import AvailabilityStatus from "../../components/general/availabilityStatus";
-
+import { jwtDecode } from "jwt-decode";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import isLoggedIn from '../../util/isLoggedIn';
 
 import { useParams, useNavigate} from "react-router-dom";
 
@@ -11,10 +12,11 @@ function AdDetails() {
   const { id } = useParams();
   const [adData, setAdData] = useState();
 	const [loading, setLoading] = useState(true);
+  const [isOwner, setIsOwner] = useState(false);
   const navigate = useNavigate();
+  const userId = jwtDecode(sessionStorage.getItem("token")).id;
 
   useEffect(() => {
-    
 		const fetchAdData = async () => {
 			try {
 				const response = await axios.get(`http://localhost:8080/api/ads/adDetails/${id}`, {
@@ -39,6 +41,16 @@ function AdDetails() {
 	
 		fetchAdData();
 	}, [id]);
+
+  useEffect(() => {
+		if (isLoggedIn()) {
+      const userId = jwtDecode(sessionStorage.getItem("token")).id;
+      if (adData && parseInt(adData.user_id) == userId) {
+        setIsOwner(true);
+      }
+    }
+    
+	}, [adData]);
 
   const goBack = () => {
     navigate(-1);
@@ -75,7 +87,10 @@ function AdDetails() {
             </h6>
             <h4 className="fw-normal">{adData.price}</h4>
             <p>{adData.description}</p>
-            <BlueButton href={`/Messages/${id}`} text="Message Seller" />
+            {isOwner 
+              ?<CustomButton href={`/EditAd/${id}`} text="Edit Ad" isBlue="false"/>
+              :<CustomButton href={`/Messages/${id}`} text="Message Seller"/>
+            }
           </div>
         </div>
       </div>
