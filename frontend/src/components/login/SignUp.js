@@ -22,11 +22,6 @@ const SignUp = (props) => {
 					{
 						email,
 						password,
-					},
-					{
-						headers: {
-							authorization: `${sessionStorage.getItem("token")}`,
-						},
 					}
 				);
 				sessionStorage.setItem("token", response.data.token);
