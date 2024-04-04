@@ -1,6 +1,69 @@
 .reason {
   padding: 10px 0px;
 }
+
+.option-user {
+  color: black;
+}
+
+.user-list {
+  font-family: Poppins, sans-serif;
+  padding: 10px;
+  border: none;
+  background: #F5C344;
+
+}
+
+section {
+  display: flex;
+  justify-content: center;
+}
+
+.edit-form {
+  width: 60%;
+  box-shadow: 0px 1px 13px rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  padding: 20px;
+}
+
+
+.form-title {
+  font-size: 20px !important;
+  color: #004C9B;
+  font-weight: 600;
+}
+
+.form-title-user_name {
+  text-align: center;
+  font-weight: 600;
+  font-size: 30px
+}
+
+.row.button-options {
+  display: flex;
+}
+
+.button-options button {
+  float: right;
+  margin-right: 10px;
+  width: fit-content;
+}
+
+.admin-button {
+  border: 3px;
+  bottom: 0;
+  margin-left: 10px;
+}
+
+.save-changes-button {
+  background-color: #004C9B;
+  color: white;
+}
+
+.cancel-button {
+  background-color: #E5E8EC;
+}
+
 /*
 
 
@@ -47,6 +110,7 @@ section article .deleteUserContainer input:hover {
     background-position: 50% 50%;
   }
 }
+
 /*
 
 
