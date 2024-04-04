@@ -6,6 +6,7 @@ import axios from "axios";
 import { useUser } from "../../userContext";
 import  { useNavigate } from 'react-router-dom'
 import { jwtDecode } from "jwt-decode";
+import LocationField from "../../components/adForm/locationField";
 
 //var imageFiles = []; // array of images
 var rawImageFiles = []; // for uploading new images
@@ -26,6 +27,8 @@ function AdForm(props) {
   const [subcategoryId, setSubcategoryId] = useState(0);
   const [imageFiles, setImageFiles] = useState([]);
   const [imageLinks, setImageLinks] = useState([]);
+  const [locationId, setLocationId] = useState(0);
+
 
 
   const [isDeleteModalShown, setIsDeleteModalShown] = useState(false);
@@ -69,7 +72,8 @@ function AdForm(props) {
             setCategoryId(response.data.rows[0].category_id);
             setAvailability(response.data.rows[0].is_available === "1" ? true : false);
             setMeetOnCampusChecked(response.data.rows[0].meet_on_campus);
-            
+            setLocationId(response.data.rows[0].location_id);
+
             setLoading(false);
           } catch (error) {
             console.error("Error fetching user data:", error);
@@ -88,7 +92,7 @@ function AdForm(props) {
       event.preventDefault();
       var editFormData = {
         user_id: jwtDecode(sessionStorage.getItem("token")).id,
-        location_id: 1, // TODO: FIX THIS LATER
+        location_id: locationId,
         title: title.current.value,
         description: description.current.value,
         price: price.current.value, 
@@ -397,7 +401,12 @@ function AdForm(props) {
         </label>
       </div>
       {
-        meetOnCampus === true ? "": addressFields(" ", " ", " ") 
+        meetOnCampus === true ? "": 
+        <>
+        Or specify a location: 
+        <LocationField selectedCity={locationId}
+        changeSelectedCity={(val) => setLocationId(val)}/> 
+        </>
       }
       
       {/* Submit/cancel buttons */}
