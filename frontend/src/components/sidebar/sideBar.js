@@ -46,7 +46,7 @@ function SideBar() {
   }
 
   return (
-    <div className="container d-flex justify-content-center pt-5 side-bar">
+    <div className="container d-flex justify-content-center side-bar">
       <ul className="list-unstyled">
       { !isAdminPanel && !isMyListings ? (
         <div className="categories-container-title">
