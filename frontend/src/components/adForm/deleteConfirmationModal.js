@@ -5,7 +5,7 @@ import  { useNavigate, useLocation } from 'react-router-dom'
 function DeleteConfirmationModal(props) {
   const navigate = useNavigate();
   const location = useLocation();
-  const isAdminPanel = location.pathname.includes("/Users");
+  const isAdminPanel = location.pathname.includes("Users");
   const handleDelete = async () => {
     //event.preventDefault(); // Prevent default form submission
     try {
@@ -65,7 +65,7 @@ function DeleteConfirmationModal(props) {
             Close
           </button>
           <button className="btn btn-yellow" onClick={handleDelete}>
-            Delete Ad
+            Delete {isAdminPanel ? 'User' : 'Ad'}
           </button>
         </Modal.Footer>
   </Modal>
