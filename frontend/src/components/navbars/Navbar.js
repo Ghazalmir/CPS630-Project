@@ -6,6 +6,7 @@ import { Dropdown, Nav } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import isLoggedIn from '../../util/isLoggedIn';
 import isAdmin from '../../util/isAdmin';
+import SideBar from '../sidebar/sideBar';
 
 function Navbar() {
   const [showDiv, setShowDiv] = useState(false);
@@ -100,11 +101,10 @@ function Navbar() {
                 )}
             <Dropdown style={{ display: showDiv ? 'block' : 'none' }}>
                 <Dropdown.Toggle className="categories-title" variant="success" id="dropdown-basic">
-                  Categories
+                  Options
                 </Dropdown.Toggle>
               <Dropdown.Menu className="navbar-categories">
-                <Dropdown.Item className="categories" href="#/action-1">Tutoring</Dropdown.Item>
-                <Dropdown.Item className="categories" href="#/action-2">Textbooks</Dropdown.Item>
+                <SideBar />
               </Dropdown.Menu>
             </Dropdown>
 
