@@ -29,7 +29,7 @@ function Filters() {
     e.preventDefault();
     console.log(location.pathname);
     try {
-      window.location.href =`${window.location.href}${selectedLocation ? `&location=${selectedLocation}` : ""}${selectedPriceRange ? `&priceRange=${selectedPriceRange}` : ""}${selectedSortBy ? `&sortby=${selectedSortBy}` : ""}`;
+      window.location.href =`${window.location.href}&filters?${selectedLocation ? `&location=${selectedLocation}` : ""}${selectedPriceRange ? `&priceRange=${selectedPriceRange}` : ""}${selectedSortBy ? `&sortby=${selectedSortBy}` : ""}`;
     } catch (error) {
       console.error('Error navigating:', error);
     }
