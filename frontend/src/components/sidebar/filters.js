@@ -11,6 +11,7 @@ function Filters() {
   const [selectedLocation, setSelectedLocation] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSortByToggle = () => {
     setIsSortByCollapsed(!isSortByCollapsed);
@@ -26,8 +27,9 @@ function Filters() {
 
   const applyFilter = (e) => {
     e.preventDefault();
+    console.log(location.pathname);
     try {
-      navigate(`/filters?${selectedLocation ? `&location=${selectedLocation}` : ""}${selectedPriceRange ? `&priceRange=${selectedPriceRange}` : ""}${selectedSortBy ? `&sortby=${selectedSortBy}` : ""}`)
+      window.location.href =`${window.location.href}${selectedLocation ? `&location=${selectedLocation}` : ""}${selectedPriceRange ? `&priceRange=${selectedPriceRange}` : ""}${selectedSortBy ? `&sortby=${selectedSortBy}` : ""}`;
     } catch (error) {
       console.error('Error navigating:', error);
     }
