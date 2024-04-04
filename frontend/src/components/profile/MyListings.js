@@ -5,10 +5,7 @@ import classes from "./MyListings.module.css"
 const MyListings = () => {
   return (
     <div className={classes.listingsContainer}>
-      <div className="col-2 sidebar">
-            <Sidebar />
-        </div>
-        <div className="col-sm-12 col-md-10 ad-container">
+        <div className="col-sm-12 col-md-12 ad-container">
             <AdContainer />
         </div>
     </div>

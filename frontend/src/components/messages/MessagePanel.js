@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import { parseISO, compareAsc } from "date-fns";
 import { Link, useParams } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import { FaArrowLeft } from "react-icons/fa";
 
 function useChatScroll(dep) {
 	const ref = React.useRef();
@@ -54,7 +55,6 @@ const MessagePanel = () => {
 		};
 	}, [jwtDecode(sessionStorage.getItem("token")).id]);
 
-
 	useEffect(() => {
 		const fetchUserData = async () => {
 			try {
@@ -76,7 +76,6 @@ const MessagePanel = () => {
 	}, []);
 
 	useEffect(() => {
-		console.log("token id: ", jwtDecode(sessionStorage.getItem("token")).id);
 		const fetchData = async () => {
 			try {
 				const [conversationsResponse, messagesResponse] = await Promise.all([
@@ -183,17 +182,23 @@ const MessagePanel = () => {
 	const sendMessage = async () => {
 		if (newMessage.trim() === "") return;
 		try {
-			const response = await axios.post("http://localhost:8080/api/messages/messages", {
-				conversation_id: selectedConversation.conversation_id,
-				message: newMessage,
-				senderID: jwtDecode(sessionStorage.getItem("token")).id,
-				recieverID:
-				jwtDecode(sessionStorage.getItem("token")).id === selectedConversation.userid1 ? selectedConversation.userid2 : selectedConversation.userid1,
-			}, {
-				headers: {
-					"authorization": sessionStorage.getItem("token")
+			const response = await axios.post(
+				"http://localhost:8080/api/messages/messages",
+				{
+					conversation_id: selectedConversation.conversation_id,
+					message: newMessage,
+					senderID: jwtDecode(sessionStorage.getItem("token")).id,
+					recieverID:
+						jwtDecode(sessionStorage.getItem("token")).id === selectedConversation.userid1
+							? selectedConversation.userid2
+							: selectedConversation.userid1,
 				},
-			});
+				{
+					headers: {
+						authorization: sessionStorage.getItem("token"),
+					},
+				}
+			);
 		} catch (error) {
 			console.error("Error uploading message:", error);
 		}
@@ -207,7 +212,9 @@ const MessagePanel = () => {
 					? selectedConversation.user2_first_name
 					: selectedConversation.user1_first_name,
 			receiver_id:
-			jwtDecode(sessionStorage.getItem("token")).id === selectedConversation.userid1 ? selectedConversation.userid2 : selectedConversation.userid1,
+				jwtDecode(sessionStorage.getItem("token")).id === selectedConversation.userid1
+					? selectedConversation.userid2
+					: selectedConversation.userid1,
 			receiver_last_name:
 				selectedConversation.userid1 === jwtDecode(sessionStorage.getItem("token")).id
 					? selectedConversation.user2_last_name
@@ -258,7 +265,7 @@ const MessagePanel = () => {
 			) : (
 				<div className="container-fluid">
 					<div className="row">
-						<div className={`${screenSize.width >= 764 ? "col-md-3" : selectedConversation ? "d-none" : "col-md-12"}`}>
+						<div className={`${screenSize.width >= 768 ? "col-md-3" : selectedConversation ? "d-none" : "col-md-12"}`}>
 							<h2>Conversations</h2>
 							<div className={classes.listGroupContainer}>
 								<ul className="list-group">
@@ -267,13 +274,13 @@ const MessagePanel = () => {
 										.map((conversation) => (
 											<li
 												key={conversation.conversation_id}
-												className={`list-group-item ${classes.listGroupItem} ${
-													selectedConversation?.conversation_id === conversation.conversation_id ? "active" : ""
+												className={`list-group-item ${
+													selectedConversation?.conversation_id === conversation.conversation_id ? classes.active : ""
 												}`}
 												onClick={() => handleConversationSelect(conversation)}
 											>
 												<div>
-													<strong>{otherUsersName(conversation)}</strong>
+													<strong>{`${otherUsersName(conversation)} - ${conversation.product_title}`}</strong>
 												</div>
 												<div className="latest-message">{cropContent(latestMessage(conversation)?.message, 80)}</div>
 											</li>
@@ -283,20 +290,20 @@ const MessagePanel = () => {
 						</div>
 						<div
 							className={`${
-								selectedConversation && screenSize.width < 764 ? "col-md-12" : "col-md-9 d-none d-md-block"
+								selectedConversation && screenSize.width <= 767 ? "col-md-12" : "col-md-9 d-none d-md-block"
 							}`}
 						>
 							{selectedConversation ? (
 								<div className={classes.header}>
-									{screenSize.width < 764 && (
-										<a
-											href="#"
+									{screenSize.width <= 767 && (
+										<button
+											className="btn btn-secondary"
 											onClick={() => {
 												setSelectedConversation(null);
 											}}
 										>
-											&#x2B05;
-										</a>
+											<FaArrowLeft />
+										</button>
 									)}
 									<h2>{otherUsersName(selectedConversation) + "  -  " + selectedConversation.product_title}</h2>
 									<Link to={"/adDetails/" + selectedConversation.product_id}>
@@ -323,29 +330,31 @@ const MessagePanel = () => {
 											))}
 									</div>
 								)}
-								<div className={`input-group mt-3 ${classes.inputGroup}`}>
-									<input
-										type="text"
-										className="form-control"
-										placeholder="Type your message here..."
-										value={newMessage}
-										onChange={(e) => {
-											if (selectedConversation) {
-												setNewMessage(e.target.value);
-											}
-										}}
-										onKeyDown={(e) => {
-											if (e.key === "Enter") {
-												sendMessage();
-											}
-										}}
-									/>
-									<div className="input-group-append">
-										<button className="btn btn-primary" onClick={sendMessage}>
-											Send
-										</button>
+								{selectedConversation && (
+									<div className={`input-group mt-3 ${classes.inputGroup}`}>
+										<input
+											type="text"
+											className="form-control"
+											placeholder="Type your message here..."
+											value={newMessage}
+											onChange={(e) => {
+												if (selectedConversation) {
+													setNewMessage(e.target.value);
+												}
+											}}
+											onKeyDown={(e) => {
+												if (e.key === "Enter") {
+													sendMessage();
+												}
+											}}
+										/>
+										<div className="input-group-append">
+											<button className="btn btn-primary" onClick={sendMessage}>
+												Send
+											</button>
+										</div>
 									</div>
-								</div>
+								)}
 							</div>
 						</div>
 					</div>

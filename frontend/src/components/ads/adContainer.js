@@ -4,6 +4,8 @@ import axios from 'axios';
 import './adContainer.css';
 import ItemBlock from './itemBlock.js';
 import { useLocation } from 'react-router-dom';
+import { jwtDecode } from "jwt-decode";
+
 
 function AdContainer() {
     const { userId, setUserId } = useUser();
@@ -70,7 +72,7 @@ function AdContainer() {
             filteredItems = filteredItems.filter(item => item.is_available == 1);
             setSelectedCategoryName('Today\'s Picks');
         } else if (location.pathname.includes('/MyListings')) {
-            filteredItems = filteredItems.filter(item => item.user_id == userId);
+            filteredItems = filteredItems.filter(item => item.user_id == jwtDecode(sessionStorage.getItem("token")).id);
             setSelectedCategoryName('My Listings');
         } else {
             setFilteredData(adData);

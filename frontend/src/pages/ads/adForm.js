@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useUser } from "../../userContext";
 import  { useNavigate } from 'react-router-dom'
+import { jwtDecode } from "jwt-decode";
 
 //var imageFiles = []; // array of images
 var rawImageFiles = []; // for uploading new images
@@ -86,7 +87,7 @@ function AdForm(props) {
     const postAd = (event) => {
       event.preventDefault();
       var editFormData = {
-        user_id: userId,
+        user_id: jwtDecode(sessionStorage.getItem("token")).id,
         location_id: 1, // TODO: FIX THIS LATER
         title: title.current.value,
         description: description.current.value,

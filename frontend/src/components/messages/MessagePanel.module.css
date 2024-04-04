@@ -29,10 +29,9 @@
 	margin: 10px;
 }
 
-.listGroupItem.active {
-	background-color: #c3d9f0;
-	color: black;
-	cursor: pointer;
+.active {
+	background-color: rgba(0, 76, 155, 1);
+	color: white;
 }
 
 .latest-message {
