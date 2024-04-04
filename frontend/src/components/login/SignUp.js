@@ -67,11 +67,6 @@ const SignUp = (props) => {
 						email,
 						phoneNumber,
 						password,
-					},
-					{
-						headers: {
-							authorization: `${sessionStorage.getItem("token")}`,
-						},
 					}
 				);
 				sessionStorage.setItem("token", response.data.token);

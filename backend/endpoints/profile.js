@@ -72,7 +72,7 @@ router.put("/newPassword", jwtMiddleware, async (req, res) => {
 });
 
 //signup end point
-router.post("/", jwtMiddleware, async (req, res) => {
+router.post("/", async (req, res) => {
 	const { firstName, lastName, email, phoneNumber, password } = req.body;
 
 	//checking if user already exists
