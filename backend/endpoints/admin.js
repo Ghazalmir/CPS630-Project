@@ -41,6 +41,7 @@ router.post("/reported-ads", async (req, res) => {
   }
 });
 
+// Create reported user
 router.post("/reported-users", async (req, res) => {
   try {
     const { reported_user_id, reported_by_user_id, reason } = req.body;
@@ -65,7 +66,7 @@ router.get("/users", async (req, res) => {
   }
 });
 
-router.post('/api/admin/delete-user', async (req, res) => {
+router.post('/delete-user', async (req, res) => {
   const { id } = req.body;
   try {
     await pool.query('DELETE FROM users WHERE id = $1', [id]);
