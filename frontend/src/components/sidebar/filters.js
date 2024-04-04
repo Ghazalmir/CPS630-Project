@@ -116,15 +116,63 @@ function Filters() {
         <div className={`collapsible-content d-${isLocationCollapsed ? 'none' : 'block'}`}>
           <div className="form-check">
             <div>
-              <input className="form-check-input" type="radio" name="location" id="meet-on-campus" value="campus"  onChange={(e) => setSelectedLocation(e.target.value)}/> 
+              <input className="form-check-input" type="radio" name="location" id="meet-on-campus" value="0"  onChange={(e) => setSelectedLocation(e.target.value)}/> 
               <label className="form-check-label">
                 Meet on Campus
               </label>
             </div>
             <div>
-              <input className="form-check-input" type="radio" name="location" id="custom-location" value="option1" /> 
+              <input className="form-check-input" type="radio" name="location" id="toronto" value="1" onChange={(e) => setSelectedLocation(e.target.value)}/> 
               <label className="form-check-label">
-                change this later
+                Toronto
+              </label>
+            </div>
+            <div>
+              <input className="form-check-input" type="radio" name="location" id="montreal" value="2" onChange={(e) => setSelectedLocation(e.target.value)}/> 
+              <label className="form-check-label">
+                Montreal
+              </label>
+            </div>
+            <div>
+              <input className="form-check-input" type="radio" name="location" id="halifax" value="3" onChange={(e) => setSelectedLocation(e.target.value)}/> 
+              <label className="form-check-label">
+                Halifax
+              </label>
+            </div>
+            <div>
+              <input className="form-check-input" type="radio" name="location" id="moncton" value="4" onChange={(e) => setSelectedLocation(e.target.value)}/> 
+              <label className="form-check-label">
+                Moncton
+              </label>
+            </div>
+            <div>
+              <input className="form-check-input" type="radio" name="location" id="winnipeg" value="5" onChange={(e) => setSelectedLocation(e.target.value)}/> 
+              <label className="form-check-label">
+                Winnipeg
+              </label>
+            </div>
+            <div>
+              <input className="form-check-input" type="radio" name="location" id="ottawa" value="6" onChange={(e) => setSelectedLocation(e.target.value)}/> 
+              <label className="form-check-label">
+                Ottawa
+              </label>
+            </div>
+            <div>
+              <input className="form-check-input" type="radio" name="location" id="hamilton" value="7" onChange={(e) => setSelectedLocation(e.target.value)}/> 
+              <label className="form-check-label">
+                Hamilton
+              </label>
+            </div>
+            <div>
+              <input className="form-check-input" type="radio" name="location" id="guelph" value="8" onChange={(e) => setSelectedLocation(e.target.value)}/> 
+              <label className="form-check-label">
+                Guelph
+              </label>
+            </div>
+            <div>
+              <input className="form-check-input" type="radio" name="location" id="custom-location" value="custom-location" onChange={(e) => setSelectedLocation(e.target.value)}/> 
+              <label className="form-check-label">
+                Custom/TBD
               </label>
             </div>
             </div>
