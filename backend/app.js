@@ -18,7 +18,7 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 dotenv.config();
 
-const PORT = 8080;
+const PORT = process.env.port || 8080;
 
 // Create an express applicaiton
 app.use(bodyParser.json());
