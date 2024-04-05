@@ -55,6 +55,30 @@ function AdDetails() {
     navigate(-1);
   };
 
+  const reportAd = () => {
+    const confirm = window.confirm("Are you sure you want to report this ad?");
+    if (confirm) {
+    fetch("http://localhost:8080/api/report/reportAd", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({product_id: id}),
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to report ad');
+        }
+        return response.json(); 
+      })
+      .then(data => {
+        //console.log("Ad reported successfully.", data.id);
+        alert("Ad reported successfully!")
+      })
+      .catch(error => console.error("Error reporting ad:", error));
+    }
+  };
+
   return (
     <>
 			{loading ? (
@@ -79,6 +103,7 @@ function AdDetails() {
               <AvailabilityStatus available={adData.is_available === "1"}/>
 
             </h2>
+            
             <h6 className="text-blue">
               {adData.meet_on_campus === "1"? 'Meet on Campus' : 
                 adData.city + ', ' + adData.province_name
@@ -95,6 +120,9 @@ function AdDetails() {
               :
               <CustomButton href={`/Login`} text="Login To Message Seller"/>
             }
+            <br/>
+            <button className="btn text-decoration-underline mt-2" onClick={reportAd}>Report Ad</button>
+
             
             
           </div>
